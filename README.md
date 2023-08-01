@@ -18,7 +18,7 @@ So that I can see the latest trending movies
 Given the customer has connectivity
 When the customer requests to see the trending movies
 Then the app should display the latest feed from remote
-   And replace the cache with the newest trending movies
+And replace the cache with the newest trending movies
 ```
 
 ### Narative #2
