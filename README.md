@@ -126,10 +126,11 @@ Then the app should display an error message
 
 ## Architecture
 
-![movies_architecture](movies_architecture.png)
+![Movies app feature](movies_architecture.png)
+
 
 ## Flowchart
 
-![movies_flowchart](movies_flowchart.png)
+![movies flow](movies_flowchart.png)
 
 
