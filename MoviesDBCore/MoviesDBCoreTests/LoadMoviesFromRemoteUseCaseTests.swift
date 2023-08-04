@@ -2,8 +2,8 @@
 import XCTest
 
 protocol HTTPClient {
-    
-    func request(from url: URL, completion: @escaping (Error?, HTTPURLResponse?) -> Void)
+    typealias Result = Swift.Result<HTTPURLResponse, Error>
+    func request(from url: URL, completion: @escaping (Result) -> Void)
 }
 
 final class RemoteMoviesLoader {
@@ -22,10 +22,12 @@ final class RemoteMoviesLoader {
     }
     
     func load(completion: @escaping (Error) -> Void) {
-        client.request(from: url) { error, response in
-            if error != nil {
+        client.request(from: url) { result in
+            switch result {
+            case .failure:
                 completion(.connectivity)
-            } else if response?.statusCode != 200 {
+                
+            case .success:
                 completion(.invalidData)
             }
         }
@@ -115,20 +117,20 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
             return messages.map(\.url)
         }
         
-        private var messages = [(url: URL, completion: (Error?, HTTPURLResponse?) -> Void)]()
+        private var messages = [(url: URL, completion: (HTTPClient.Result) -> Void)]()
         
-        func request(from url: URL, completion: @escaping (Error?, HTTPURLResponse?) -> Void) {
+        func request(from url: URL, completion: @escaping (Result<HTTPURLResponse, Error>) -> Void) {
             messages.append((url, completion))
         }
         
         func complete(with error: Error, at index: Int = 0) {
-            messages[index].completion(error, nil)
+            messages[index].completion(.failure(error))
         }
         
         func complete(withStatusCode code: Int, at index: Int = 0) {
             let url = requestedURLs[index]
-            let response = HTTPURLResponse(url: url, statusCode: code, httpVersion: nil, headerFields: nil)
-            messages[index].completion(nil, response)
+            let response = HTTPURLResponse(url: url, statusCode: code, httpVersion: nil, headerFields: nil)!
+            messages[index].completion(.success(response))
         }
     }
 }
