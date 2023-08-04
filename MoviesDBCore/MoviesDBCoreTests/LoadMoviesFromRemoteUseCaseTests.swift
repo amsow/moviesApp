@@ -1,9 +1,9 @@
 
 import XCTest
 
-class HTTPClient {
+protocol HTTPClient {
     
-    func request(from url: URL) {}
+    func request(from url: URL)
 }
 
 final class RemoteMoviesLoader {
@@ -70,7 +70,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     final class HTTPClientSpy: HTTPClient {
         private(set) var requestedURLs = [URL]()
         
-        override func request(from url: URL) {
+         func request(from url: URL) {
             requestedURLs.append(url)
         }
     }
