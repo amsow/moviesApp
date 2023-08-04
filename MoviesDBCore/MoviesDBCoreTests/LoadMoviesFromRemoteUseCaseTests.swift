@@ -3,7 +3,7 @@ import XCTest
 
 protocol HTTPClient {
     
-    func request(from url: URL, completion: @escaping (Error?) -> Void)
+    func request(from url: URL, completion: @escaping (Error) -> Void)
 }
 
 final class RemoteMoviesLoader {
@@ -16,8 +16,14 @@ final class RemoteMoviesLoader {
         self.client = client
     }
     
-    func load(completion: @escaping (Error?) -> Void) {
-        client.request(from: url, completion: completion)
+    enum Error: Swift.Error {
+        case connectivity
+    }
+    
+    func load(completion: @escaping (Error) -> Void) {
+        client.request(from: url) { error in
+            completion(.connectivity)
+        }
     }
 }
 
@@ -61,10 +67,10 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         let (client, sut) = makeSUT()
         let anyError = NSError(domain: "any error", code: 0)
         let loadCompletionExpectation = expectation(description: "Wait for load completion")
-        
+    
         sut.load { error in
-            XCTAssertNotNil(error)
-            XCTAssertEqual(anyError, error as? NSError)
+            
+            XCTAssertEqual(error, RemoteMoviesLoader.Error.connectivity)
             
             loadCompletionExpectation.fulfill()
         }
@@ -91,9 +97,9 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
             return messages.map(\.url)
         }
         
-        private var messages = [(url: URL, completion: (Error?) -> Void)]()
+        private var messages = [(url: URL, completion: (Error) -> Void)]()
         
-        func request(from url: URL, completion: @escaping (Error?) -> Void) {
+        func request(from url: URL, completion: @escaping (Error) -> Void) {
             messages.append((url, completion))
         }
         
