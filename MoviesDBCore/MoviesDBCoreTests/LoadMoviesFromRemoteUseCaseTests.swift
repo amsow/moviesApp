@@ -14,8 +14,8 @@ final class RemoteMoviesLoader {
         self.client = client
     }
     
-    func load() {
-        client.request(from: URL(string: "http://any-url.com")!)
+    func load(from url: URL) {
+        client.request(from: url)
     }
 }
 
@@ -30,27 +30,28 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         _ = RemoteMoviesLoader(client: client)
         
         // Then
-        XCTAssertNil(client.requestedURL)
+        XCTAssertTrue(client.requestedURLs.isEmpty)
     }
     
     func test_load_requestsFromURL() {
         // Given
         let client = HTTPClientSpy()
         let sut = RemoteMoviesLoader(client: client)
+        let url = URL(string: "http://any-url.com")!
         
         // When
-        sut.load()
+        sut.load(from: url)
         
         // Then
-        XCTAssertNotNil(client.requestedURL)
+        XCTAssertEqual(client.requestedURLs, [url])
     }
    
     
     final class HTTPClientSpy: HTTPClient {
-        var requestedURL: URL?
+        private(set) var requestedURLs = [URL]()
         
         override func request(from url: URL) {
-            requestedURL = url
+            requestedURLs.append(url)
         }
     }
 }
