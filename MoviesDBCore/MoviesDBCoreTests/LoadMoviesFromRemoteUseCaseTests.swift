@@ -25,11 +25,8 @@ final class RemoteMoviesLoader {
 final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     
     func test_init_doesNotRequestLoad() {
-        // Given
-        let client = HTTPClientSpy()
-        
-        // When
-        _ = RemoteMoviesLoader(url: URL(string: "http://any-url.com")!, client: client)
+        // Given & When
+        let (client, _) = makeSUT()
         
         // Then
         XCTAssertTrue(client.requestedURLs.isEmpty)
@@ -37,9 +34,8 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     
     func test_load_requestsFromURL() {
         // Given
-        let url = URL(string: "http://any-url.com")!
-        let client = HTTPClientSpy()
-        let sut = RemoteMoviesLoader(url: url, client: client)
+        let url = URL(string: "http://an-url.com")!
+        let (client, sut) = makeSUT(url: url)
         
         // When
         sut.load()
@@ -50,14 +46,24 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     
     func test_loadTwice_requestsTwiceFromURL() {
         // Given
-        let url = URL(string: "http://any-url.com")!
+        let url = URL(string: "http://a-given-url.com")!
+        let (client, sut) = makeSUT(url: url)
+        
+        // When
+        sut.load()
+        sut.load()
+        
+        // Then
+        XCTAssertEqual(client.requestedURLs, [url, url])
+    }
+    
+    // MARK: - Helpers
+    
+    private func makeSUT(url: URL = URL(string: "http://any-url.com")!) -> (HTTPClientSpy, RemoteMoviesLoader) {
         let client = HTTPClientSpy()
         let sut = RemoteMoviesLoader(url: url, client: client)
         
-        sut.load()
-        sut.load()
-        
-        XCTAssertEqual(client.requestedURLs, [url, url])
+        return (client, sut)
     }
    
     
