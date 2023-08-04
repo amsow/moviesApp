@@ -3,7 +3,7 @@ import XCTest
 
 protocol HTTPClient {
     
-    func request(from url: URL, completion: @escaping (Error) -> Void)
+    func request(from url: URL, completion: @escaping (Error?, HTTPURLResponse?) -> Void)
 }
 
 final class RemoteMoviesLoader {
@@ -18,11 +18,16 @@ final class RemoteMoviesLoader {
     
     enum Error: Swift.Error {
         case connectivity
+        case invalidData
     }
     
     func load(completion: @escaping (Error) -> Void) {
-        client.request(from: url) { error in
-            completion(.connectivity)
+        client.request(from: url) { error, response in
+            if error != nil {
+                completion(.connectivity)
+            } else if response?.statusCode != 200 {
+                completion(.invalidData)
+            }
         }
     }
 }
@@ -66,17 +71,26 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     func test_load_deliversErrorOnClientError() {
         let (client, sut) = makeSUT()
         let anyError = NSError(domain: "any error", code: 0)
-        let loadCompletionExpectation = expectation(description: "Wait for load completion")
-    
+        
+        var capturedErrors = [RemoteMoviesLoader.Error]()
         sut.load { error in
-            
-            XCTAssertEqual(error, RemoteMoviesLoader.Error.connectivity)
-            
-            loadCompletionExpectation.fulfill()
+            capturedErrors.append(error)
         }
         
         client.complete(with: anyError)
-        wait(for: [loadCompletionExpectation], timeout: 1.0)
+        
+        XCTAssertEqual(capturedErrors, [.connectivity])
+    }
+    
+    func test_load_deliversErrorOnNon200HTTPResponse() {
+        let (client, sut) = makeSUT()
+
+        var capturedErrors = [RemoteMoviesLoader.Error]()
+        sut.load { capturedErrors.append($0) }
+
+        client.complete(withStatusCode: 400)
+
+        XCTAssertEqual(capturedErrors, [.invalidData])
     }
     
     
@@ -97,14 +111,20 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
             return messages.map(\.url)
         }
         
-        private var messages = [(url: URL, completion: (Error) -> Void)]()
+        private var messages = [(url: URL, completion: (Error?, HTTPURLResponse?) -> Void)]()
         
-        func request(from url: URL, completion: @escaping (Error) -> Void) {
+        func request(from url: URL, completion: @escaping (Error?, HTTPURLResponse?) -> Void) {
             messages.append((url, completion))
         }
         
         func complete(with error: Error, at index: Int = 0) {
-            messages[index].completion(error)
+            messages[index].completion(error, nil)
+        }
+        
+        func complete(withStatusCode code: Int, at index: Int = 0) {
+            let url = requestedURLs[index]
+            let response = HTTPURLResponse(url: url, statusCode: code, httpVersion: nil, headerFields: nil)
+            messages[index].completion(nil, response)
         }
     }
 }
