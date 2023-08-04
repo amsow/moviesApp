@@ -73,6 +73,8 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         wait(for: [loadCompletionExpectation], timeout: 1.0)
     }
     
+    
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL = URL(string: "http://any-url.com")!) -> (HTTPClientSpy, RemoteMoviesLoader) {
@@ -84,16 +86,19 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
    
     
     final class HTTPClientSpy: HTTPClient {
-        private(set) var requestedURLs = [URL]()
-        private var errorCompletions = [(Error?) -> Void]()
         
-        func request(from url: URL, completion: @escaping (Error?) -> Void) {
-            requestedURLs.append(url)
-            errorCompletions.append(completion)
+        var requestedURLs: [URL] {
+            return messages.map(\.url)
         }
         
-        func complete(with error: Error) {
-            errorCompletions[0](error)
+        private var messages = [(url: URL, completion: (Error?) -> Void)]()
+        
+        func request(from url: URL, completion: @escaping (Error?) -> Void) {
+            messages.append((url, completion))
+        }
+        
+        func complete(with error: Error, at index: Int = 0) {
+            messages[index].completion(error)
         }
     }
 }
