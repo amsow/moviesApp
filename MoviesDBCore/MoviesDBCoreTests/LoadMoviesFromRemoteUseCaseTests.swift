@@ -84,13 +84,17 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     
     func test_load_deliversErrorOnNon200HTTPResponse() {
         let (client, sut) = makeSUT()
-
-        var capturedErrors = [RemoteMoviesLoader.Error]()
-        sut.load { capturedErrors.append($0) }
-
-        client.complete(withStatusCode: 400)
-
-        XCTAssertEqual(capturedErrors, [.invalidData])
+        let sample = [400, 403, 305, 150, 500, 203]
+        
+        sample.enumerated().forEach { index, code in
+            var capturedErrors = [RemoteMoviesLoader.Error]()
+            sut.load { capturedErrors.append($0) }
+            
+            client.complete(withStatusCode: code, at: index)
+            
+            
+            XCTAssertEqual(capturedErrors, [.invalidData])
+        }
     }
     
     
