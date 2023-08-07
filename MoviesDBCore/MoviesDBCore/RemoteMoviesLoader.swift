@@ -24,7 +24,7 @@ public final class RemoteMoviesLoader: MoviesLoader {
                 completion(.failure(Error.connectivity))
                 
             case .success:
-                completion(.failure(Error.invalidData))
+                    completion(.failure(Error.invalidData))
             }
         }
     }
