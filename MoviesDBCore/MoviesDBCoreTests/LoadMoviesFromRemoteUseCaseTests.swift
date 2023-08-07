@@ -1,39 +1,6 @@
 
 import XCTest
-
-protocol HTTPClient {
-    typealias Result = Swift.Result<(Data, HTTPURLResponse), Error>
-    func request(from url: URL, completion: @escaping (Result) -> Void)
-}
-
-final class RemoteMoviesLoader {
-    
-    private let url: URL
-    private let client: HTTPClient
-    
-    init(url: URL, client: HTTPClient) {
-        self.url = url
-        self.client = client
-    }
-    
-    enum Error: Swift.Error {
-        case connectivity
-        case invalidData
-    }
-    
-    func load(completion: @escaping (Error) -> Void) {
-        client.request(from: url) { result in
-            switch result {
-            case .failure:
-                completion(.connectivity)
-                
-            case .success:
-                completion(.invalidData)
-            }
-        }
-    }
-}
-
+import MoviesDBCore
 
 final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     
