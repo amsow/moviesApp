@@ -42,8 +42,10 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         let anyError = NSError(domain: "any error", code: 0)
         
         var capturedErrors = [RemoteMoviesLoader.Error]()
-        sut.load { error in
-            capturedErrors.append(error)
+        sut.load { result in
+            if case .failure(let error) = result {
+                capturedErrors.append(error)
+            }
         }
         
         client.complete(with: anyError)
@@ -57,7 +59,11 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         
         sample.enumerated().forEach { index, code in
             var capturedErrors = [RemoteMoviesLoader.Error]()
-            sut.load { capturedErrors.append($0) }
+            sut.load { result in
+                if case .failure(let error) = result {
+                    capturedErrors.append(error)
+                }
+            }
             
             client.complete(withStatusCode: code, at: index)
             
@@ -70,7 +76,11 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         let (client, sut) = makeSUT()
         
         var receivedErrors = [RemoteMoviesLoader.Error]()
-        sut.load { receivedErrors.append($0) }
+        sut.load { result in
+            if case .failure(let error) = result {
+                receivedErrors.append(error)
+            }
+        }
         
         let invalidData = Data("invalid data".utf8)
         client.complete(withStatusCode: 200, data: invalidData)

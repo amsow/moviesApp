@@ -2,10 +2,10 @@
 
 import Foundation
 
-struct Movie {
-    let id: Int
-    let title: String
-    let overview: String
-    let releaseDate: Date
-    let posterImageURL: URL
+public struct Movie {
+    public let id: Int
+    public let title: String
+    public let overview: String
+    public let releaseDate: Date
+    public let posterImageURL: URL
 }

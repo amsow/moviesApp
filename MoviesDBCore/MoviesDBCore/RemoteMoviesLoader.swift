@@ -17,14 +17,14 @@ public final class RemoteMoviesLoader {
         case invalidData
     }
     
-    public func load(completion: @escaping (Error) -> Void) {
+    public func load(completion: @escaping (Result<[Movie], Error>) -> Void) {
         client.request(from: url) { result in
             switch result {
             case .failure:
-                completion(.connectivity)
+                completion(.failure(.connectivity))
                 
             case .success:
-                completion(.invalidData)
+                completion(.failure(.invalidData))
             }
         }
     }
