@@ -2,7 +2,7 @@
 import XCTest
 
 protocol HTTPClient {
-    typealias Result = Swift.Result<HTTPURLResponse, Error>
+    typealias Result = Swift.Result<(Data, HTTPURLResponse), Error>
     func request(from url: URL, completion: @escaping (Result) -> Void)
 }
 
@@ -99,6 +99,17 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         }
     }
     
+    func test_load_deliversErrorOn200HTTPResponseWithInvalidJSON() {
+        let (client, sut) = makeSUT()
+        
+        var receivedErrors = [RemoteMoviesLoader.Error]()
+        sut.load { receivedErrors.append($0) }
+        
+        let invalidData = Data("invalid data".utf8)
+        client.complete(withStatusCode: 200, data: invalidData)
+        
+        XCTAssertEqual(receivedErrors, [.invalidData])
+    }
     
     
     // MARK: - Helpers
@@ -119,7 +130,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         
         private var messages = [(url: URL, completion: (HTTPClient.Result) -> Void)]()
         
-        func request(from url: URL, completion: @escaping (Result<HTTPURLResponse, Error>) -> Void) {
+        func request(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void) {
             messages.append((url, completion))
         }
         
@@ -127,10 +138,10 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
             messages[index].completion(.failure(error))
         }
         
-        func complete(withStatusCode code: Int, at index: Int = 0) {
+        func complete(withStatusCode code: Int, data: Data = .init(), at index: Int = 0) {
             let url = requestedURLs[index]
             let response = HTTPURLResponse(url: url, statusCode: code, httpVersion: nil, headerFields: nil)!
-            messages[index].completion(.success(response))
+            messages[index].completion(.success((data, response)))
         }
     }
 }
