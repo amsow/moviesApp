@@ -2,7 +2,7 @@
 
 import Foundation
 
-public final class RemoteMoviesLoader {
+public final class RemoteMoviesLoader: MoviesLoader {
     
     private let url: URL
     private let client: HTTPClient
@@ -17,14 +17,14 @@ public final class RemoteMoviesLoader {
         case invalidData
     }
     
-    public func load(completion: @escaping (Result<[Movie], Error>) -> Void) {
+    public func load(completion: @escaping (Result<[Movie], Swift.Error>) -> Void) {
         client.request(from: url) { result in
             switch result {
             case .failure:
-                completion(.failure(.connectivity))
+                completion(.failure(Error.connectivity))
                 
             case .success:
-                completion(.failure(.invalidData))
+                completion(.failure(Error.invalidData))
             }
         }
     }

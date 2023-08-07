@@ -43,7 +43,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         
         var capturedErrors = [RemoteMoviesLoader.Error]()
         sut.load { result in
-            if case .failure(let error) = result {
+            if case .failure(let error as RemoteMoviesLoader.Error) = result {
                 capturedErrors.append(error)
             }
         }
@@ -60,7 +60,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         sample.enumerated().forEach { index, code in
             var capturedErrors = [RemoteMoviesLoader.Error]()
             sut.load { result in
-                if case .failure(let error) = result {
+                if case .failure(let error as RemoteMoviesLoader.Error) = result {
                     capturedErrors.append(error)
                 }
             }
@@ -77,7 +77,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         
         var receivedErrors = [RemoteMoviesLoader.Error]()
         sut.load { result in
-            if case .failure(let error) = result {
+            if case .failure(let error as RemoteMoviesLoader.Error) = result {
                 receivedErrors.append(error)
             }
         }
