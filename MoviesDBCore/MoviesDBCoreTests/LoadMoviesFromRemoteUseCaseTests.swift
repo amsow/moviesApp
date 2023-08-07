@@ -68,6 +68,16 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
+    func test_load_deliversNoMoviesOn200HTTPResponseWithEmptyJSONData() {
+        let (client, sut) = makeSUT()
+        
+        let emptyJSONData = Data("{\"results\": []}".utf8)
+        
+        expect(sut, toCompleteWith: .success([]), action: {
+            client.complete(withStatusCode: 200, data: emptyJSONData)
+        })
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL = URL(string: "http://any-url.com")!) -> (HTTPClientSpy, RemoteMoviesLoader) {
@@ -110,13 +120,13 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         sut.load { receivedResult in
             switch (receivedResult, expectedResult) {
             case (.failure(let receivedError as RemoteMoviesLoader.Error), .failure(let expectedError as RemoteMoviesLoader.Error)):
-                XCTAssertEqual(receivedError, expectedError,
-                               "Expected \(expectedResult), got \(receivedResult) with \(receivedError) instead",
-                               file: file,
-                               line: line)
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+                
+            case (.success(let receivedMovies), .success(let expectedMovies)):
+                XCTAssertEqual(receivedMovies, expectedMovies, file: file, line: line)
                 
             default:
-                XCTFail()
+                XCTFail("Expected \(expectedResult) got \(receivedResult) instead", file: file, line: line)
             }
             
             exp.fulfill()
@@ -125,5 +135,16 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         action()
         
         wait(for: [exp], timeout: 1.0)
+    }
+}
+
+extension Movie: Equatable {
+    
+      public static func ==(lhs: Movie, rhs: Movie) -> Bool {
+         return lhs.id == rhs.id &&
+         lhs.title == rhs.title &&
+         lhs.overview == rhs.overview &&
+         lhs.releaseDate == rhs.releaseDate &&
+         lhs.posterImageURL == rhs.posterImageURL
     }
 }

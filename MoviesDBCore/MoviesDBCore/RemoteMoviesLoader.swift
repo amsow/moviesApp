@@ -23,8 +23,12 @@ public final class RemoteMoviesLoader: MoviesLoader {
             case .failure:
                 completion(.failure(Error.connectivity))
                 
-            case .success:
+            case .success(let (data, _)):
+                if let _ = try? JSONSerialization.jsonObject(with: data) {
+                    completion(.success([]))
+                } else {
                     completion(.failure(Error.invalidData))
+                }
             }
         }
     }
