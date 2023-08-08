@@ -79,7 +79,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
     func test_requestFromURL_succeedsOnHTTPURLResponseWithData() {
         let url = anyURL()
         let data = anyData()
-        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let response = anyHTTPURLResponse(for: url)
         URLProtocolStub.stub(data: data, response: response, error: nil)
         
         let exp = expectation(description: "Wait for request completion")
@@ -87,11 +87,34 @@ final class URLSessionHTTPClientTests: XCTestCase {
             switch result {
             case .success(let (receivedData, receivedResponse)):
                 XCTAssertEqual(receivedData, data)
-                XCTAssertEqual(receivedResponse.url, response?.url)
-                XCTAssertEqual(receivedResponse.statusCode, response?.statusCode)
+                XCTAssertEqual(receivedResponse.url, response.url)
+                XCTAssertEqual(receivedResponse.statusCode, response.statusCode)
                 
             default:
                 XCTFail("Expected success but got \(result) instead")
+            }
+            
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
+    }
+    
+    func test_requestFromURL_succeedsWithEmptyDataOnHTTPURLResponseWithData() {
+        let response = anyHTTPURLResponse()
+        let emptyData = Data()
+        URLProtocolStub.stub(data: nil, response: response, error: nil)
+        
+        let exp = expectation(description: "Wait for request completion")
+        makeSUT().request(from: anyURL()) { result in
+            switch result {
+            case .success(let (receivedData, receivedResponse)):
+                XCTAssertEqual(receivedData, emptyData)
+                XCTAssertEqual(receivedResponse.url, response.url)
+                XCTAssertEqual(receivedResponse.statusCode, response.statusCode)
+                
+            default:
+                XCTFail("Expected success, got \(result) instead")
             }
             
             exp.fulfill()
@@ -122,6 +145,10 @@ final class URLSessionHTTPClientTests: XCTestCase {
     
     func anyNSError() -> NSError {
         NSError(domain: "any error", code: 0)
+    }
+    
+    func anyHTTPURLResponse(for url: URL = URL(string: "http://url.com")!) -> HTTPURLResponse {
+        HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!
     }
     
     private func resultErrorFor(
