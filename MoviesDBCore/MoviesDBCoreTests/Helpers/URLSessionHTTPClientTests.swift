@@ -13,12 +13,30 @@ final class URLSessionHTTPClient {
     
     func request(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) {
         session.dataTask(with: url) { _, _, error in
-            completion(.failure(error!))
+            if let error {
+                completion(.failure(error))
+            }
         }.resume()
     }
 }
 
 final class URLSessionHTTPClientTests: XCTestCase {
+    
+    func test_requestFromURL_performsGETRequestWithURL() {
+        let url = URL(string: "http://url.com")!
+        
+        let exp = expectation(description: "Wait for request")
+        URLProtocolStub.observeRequests { request in
+            XCTAssertEqual(request.url, url)
+            XCTAssertEqual(request.httpMethod, "GET")
+            
+            exp.fulfill()
+        }
+        
+        makeSUT().request(from: url) { _ in }
+        
+        wait(for: [exp], timeout: 1.0)
+    }
     
     func test_requestFromURL_failsOnRequestError() {
         let url = URL(string: "http://any-url.com")!
@@ -70,7 +88,12 @@ private final class URLProtocolStub: URLProtocol {
         stub = Stub(data: data, response: response, error: error, requestObserver: nil)
     }
     
+    static func observeRequests(_ observer: @escaping (URLRequest) -> Void) {
+        stub = Stub(data: nil, response: nil, error: nil, requestObserver: observer)
+    }
+    
     override class func canInit(with request: URLRequest) -> Bool {
+        stub?.requestObserver?(request)
         return true
     }
     
