@@ -79,63 +79,36 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     }
     
     func test_load_deliversMoviesItemsOn200HTTPResponseWithValidJSONData() {
-        let movie1 = Movie(
+        let movie1 = makeMovie(
             id: 1,
             title: "title1",
             overview: "overview1",
-            releaseDate: Date(timeIntervalSince1970: 1627430400),
+            releaseDate: (Date(timeIntervalSince1970: 1627430400), "2021-07-28"),
             posterImageURL: URL(string: "http://poster-image-base-url.com/w0cn9vwzkheuCT2a2MStdnadOyh.jpg")!
         )
         
-        let movie2 = Movie(
+        let movie2 = makeMovie(
             id: 2,
             title: "title2",
             overview: "overview2",
-            releaseDate: Date(timeIntervalSince1970: 970617600),
+            releaseDate: (Date(timeIntervalSince1970: 970617600), "2000-10-04"),
             posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2MStdnadOyh.jpg")!
         )
         
-        let movie3 = Movie(
+        let movie3 = makeMovie(
             id: 3,
             title: "title3",
             overview: "overview3",
-            releaseDate: Date(timeIntervalSince1970: 1111276800),
+            releaseDate: (Date(timeIntervalSince1970: 1111276800), "2005-03-20"),
             posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2a2MStdnadOyh.jpg")!
         )
-        
-        let remoteMovieJSON1: [String: Any] = [
-            "id": movie1.id,
-            "title": movie1.title,
-            "overview": movie1.overview,
-            "release_date": "2021-07-28",
-            "poster_path": movie1.posterImageURL.lastPathComponent
-        ]
-        
-        let remoteMovieJSON2: [String: Any] = [
-            "id": movie2.id,
-            "title": movie2.title,
-            "overview": movie2.overview,
-            "release_date": "2000-10-04",
-            "poster_path": movie2.posterImageURL.lastPathComponent
-        ]
-        
-        let remoteMovieJSON3: [String: Any] = [
-            "id": movie3.id,
-            "title": movie3.title,
-            "overview": movie3.overview,
-            "release_date": "2005-03-20",
-            "poster_path": movie3.posterImageURL.lastPathComponent
-        ]
     
-        let remoteMoviesResponseJSON = [
-            "results": [remoteMovieJSON1, remoteMovieJSON2, remoteMovieJSON3]
-        ]
+        let remoteMoviesResponseData = makeMovieResponseJSONData([movie1.json, movie2.json, movie3.json])
         
         let (client, sut) = makeSUT()
         
-        expect(sut, toCompleteWith: .success([movie1, movie2, movie3]), action: {
-            let jsonData = try! JSONSerialization.data(withJSONObject: remoteMoviesResponseJSON)
-            client.complete(withStatusCode: 200, data: jsonData)
+        expect(sut, toCompleteWith: .success([movie1.model, movie2.model, movie3.model]), action: {
+            client.complete(withStatusCode: 200, data: remoteMoviesResponseData)
         })
     }
     
@@ -196,6 +169,41 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         action()
         
         wait(for: [exp], timeout: 1.0)
+    }
+    
+    private func makeMovieJSON(_ movie: Movie) -> [String: Any] {
+        [
+            "id": movie.id,
+            "title": movie.title,
+            "overview": movie.overview,
+            "release_date": "2000-10-04",
+            "poster_path": movie.posterImageURL.lastPathComponent
+        ]
+    }
+    
+    private func makeMovie(
+        id: Int,
+        title: String,
+        overview: String,
+        releaseDate: (representation: Date, string: String),
+        posterImageURL: URL
+    ) -> (model: Movie, json: [String: Any]) {
+        let model = Movie(id: id, title: title, overview: overview, releaseDate: releaseDate.representation, posterImageURL: posterImageURL)
+        let json: [String: Any] = [
+            "id": model.id,
+            "title": model.title,
+            "overview": model.overview,
+            "release_date": releaseDate.string,
+            "poster_path": model.posterImageURL.lastPathComponent
+        ]
+        
+        return (model, json)
+    }
+    
+    private func makeMovieResponseJSONData(_ json: [[String: Any]]) -> Data {
+        let json: [String: Any] = ["results": json]
+        
+        return try! JSONSerialization.data(withJSONObject: json)
     }
 }
 
