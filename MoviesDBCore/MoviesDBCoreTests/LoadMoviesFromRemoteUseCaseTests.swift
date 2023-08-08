@@ -53,7 +53,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         sample.enumerated().forEach { index, code in
             
             expect(sut, toCompleteWith: .failure(RemoteMoviesLoader.Error.invalidData), action: {
-                client.complete(withStatusCode: code, at: index)
+                client.complete(withStatusCode: code, data: anyData(), at: index)
             })
         }
     }
@@ -138,7 +138,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
             messages[index].completion(.failure(error))
         }
         
-        func complete(withStatusCode code: Int, data: Data = .init(), at index: Int = 0) {
+        func complete(withStatusCode code: Int, data: Data, at index: Int = 0) {
             let url = requestedURLs[index]
             let response = HTTPURLResponse(url: url, statusCode: code, httpVersion: nil, headerFields: nil)!
             messages[index].completion(.success((data, response)))
@@ -194,6 +194,10 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         let json: [String: Any] = ["results": json]
         
         return try! JSONSerialization.data(withJSONObject: json)
+    }
+    
+    private func anyData() -> Data {
+        Data("any data".utf8)
     }
 }
 

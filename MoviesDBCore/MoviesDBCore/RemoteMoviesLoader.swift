@@ -31,8 +31,8 @@ public final class RemoteMoviesLoader: MoviesLoader {
             case .failure:
                 completion(.failure(Error.connectivity))
                 
-            case .success(let (data, _)):
-                if let moviesResponse = try? Self.decoder.decode(RemoteMoviesResponseDTO.self, from: data) {
+            case .success(let (data, response)):
+                if response.statusCode == 200, let moviesResponse = try? Self.decoder.decode(RemoteMoviesResponseDTO.self, from: data) {
                     completion(.success(moviesResponse.results.map(\.model)))
                 } else {
                     completion(.failure(Error.invalidData))
