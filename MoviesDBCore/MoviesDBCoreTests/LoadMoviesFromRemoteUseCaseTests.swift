@@ -63,7 +63,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         
         expect(sut, toCompleteWith: .failure(RemoteMoviesLoader.Error.invalidData), action: {
             
-            let invalidData = Data("invalid data".utf8)
+            let invalidData = anyData()
             client.complete(withStatusCode: 200, data: invalidData)
         })
     }
@@ -71,7 +71,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     func test_load_deliversNoMoviesOn200HTTPResponseWithEmptyJSONData() {
         let (client, sut) = makeSUT()
         
-        let emptyJSONData = Data("{\"results\": []}".utf8)
+        let emptyJSONData = makeMovieResponseJSONData([])
         
         expect(sut, toCompleteWith: .success([]), action: {
             client.complete(withStatusCode: 200, data: emptyJSONData)
