@@ -63,6 +63,16 @@ final class URLSessionHTTPClientTests: XCTestCase {
         XCTAssertNotNil(receivedError)
     }
     
+    func test_requestFromURL_failsOnNonHTTPURLResponse() {
+        let response = URLResponse(url: anyURL(), mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
+       XCTAssertNotNil(resultErrorFor(data: anyData(), response: response, error: nil))
+    }
+    
+    func test_requestFromURL_failsOnNilURLResponse() {
+        
+        XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: anyNSError()))
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> URLSessionHTTPClient {
@@ -77,6 +87,14 @@ final class URLSessionHTTPClientTests: XCTestCase {
     
     private func anyURL() -> URL {
         URL(string: "http://any-url.com")!
+    }
+    
+    func anyData() -> Data {
+        Data("any data".utf8)
+    }
+    
+    func anyNSError() -> NSError {
+        NSError(domain: "any error", code: 0)
     }
     
     private func resultErrorFor(
