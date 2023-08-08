@@ -51,7 +51,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         let sample = [400, 403, 305, 150, 500, 203]
         
         sample.enumerated().forEach { index, code in
-           
+            
             expect(sut, toCompleteWith: .failure(RemoteMoviesLoader.Error.invalidData), action: {
                 client.complete(withStatusCode: code, at: index)
             })
@@ -102,7 +102,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
             releaseDate: (Date(timeIntervalSince1970: 1111276800), "2005-03-20"),
             posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2a2MStdnadOyh.jpg")!
         )
-    
+        
         let remoteMoviesResponseData = makeMovieResponseJSONData([movie1.json, movie2.json, movie3.json])
         
         let (client, sut) = makeSUT()
@@ -120,7 +120,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         
         return (client, sut)
     }
-   
+    
     
     final class HTTPClientSpy: HTTPClient {
         
@@ -171,16 +171,6 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
-    private func makeMovieJSON(_ movie: Movie) -> [String: Any] {
-        [
-            "id": movie.id,
-            "title": movie.title,
-            "overview": movie.overview,
-            "release_date": "2000-10-04",
-            "poster_path": movie.posterImageURL.lastPathComponent
-        ]
-    }
-    
     private func makeMovie(
         id: Int,
         title: String,
@@ -209,11 +199,11 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
 
 extension Movie: Equatable {
     
-      public static func ==(lhs: Movie, rhs: Movie) -> Bool {
-         return lhs.id == rhs.id &&
-         lhs.title == rhs.title &&
-         lhs.overview == rhs.overview &&
-         lhs.releaseDate == rhs.releaseDate &&
-         lhs.posterImageURL == rhs.posterImageURL
+    public static func ==(lhs: Movie, rhs: Movie) -> Bool {
+        return lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.overview == rhs.overview &&
+        lhs.releaseDate == rhs.releaseDate &&
+        lhs.posterImageURL == rhs.posterImageURL
     }
 }
