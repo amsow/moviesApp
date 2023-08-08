@@ -42,11 +42,11 @@ public final class RemoteMoviesLoader: MoviesLoader {
     }
 }
 
-struct RemoteMoviesResponseDTO: Decodable {
+private struct RemoteMoviesResponseDTO: Decodable {
     let results: [RemoteMovieDTO]
 }
 
-public struct RemoteMovieDTO: Decodable {
+private struct RemoteMovieDTO: Decodable {
     let id: Int
     let title: String
     let overview: String
