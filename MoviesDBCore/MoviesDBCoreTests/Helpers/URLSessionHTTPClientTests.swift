@@ -11,11 +11,18 @@ final class URLSessionHTTPClient {
         self.session = session
     }
     
+    enum Error: Swift.Error {
+        case noValues
+    }
+    
     func request(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) {
         session.dataTask(with: url) { _, _, error in
             if let error {
                 completion(.failure(error))
+            } else {
+                completion(.failure(Error.noValues))
             }
+            
         }.resume()
     }
 }
@@ -56,7 +63,26 @@ final class URLSessionHTTPClientTests: XCTestCase {
         }
         
         wait(for: [exp], timeout: 1.0)
+    }
+    
+    func test_requestFromURL_failsOnAllNilValues() {
+        let url = anyURL()
+        URLProtocolStub.stub(data: nil, response: nil, error: nil)
         
+        let exp = expectation(description: "Wait for request")
+        makeSUT().request(from: url) { result in
+            switch result {
+            case .failure:
+                break
+                
+            default:
+                XCTFail("Expected failure, got \(result) instead")
+            }
+            
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
     }
     
     // MARK: - Helpers
