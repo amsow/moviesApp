@@ -17,6 +17,14 @@ final class URLSessionHTTPClient {
 
 final class URLSessionHTTPClientTests: XCTestCase {
     
+    func test_init_doesNotCreateDataTaskWithURL() {
+        let session = URLSessionSpy()
+        
+        _ = URLSessionHTTPClient(session: session)
+        
+        XCTAssertTrue(session.receivedURLs.isEmpty)
+    }
+    
     func test_requestFromURL_createsDataTaskWithURL() {
         let url = URL(string: "http://any-url.com")!
         let session = URLSessionSpy()
