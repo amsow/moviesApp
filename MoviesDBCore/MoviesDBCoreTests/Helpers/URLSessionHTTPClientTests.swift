@@ -1,6 +1,7 @@
 
 
 import XCTest
+import MoviesDBCore
 
 final class URLSessionHTTPClient {
     
@@ -10,41 +11,87 @@ final class URLSessionHTTPClient {
         self.session = session
     }
     
-    func request(from url: URL) {
-        session.dataTask(with: url)
+    func request(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) {
+        session.dataTask(with: url) { _, _, error in
+            completion(.failure(error!))
+        }.resume()
     }
 }
 
 final class URLSessionHTTPClientTests: XCTestCase {
     
-    func test_init_doesNotCreateDataTaskWithURL() {
-        let session = URLSessionSpy()
-        
-        _ = URLSessionHTTPClient(session: session)
-        
-        XCTAssertTrue(session.receivedURLs.isEmpty)
-    }
-    
-    func test_requestFromURL_createsDataTaskWithURL() {
+    func test_requestFromURL_failsOnRequestError() {
+        // Given
         let url = URL(string: "http://any-url.com")!
-        let session = URLSessionSpy()
-        let sut = URLSessionHTTPClient(session: session)
+        let error = NSError(domain: "an error", code: 0)
+        URLProtocolStub.stub(data: nil, response: nil, error: error)
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [URLProtocolStub.self]
         
-        sut.request(from: url)
+        let sut = URLSessionHTTPClient(session: URLSession(configuration: config))
         
-        XCTAssertEqual(session.receivedURLs, [url])
-    }
-    
-    private class URLSessionSpy: URLSession {
-        var receivedURLs = [URL]()
-        
-        override func dataTask(with url: URL) -> URLSessionDataTask {
-            receivedURLs.append(url)
+        // When
+        let exp = expectation(description: "Wait for request completion")
+        sut.request(from: url) { result in
+            if case .failure(let receivedError as NSError) = result {
+                XCTAssertEqual(receivedError.domain, error.domain)
+                XCTAssertEqual(receivedError.code, error.code)
+            } else {
+                XCTFail("Expected failure with error \(error), got \(result) instead")
+            }
             
-            return FakeURLSessionDataTask()
+            exp.fulfill()
         }
+        
+        wait(for: [exp], timeout: 1.0)
+        
+    }
+}
+
+
+private final class URLProtocolStub: URLProtocol {
+    
+    struct Stub {
+        let data: Data?
+        let response: URLResponse?
+        let error: Error?
+        let requestObserver: ((URLRequest) -> Void)?
     }
     
-    private class FakeURLSessionDataTask: URLSessionDataTask {}
-
+    private static var stub: Stub?
+    
+    static func stub(data: Data?, response: URLResponse?, error: Error?) {
+        stub = Stub(data: data, response: response, error: error, requestObserver: nil)
+    }
+    
+    override class func canInit(with request: URLRequest) -> Bool {
+        return true
+    }
+    
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest {
+        return request
+    }
+    
+    override func startLoading() {
+        guard let stub = URLProtocolStub.stub else {
+            return
+        }
+        
+        if let data = stub.data {
+            client?.urlProtocol(self, didLoad: data)
+        }
+        
+        if let response = stub.response {
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        }
+        
+        if let error = stub.error {
+            client?.urlProtocol(self, didFailWithError: error)
+        }
+        
+        client?.urlProtocolDidFinishLoading(self)
+    }
+    
+    override func stopLoading() { }
+    
 }
