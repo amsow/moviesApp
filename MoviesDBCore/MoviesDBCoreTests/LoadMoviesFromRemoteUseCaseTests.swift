@@ -78,6 +78,67 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
+    func test_load_deliversMoviesItemsOn200HTTPResponseWithValidJSONData() {
+        let movie1 = Movie(
+            id: 1,
+            title: "title1",
+            overview: "overview1",
+            releaseDate: Date(timeIntervalSince1970: 1627430400),
+            posterImageURL: URL(string: "http://poster-image-base-url.com/w0cn9vwzkheuCT2a2MStdnadOyh.jpg")!
+        )
+        
+        let movie2 = Movie(
+            id: 2,
+            title: "title2",
+            overview: "overview2",
+            releaseDate: Date(timeIntervalSince1970: 970617600),
+            posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2MStdnadOyh.jpg")!
+        )
+        
+        let movie3 = Movie(
+            id: 3,
+            title: "title3",
+            overview: "overview3",
+            releaseDate: Date(timeIntervalSince1970: 1111276800),
+            posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2a2MStdnadOyh.jpg")!
+        )
+        
+        let remoteMovieJSON1: [String: Any] = [
+            "id": movie1.id,
+            "title": movie1.title,
+            "overview": movie1.overview,
+            "release_date": "2021-07-28",
+            "poster_path": movie1.posterImageURL.lastPathComponent
+        ]
+        
+        let remoteMovieJSON2: [String: Any] = [
+            "id": movie2.id,
+            "title": movie2.title,
+            "overview": movie2.overview,
+            "release_date": "2000-10-04",
+            "poster_path": movie2.posterImageURL.lastPathComponent
+        ]
+        
+        let remoteMovieJSON3: [String: Any] = [
+            "id": movie3.id,
+            "title": movie3.title,
+            "overview": movie3.overview,
+            "release_date": "2005-03-20",
+            "poster_path": movie3.posterImageURL.lastPathComponent
+        ]
+    
+        let remoteMoviesResponseJSON = [
+            "results": [remoteMovieJSON1, remoteMovieJSON2, remoteMovieJSON3]
+        ]
+        
+        let (client, sut) = makeSUT()
+        
+        expect(sut, toCompleteWith: .success([movie1, movie2, movie3]), action: {
+            let jsonData = try! JSONSerialization.data(withJSONObject: remoteMoviesResponseJSON)
+            client.complete(withStatusCode: 200, data: jsonData)
+        })
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(url: URL = URL(string: "http://any-url.com")!) -> (HTTPClientSpy, RemoteMoviesLoader) {
