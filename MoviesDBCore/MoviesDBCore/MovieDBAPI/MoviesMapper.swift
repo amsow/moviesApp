@@ -38,7 +38,7 @@ struct MoviesMapper {
     }
     
     static func map(_ data: Data, response: HTTPURLResponse) throws -> [Movie] {
-        guard response.statusCode == 200 else {
+        guard response.isOK else {
             throw RemoteMoviesLoader.Error.invalidData
         }
         
