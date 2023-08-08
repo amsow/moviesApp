@@ -114,9 +114,11 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT(url: URL = URL(string: "http://any-url.com")!) -> (HTTPClientSpy, RemoteMoviesLoader) {
+    private func makeSUT(url: URL = URL(string: "http://any-url.com")!, file: StaticString = #filePath, line: UInt = #line) -> (HTTPClientSpy, RemoteMoviesLoader) {
         let client = HTTPClientSpy()
         let sut = RemoteMoviesLoader(url: url, client: client)
+        trackMemoryLeaks(sut, file: file, line: line)
+        trackMemoryLeaks(client, file: file, line: line)
         
         return (client, sut)
     }
