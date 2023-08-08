@@ -32,13 +32,7 @@ public final class RemoteMoviesLoader: MoviesLoader {
                 completion(.failure(Error.connectivity))
                 
             case .success(let (data, response)):
-                do {
-                    let movies = try MoviesMapper.map(data, response: response)
-                    completion(.success(movies))
-                    
-                } catch {
-                    completion(.failure(Error.invalidData))
-                }
+                completion(MoviesMapper.map(data, response: response))
             }
         }
     }

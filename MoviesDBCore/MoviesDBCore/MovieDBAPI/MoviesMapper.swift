@@ -37,14 +37,18 @@ struct MoviesMapper {
         }
     }
     
-    static func map(_ data: Data, response: HTTPURLResponse) throws -> [Movie] {
+    static func map(_ data: Data, response: HTTPURLResponse) -> MoviesLoader.Result {
         guard response.isOK else {
-            throw RemoteMoviesLoader.Error.invalidData
+            return .failure(RemoteMoviesLoader.Error.invalidData)
         }
         
-        let moviesResponse = try decoder.decode(RemoteMoviesResponseDTO.self, from: data)
-        
-        return moviesResponse.results.map(\.model)
+        do {
+            let moviesResponse = try decoder.decode(RemoteMoviesResponseDTO.self, from: data)
+            return .success(moviesResponse.results.map(\.model))
+            
+        } catch {
+            return .failure(RemoteMoviesLoader.Error.invalidData)
+        }
     }
 }
 
