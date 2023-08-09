@@ -43,6 +43,7 @@
 		32B6389B2A7C117E005D39AE /* MoviesLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesLoader.swift; sourceTree = "<group>"; };
 		32B6389D2A7C145D005D39AE /* LoadMoviesFromRemoteUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoviesFromRemoteUseCaseTests.swift; sourceTree = "<group>"; };
 		32C83D352A8413B7009490D1 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
+		32C83D392A84154A009490D1 /* MoviesDBCore.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MoviesDBCore.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +106,7 @@
 		32B638752A7C094C005D39AE = {
 			isa = PBXGroup;
 			children = (
+				32C83D392A84154A009490D1 /* MoviesDBCore.xctestplan */,
 				32B638812A7C094C005D39AE /* MoviesDBCore */,
 				32B6388B2A7C094C005D39AE /* MoviesDBCoreTests */,
 				32B638802A7C094C005D39AE /* Products */,
