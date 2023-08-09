@@ -3,33 +3,6 @@
 import XCTest
 import MoviesDBCore
 
-final class URLSessionHTTPClient: HTTPClient {
-    
-    private let session: URLSession
-    
-    init(session: URLSession) {
-        self.session = session
-    }
-    
-    enum Error: Swift.Error {
-        case noValues
-    }
-    
-    func request(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) {
-        session.dataTask(with: url) { data, response, error in
-            completion(Result {
-                if let error = error {
-                    throw error
-                } else if let response = response as? HTTPURLResponse, let data = data {
-                    return (data, response)
-                } else {
-                    throw Error.noValues
-                }
-            })
-        }.resume()
-    }
-}
-
 final class URLSessionHTTPClientTests: XCTestCase {
     
     func test_requestFromURL_performsGETRequestWithURL() {

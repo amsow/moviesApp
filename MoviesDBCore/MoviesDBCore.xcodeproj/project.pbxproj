@@ -17,6 +17,7 @@
 		32B6389A2A7C0F60005D39AE /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B638992A7C0F60005D39AE /* Movie.swift */; };
 		32B6389C2A7C117E005D39AE /* MoviesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B6389B2A7C117E005D39AE /* MoviesLoader.swift */; };
 		32B6389E2A7C145D005D39AE /* LoadMoviesFromRemoteUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B6389D2A7C145D005D39AE /* LoadMoviesFromRemoteUseCaseTests.swift */; };
+		32C83D362A8413B7009490D1 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C83D352A8413B7009490D1 /* URLSessionHTTPClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +42,7 @@
 		32B638992A7C0F60005D39AE /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		32B6389B2A7C117E005D39AE /* MoviesLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesLoader.swift; sourceTree = "<group>"; };
 		32B6389D2A7C145D005D39AE /* LoadMoviesFromRemoteUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoviesFromRemoteUseCaseTests.swift; sourceTree = "<group>"; };
+		32C83D352A8413B7009490D1 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 				32307D862A81333900E84E8C /* RemoteMoviesLoader.swift */,
 				32307D882A81335A00E84E8C /* HTTPClient.swift */,
 				325255492A827AC500DE7603 /* MoviesMapper.swift */,
+				32C83D352A8413B7009490D1 /* URLSessionHTTPClient.swift */,
 			);
 			path = MovieDBAPI;
 			sourceTree = "<group>";
@@ -244,6 +247,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32C83D362A8413B7009490D1 /* URLSessionHTTPClient.swift in Sources */,
 				32B6389A2A7C0F60005D39AE /* Movie.swift in Sources */,
 				32B6389C2A7C117E005D39AE /* MoviesLoader.swift in Sources */,
 				32307D892A81335A00E84E8C /* HTTPClient.swift in Sources */,
