@@ -17,15 +17,15 @@ final class URLSessionHTTPClient: HTTPClient {
     
     func request(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) {
         session.dataTask(with: url) { data, response, error in
-            
-            if let error {
-                completion(.failure(error))
-            } else if let response = response as? HTTPURLResponse, let data = data {
-                completion(.success((data, response)))
-            } else {
-                completion(.failure(Error.noValues))
-            }
-            
+            completion(Result {
+                if let error = error {
+                    throw error
+                } else if let response = response as? HTTPURLResponse, let data = data {
+                    return (data, response)
+                } else {
+                    throw Error.noValues
+                }
+            })
         }.resume()
     }
 }
@@ -49,12 +49,12 @@ final class URLSessionHTTPClientTests: XCTestCase {
     }
     
     func test_requestFromURL_failsOnRequestError() {
-    
+        
         let requestError = anyNSError()
         
         let receivedError = resultErrorFor(data: nil, response: nil, error: requestError) as? NSError
         
-
+        
         XCTAssertEqual(requestError.domain, receivedError?.domain)
         XCTAssertEqual(requestError.code, receivedError?.code)
     }
@@ -68,7 +68,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
     
     func test_requestFromURL_failsOnNonHTTPURLResponse() {
         let response = URLResponse(url: anyURL(), mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
-       XCTAssertNotNil(resultErrorFor(data: anyData(), response: response, error: nil))
+        XCTAssertNotNil(resultErrorFor(data: anyData(), response: response, error: nil))
     }
     
     func test_requestFromURL_failsOnNilURLResponse() {
@@ -104,7 +104,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> URLSessionHTTPClient {
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [URLProtocolStub.self]
-    
+        
         let sut = URLSessionHTTPClient(session: URLSession(configuration: config))
         trackMemoryLeaks(sut, file: file, line: line)
         
@@ -180,8 +180,8 @@ final class URLSessionHTTPClientTests: XCTestCase {
         let exp = expectation(description: "Wait for request completion")
         var receivedResult: HTTPClient.Result?
         sut.request(from: anyURL()) { result in
-             receivedResult = result
-             exp.fulfill()
+            receivedResult = result
+            exp.fulfill()
         }
         
         wait(for: [exp], timeout: 1.0)
