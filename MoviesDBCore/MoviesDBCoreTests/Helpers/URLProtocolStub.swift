@@ -21,6 +21,10 @@ final class URLProtocolStub: URLProtocol {
         stub = Stub(data: nil, response: nil, error: nil, requestObserver: observer)
     }
     
+    static func removeStub() {
+        stub = nil
+    }
+    
     override class func canInit(with request: URLRequest) -> Bool {
         stub?.requestObserver?(request)
         return true

@@ -5,6 +5,11 @@ import MoviesDBCore
 
 final class URLSessionHTTPClientTests: XCTestCase {
     
+    override func tearDown() {
+        super.tearDown()
+        URLProtocolStub.removeStub()
+    }
+    
     func test_requestFromURL_performsGETRequestWithURL() {
         let url = anyURL()
         
