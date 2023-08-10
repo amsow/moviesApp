@@ -19,6 +19,7 @@
 		32B6389E2A7C145D005D39AE /* LoadMoviesFromRemoteUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B6389D2A7C145D005D39AE /* LoadMoviesFromRemoteUseCaseTests.swift */; };
 		32C83D362A8413B7009490D1 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C83D352A8413B7009490D1 /* URLSessionHTTPClient.swift */; };
 		32C83D3B2A841671009490D1 /* URLProtocolStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C83D3A2A841671009490D1 /* URLProtocolStub.swift */; };
+		32C83D3D2A850F48009490D1 /* CacheMoviesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C83D3C2A850F48009490D1 /* CacheMoviesUseCaseTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		32C83D352A8413B7009490D1 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 		32C83D392A84154A009490D1 /* MoviesDBCore.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MoviesDBCore.xctestplan; sourceTree = "<group>"; };
 		32C83D3A2A841671009490D1 /* URLProtocolStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLProtocolStub.swift; sourceTree = "<group>"; };
+		32C83D3C2A850F48009490D1 /* CacheMoviesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheMoviesUseCaseTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +141,7 @@
 			children = (
 				3252554E2A82829C00DE7603 /* Helpers */,
 				32B6389D2A7C145D005D39AE /* LoadMoviesFromRemoteUseCaseTests.swift */,
+				32C83D3C2A850F48009490D1 /* CacheMoviesUseCaseTests.swift */,
 			);
 			path = MoviesDBCoreTests;
 			sourceTree = "<group>";
@@ -268,6 +271,7 @@
 			files = (
 				32B6389E2A7C145D005D39AE /* LoadMoviesFromRemoteUseCaseTests.swift in Sources */,
 				3247A3B32A828C7F00778867 /* URLSessionHTTPClientTests.swift in Sources */,
+				32C83D3D2A850F48009490D1 /* CacheMoviesUseCaseTests.swift in Sources */,
 				325255502A8282D900DE7603 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
 				32C83D3B2A841671009490D1 /* URLProtocolStub.swift in Sources */,
 			);
