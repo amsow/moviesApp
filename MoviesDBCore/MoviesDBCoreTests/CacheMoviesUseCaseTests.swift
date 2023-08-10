@@ -27,15 +27,13 @@ final class LocalMoviesLoader {
 final class CacheMoviesUseCaseTests: XCTestCase {
     
     func test_init_doesNotMessageCacheUponCreation() {
-        let store = MoviesStoreSpy()
-        _ = LocalMoviesLoader(store: store)
+        let store = makeSUT().store
         
         XCTAssertTrue(store.messages.isEmpty)
     }
     
     func test_save_requestsCacheDeletion() {
-        let store = MoviesStoreSpy()
-        let sut = LocalMoviesLoader(store: store)
+        let (store, sut) = makeSUT()
         
         sut.save(makeMovies())
         
@@ -44,8 +42,7 @@ final class CacheMoviesUseCaseTests: XCTestCase {
     
     func test_save_doesNotRequestInsertionOnCacheDeletionError() {
         let deletionError = NSError(domain: "deletion error", code: 0)
-        let store = MoviesStoreSpy()
-        let sut = LocalMoviesLoader(store: store)
+        let (store, sut) = makeSUT()
         
         sut.save(makeMovies())
         
@@ -55,13 +52,21 @@ final class CacheMoviesUseCaseTests: XCTestCase {
     
     func test_save_requestsNewCacheInsertionOnSuccessfulDeletion() {
         let movies = makeMovies()
-        let store = MoviesStoreSpy()
-        let sut = LocalMoviesLoader(store: store)
+        let (store, sut) = makeSUT()
         
         sut.save(movies)
         
         store.completeDeletionSuccessfully()
         XCTAssertEqual(store.messages, [.deleteCachedMovies, .insert(movies)])
+    }
+    
+    // MARK: - Helpers
+    
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (store: MoviesStoreSpy, sut: LocalMoviesLoader) {
+        let store = MoviesStoreSpy()
+        let sut = LocalMoviesLoader(store: store)
+        
+        return (store, sut)
     }
     
     final class MoviesStoreSpy: MoviesStore {
