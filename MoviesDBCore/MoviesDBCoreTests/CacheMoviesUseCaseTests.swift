@@ -94,6 +94,23 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
+    func test_save_failsOnCacheInsertionError() {
+        let insertionError = NSError(domain: "insertion error", code: 0)
+        let (store, sut) = makeSUT()
+        
+        let exp = expectation(description: "Wait for save")
+        sut.save(makeMovies()) { error in
+            XCTAssertEqual(insertionError, error as? NSError)
+            exp.fulfill()
+        }
+        
+        store.completeDeletionSuccessfully()
+        store.completeInsertion(with: insertionError)
+        
+        wait(for: [exp], timeout: 1.0)
+    }
+    
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (store: MoviesStoreSpy, sut: LocalMoviesLoader) {
@@ -135,6 +152,10 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         
         func completeInsertionSuccessfully(at index: Int = 0) {
             insertionCompletions[index](.none)
+        }
+        
+        func completeInsertion(with error: Error, at index: Int = 0) {
+            insertionCompletions[index](error)
         }
     }
     
