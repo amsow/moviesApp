@@ -8,6 +8,7 @@ protocol MoviesStore {
 }
 
 final class LocalMoviesLoader {
+    typealias SaveResult = Result<Void, Error>
     
     private let store: MoviesStore
     
@@ -15,16 +16,20 @@ final class LocalMoviesLoader {
         self.store = store
     }
     
-    func save(_ movies: [Movie], completion: @escaping (Error?) -> Void) {
+    func save(_ movies: [Movie], completion: @escaping (SaveResult) -> Void) {
         store.deleteCachedMovies { [weak self] error in
             guard let self = self else { return }
             if error == nil {
                 self.store.insert(movies) { [weak self] error in
                     guard self != nil else { return }
-                  completion(error)
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(()))
+                    }
                 }
             } else {
-                completion(error)
+                completion(.failure(error!))
             }
         }
     }
@@ -98,24 +103,24 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         let store = MoviesStoreSpy()
         var sut: LocalMoviesLoader? = LocalMoviesLoader(store: store)
         
-        var receivedErrors = [Error?]()
-        sut?.save(makeMovies()) { error in
-            receivedErrors.append(error)
+        var receivedResults = [LocalMoviesLoader.SaveResult]()
+        sut?.save(makeMovies()) { result in
+            receivedResults.append(result)
         }
         
         sut = nil
         store.completeDeletion(with: anyNSError())
 
-        XCTAssertTrue(receivedErrors.isEmpty)
+        XCTAssertTrue(receivedResults.isEmpty)
     }
     
     func test_save_doesNotDeliverInsertionErrorAfterSUTHasBeenDeallocated() {
         let store = MoviesStoreSpy()
         var sut: LocalMoviesLoader? = LocalMoviesLoader(store: store)
         
-        var receivedErrors = [Error?]()
-        sut?.save(makeMovies()) { error in
-            receivedErrors.append(error)
+        var receivedResults = [LocalMoviesLoader.SaveResult]()
+        sut?.save(makeMovies()) { result in
+            receivedResults.append(result)
         }
     
         store.completeDeletionSuccessfully()
@@ -124,7 +129,7 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         
         store.completeInsertion(with: anyNSError())
 
-        XCTAssertTrue(receivedErrors.isEmpty)
+        XCTAssertTrue(receivedResults.isEmpty)
     }
     
     
@@ -148,8 +153,10 @@ final class CacheMoviesUseCaseTests: XCTestCase {
     ) {
         let exp = expectation(description: "Wait for save")
         var receivedError: Error?
-        sut.save(makeMovies()) { error in
-            receivedError = error
+        sut.save(makeMovies()) { result in
+            if case let .failure(error) = result {
+                receivedError = error
+            }
             exp.fulfill()
         }
         
