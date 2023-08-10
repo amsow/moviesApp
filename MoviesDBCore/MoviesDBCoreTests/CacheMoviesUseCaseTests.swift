@@ -4,7 +4,7 @@ import MoviesDBCore
 
 protocol MoviesStore {
     func deleteCachedMovies(completion: @escaping (Error?) -> Void)
-    func insert(_ movies: [Movie])
+    func insert(_ movies: [Movie], completion: @escaping (Error?) -> Void)
 }
 
 final class LocalMoviesLoader {
@@ -18,7 +18,9 @@ final class LocalMoviesLoader {
     func save(_ movies: [Movie], completion: @escaping (Error?) -> Void) {
         store.deleteCachedMovies { [weak self] error in
             if error == nil {
-                self?.store.insert(movies)
+                self?.store.insert(movies) { error in
+                  completion(error)
+                }
             } else {
                 completion(error)
             }
@@ -74,7 +76,22 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         
         store.completeDeletion(with: deletionError)
         wait(for: [exp], timeout: 1.0)
+    }
+    
+    func test_save_succeedsOnSuccessfulCacheInsertion() {
+        let (store, sut) = makeSUT()
+        let movies = makeMovies()
         
+        let exp = expectation(description: "wait for save")
+        sut.save(movies) { error in
+            XCTAssertNil(error)
+            exp.fulfill()
+        }
+        
+        store.completeDeletionSuccessfully()
+        store.completeInsertionSuccessfully()
+        
+        wait(for: [exp], timeout: 1.0)
     }
     
     // MARK: - Helpers
@@ -91,6 +108,7 @@ final class CacheMoviesUseCaseTests: XCTestCase {
     final class MoviesStoreSpy: MoviesStore {
         private(set) var messages = [Message]()
         private var deletionCompletions = [(Error?) -> Void]()
+        private var insertionCompletions = [(Error?) -> Void]()
         
         enum Message: Equatable {
             case deleteCachedMovies
@@ -102,8 +120,9 @@ final class CacheMoviesUseCaseTests: XCTestCase {
             deletionCompletions.append(completion)
         }
         
-        func insert(_ movies: [Movie]) {
+        func insert(_ movies: [Movie], completion: @escaping (Error?) -> Void) {
             messages.append(.insert(movies))
+            insertionCompletions.append(completion)
         }
         
         func completeDeletion(with error: Error, at index: Int = 0) {
@@ -112,6 +131,10 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         
         func completeDeletionSuccessfully(at index: Int = 0) {
             deletionCompletions[index](.none)
+        }
+        
+        func completeInsertionSuccessfully(at index: Int = 0) {
+            insertionCompletions[index](.none)
         }
     }
     
