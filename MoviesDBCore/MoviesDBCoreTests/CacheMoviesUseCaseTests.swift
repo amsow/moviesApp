@@ -15,10 +15,12 @@ final class LocalMoviesLoader {
         self.store = store
     }
     
-    func save(_ movies: [Movie]) {
+    func save(_ movies: [Movie], completion: @escaping (Error?) -> Void) {
         store.deleteCachedMovies { [weak self] error in
             if error == nil {
                 self?.store.insert(movies)
+            } else {
+                completion(error)
             }
         }
     }
@@ -35,7 +37,7 @@ final class CacheMoviesUseCaseTests: XCTestCase {
     func test_save_requestsCacheDeletion() {
         let (store, sut) = makeSUT()
         
-        sut.save(makeMovies())
+        sut.save(makeMovies()) { _ in }
         
         XCTAssertEqual(store.messages, [.deleteCachedMovies])
     }
@@ -44,7 +46,7 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         let deletionError = NSError(domain: "deletion error", code: 0)
         let (store, sut) = makeSUT()
         
-        sut.save(makeMovies())
+        sut.save(makeMovies()) { _ in }
         
         store.completeDeletion(with: deletionError)
         XCTAssertEqual(store.messages, [.deleteCachedMovies])
@@ -54,10 +56,25 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         let movies = makeMovies()
         let (store, sut) = makeSUT()
         
-        sut.save(movies)
+        sut.save(movies) { _ in }
         
         store.completeDeletionSuccessfully()
         XCTAssertEqual(store.messages, [.deleteCachedMovies, .insert(movies)])
+    }
+    
+    func test_save_failsOnDeletionError() {
+        let deletionError = NSError(domain: "deletion error", code: 0)
+        let (store, sut) = makeSUT()
+        
+        let exp = expectation(description: "wait for save")
+        sut.save(makeMovies()) { error in
+            XCTAssertEqual(deletionError, error as? NSError)
+            exp.fulfill()
+        }
+        
+        store.completeDeletion(with: deletionError)
+        wait(for: [exp], timeout: 1.0)
+        
     }
     
     // MARK: - Helpers
