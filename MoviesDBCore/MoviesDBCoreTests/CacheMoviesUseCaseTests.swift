@@ -68,46 +68,28 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         let deletionError = NSError(domain: "deletion error", code: 0)
         let (store, sut) = makeSUT()
         
-        let exp = expectation(description: "wait for save")
-        sut.save(makeMovies()) { error in
-            XCTAssertEqual(deletionError, error as? NSError)
-            exp.fulfill()
-        }
-        
-        store.completeDeletion(with: deletionError)
-        wait(for: [exp], timeout: 1.0)
+        expect(sut, toCompleteWith: deletionError, when: {
+            store.completeDeletion(with: deletionError)
+        })
     }
     
     func test_save_succeedsOnSuccessfulCacheInsertion() {
         let (store, sut) = makeSUT()
-        let movies = makeMovies()
         
-        let exp = expectation(description: "wait for save")
-        sut.save(movies) { error in
-            XCTAssertNil(error)
-            exp.fulfill()
-        }
-        
-        store.completeDeletionSuccessfully()
-        store.completeInsertionSuccessfully()
-        
-        wait(for: [exp], timeout: 1.0)
+        expect(sut, toCompleteWith: nil, when: {
+            store.completeDeletionSuccessfully()
+            store.completeInsertionSuccessfully()
+        })
     }
     
     func test_save_failsOnCacheInsertionError() {
         let insertionError = NSError(domain: "insertion error", code: 0)
         let (store, sut) = makeSUT()
         
-        let exp = expectation(description: "Wait for save")
-        sut.save(makeMovies()) { error in
-            XCTAssertEqual(insertionError, error as? NSError)
-            exp.fulfill()
-        }
-        
-        store.completeDeletionSuccessfully()
-        store.completeInsertion(with: insertionError)
-        
-        wait(for: [exp], timeout: 1.0)
+        expect(sut, toCompleteWith: insertionError, when: {
+            store.completeDeletionSuccessfully()
+            store.completeInsertion(with: insertionError)
+        })
     }
     
     
@@ -120,6 +102,27 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         trackMemoryLeaks(sut, file: file, line: line)
         
         return (store, sut)
+    }
+    
+    private func expect(
+        _ sut: LocalMoviesLoader,
+        toCompleteWith error: NSError?,
+        when action: () -> Void,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let exp = expectation(description: "Wait for save")
+        var receivedError: Error?
+        sut.save(makeMovies()) { error in
+            receivedError = error
+            exp.fulfill()
+        }
+        
+        action()
+        
+        wait(for: [exp], timeout: 1.0)
+        
+        XCTAssertEqual(receivedError as? NSError, error, file: file, line: line)
     }
     
     final class MoviesStoreSpy: MoviesStore {
