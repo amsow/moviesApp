@@ -16,9 +16,9 @@ final class LocalMoviesLoader {
     }
     
     func save(_ movies: [Movie]) {
-        store.deleteCachedMovies { error in
+        store.deleteCachedMovies { [weak self] error in
             if error == nil {
-                self.store.insert(movies)
+                self?.store.insert(movies)
             }
         }
     }
@@ -65,6 +65,8 @@ final class CacheMoviesUseCaseTests: XCTestCase {
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (store: MoviesStoreSpy, sut: LocalMoviesLoader) {
         let store = MoviesStoreSpy()
         let sut = LocalMoviesLoader(store: store)
+        trackMemoryLeaks(store, file: file, line: line)
+        trackMemoryLeaks(sut, file: file, line: line)
         
         return (store, sut)
     }
