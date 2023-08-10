@@ -27,17 +27,21 @@ final class LocalMoviesLoader {
             guard let self = self else { return }
             switch deletionResult {
             case .success:
-                self.store.insert(movies) { [weak self] insertionResult in
-                    guard self != nil else { return }
-                    if case .failure(let error) = insertionResult {
-                        completion(.failure(error))
-                    } else {
-                        completion(insertionResult)
-                    }
-                }
+                self.cache(movies, with: completion)
                 
             case .failure(let error):
                 completion(.failure(error))
+            }
+        }
+    }
+    
+    private func cache(_ movies: [Movie], with completion: @escaping (SaveResult) -> Void) {
+        self.store.insert(movies) { [weak self] insertionResult in
+            guard self != nil else { return }
+            if case .failure(let error) = insertionResult {
+                completion(.failure(error))
+            } else {
+                completion(insertionResult)
             }
         }
     }
