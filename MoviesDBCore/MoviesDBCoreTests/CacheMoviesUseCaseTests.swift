@@ -17,9 +17,10 @@ final class LocalMoviesLoader {
     
     func save(_ movies: [Movie], completion: @escaping (Error?) -> Void) {
         store.deleteCachedMovies { [weak self] error in
-            guard let self else { return }
+            guard let self = self else { return }
             if error == nil {
-                self.store.insert(movies) { error in
+                self.store.insert(movies) { [weak self] error in
+                    guard self != nil else { return }
                   completion(error)
                 }
             } else {
@@ -93,7 +94,7 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         })
     }
     
-    func test_saveDoesNotDeliverDeletionErrorAfterSUTHasBeenDeallocated() {
+    func test_save_doesNotDeliverDeletionErrorAfterSUTHasBeenDeallocated() {
         let store = MoviesStoreSpy()
         var sut: LocalMoviesLoader? = LocalMoviesLoader(store: store)
         
@@ -104,6 +105,24 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         
         sut = nil
         store.completeDeletion(with: anyNSError())
+
+        XCTAssertTrue(receivedErrors.isEmpty)
+    }
+    
+    func test_save_doesNotDeliverInsertionErrorAfterSUTHasBeenDeallocated() {
+        let store = MoviesStoreSpy()
+        var sut: LocalMoviesLoader? = LocalMoviesLoader(store: store)
+        
+        var receivedErrors = [Error?]()
+        sut?.save(makeMovies()) { error in
+            receivedErrors.append(error)
+        }
+    
+        store.completeDeletionSuccessfully()
+        
+        sut = nil
+        
+        store.completeInsertion(with: anyNSError())
 
         XCTAssertTrue(receivedErrors.isEmpty)
     }
