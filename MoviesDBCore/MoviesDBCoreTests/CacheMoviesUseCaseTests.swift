@@ -3,8 +3,14 @@ import XCTest
 import MoviesDBCore
 
 protocol MoviesStore {
-    func deleteCachedMovies(completion: @escaping (Error?) -> Void)
-    func insert(_ movies: [Movie], completion: @escaping (Error?) -> Void)
+    typealias DeletionResult = Result<Void, Error>
+    typealias InsertionResult = Result<Void, Error>
+    
+    typealias DeletionCompletion = (DeletionResult) -> Void
+    typealias InsertionCompletion = (InsertionResult) -> Void
+    
+    func deleteCachedMovies(completion: @escaping DeletionCompletion)
+    func insert(_ movies: [Movie], completion: @escaping InsertionCompletion)
 }
 
 final class LocalMoviesLoader {
@@ -17,19 +23,21 @@ final class LocalMoviesLoader {
     }
     
     func save(_ movies: [Movie], completion: @escaping (SaveResult) -> Void) {
-        store.deleteCachedMovies { [weak self] error in
+        store.deleteCachedMovies { [weak self] deletionResult in
             guard let self = self else { return }
-            if error == nil {
-                self.store.insert(movies) { [weak self] error in
+            switch deletionResult {
+            case .success:
+                self.store.insert(movies) { [weak self] insertionResult in
                     guard self != nil else { return }
-                    if let error = error {
+                    if case .failure(let error) = insertionResult {
                         completion(.failure(error))
                     } else {
-                        completion(.success(()))
+                        completion(insertionResult)
                     }
                 }
-            } else {
-                completion(.failure(error!))
+                
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
@@ -169,38 +177,38 @@ final class CacheMoviesUseCaseTests: XCTestCase {
     
     final class MoviesStoreSpy: MoviesStore {
         private(set) var messages = [Message]()
-        private var deletionCompletions = [(Error?) -> Void]()
-        private var insertionCompletions = [(Error?) -> Void]()
+        private var deletionCompletions = [MoviesStore.DeletionCompletion]()
+        private var insertionCompletions = [MoviesStore.InsertionCompletion]()
         
         enum Message: Equatable {
             case deleteCachedMovies
             case insert([Movie])
         }
         
-        func deleteCachedMovies(completion: @escaping (Error?) -> Void) {
+        func deleteCachedMovies(completion: @escaping DeletionCompletion) {
             messages.append(.deleteCachedMovies)
             deletionCompletions.append(completion)
         }
         
-        func insert(_ movies: [Movie], completion: @escaping (Error?) -> Void) {
+        func insert(_ movies: [Movie], completion: @escaping InsertionCompletion) {
             messages.append(.insert(movies))
             insertionCompletions.append(completion)
         }
         
         func completeDeletion(with error: Error, at index: Int = 0) {
-            deletionCompletions[index](error)
+            deletionCompletions[index](.failure(error))
         }
         
         func completeDeletionSuccessfully(at index: Int = 0) {
-            deletionCompletions[index](.none)
+            deletionCompletions[index](.success(()))
         }
         
         func completeInsertionSuccessfully(at index: Int = 0) {
-            insertionCompletions[index](.none)
+            insertionCompletions[index](.success(()))
         }
         
         func completeInsertion(with error: Error, at index: Int = 0) {
-            insertionCompletions[index](error)
+            insertionCompletions[index](.failure(error))
         }
     }
     
