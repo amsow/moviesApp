@@ -41,7 +41,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         let (client, sut) = makeSUT()
         let anyError = NSError(domain: "any error", code: 0)
         
-        expect(sut, toCompleteWith: .failure(RemoteMoviesLoader.Error.connectivity), action: {
+        expect(sut, toCompleteWith: .failure(RemoteMoviesLoader.Error.connectivity), when: {
             client.complete(with: anyError)
         })
     }
@@ -52,7 +52,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         
         sample.enumerated().forEach { index, code in
             
-            expect(sut, toCompleteWith: .failure(RemoteMoviesLoader.Error.invalidData), action: {
+            expect(sut, toCompleteWith: .failure(RemoteMoviesLoader.Error.invalidData), when: {
                 client.complete(withStatusCode: code, data: anyData(), at: index)
             })
         }
@@ -61,7 +61,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     func test_load_deliversErrorOn200HTTPResponseWithInvalidJSON() {
         let (client, sut) = makeSUT()
         
-        expect(sut, toCompleteWith: .failure(RemoteMoviesLoader.Error.invalidData), action: {
+        expect(sut, toCompleteWith: .failure(RemoteMoviesLoader.Error.invalidData), when: {
             
             let invalidData = anyData()
             client.complete(withStatusCode: 200, data: invalidData)
@@ -73,7 +73,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         
         let emptyJSONData = makeMovieResponseJSONData([])
         
-        expect(sut, toCompleteWith: .success([]), action: {
+        expect(sut, toCompleteWith: .success([]), when: {
             client.complete(withStatusCode: 200, data: emptyJSONData)
         })
     }
@@ -107,7 +107,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         
         let (client, sut) = makeSUT()
         
-        expect(sut, toCompleteWith: .success([movie1.model, movie2.model, movie3.model]), action: {
+        expect(sut, toCompleteWith: .success([movie1.model, movie2.model, movie3.model]), when: {
             client.complete(withStatusCode: 200, data: remoteMoviesResponseData)
         })
     }
@@ -163,7 +163,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
     
     private func expect(_ sut: RemoteMoviesLoader,
                         toCompleteWith expectedResult: MoviesLoader.Result,
-                        action: () -> Void,
+                        when action: () -> Void,
                         file: StaticString = #filePath,
                         line: UInt = #line) {
         let exp = expectation(description: "Wait for load")
