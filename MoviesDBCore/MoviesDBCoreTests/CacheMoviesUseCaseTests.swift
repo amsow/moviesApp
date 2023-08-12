@@ -2,51 +2,6 @@
 import XCTest
 import MoviesDBCore
 
-protocol MoviesStore {
-    typealias DeletionResult = Result<Void, Error>
-    typealias InsertionResult = Result<Void, Error>
-    
-    typealias DeletionCompletion = (DeletionResult) -> Void
-    typealias InsertionCompletion = (InsertionResult) -> Void
-    
-    func deleteCachedMovies(completion: @escaping DeletionCompletion)
-    func insert(_ movies: [Movie], completion: @escaping InsertionCompletion)
-}
-
-final class LocalMoviesLoader {
-    typealias SaveResult = Result<Void, Error>
-    
-    private let store: MoviesStore
-    
-    init(store: MoviesStore) {
-        self.store = store
-    }
-    
-    func save(_ movies: [Movie], completion: @escaping (SaveResult) -> Void) {
-        store.deleteCachedMovies { [weak self] deletionResult in
-            guard let self = self else { return }
-            switch deletionResult {
-            case .success:
-                self.cache(movies, with: completion)
-                
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    private func cache(_ movies: [Movie], with completion: @escaping (SaveResult) -> Void) {
-        self.store.insert(movies) { [weak self] insertionResult in
-            guard self != nil else { return }
-            if case .failure(let error) = insertionResult {
-                completion(.failure(error))
-            } else {
-                completion(insertionResult)
-            }
-        }
-    }
-}
-
 final class CacheMoviesUseCaseTests: XCTestCase {
     
     func test_init_doesNotMessageCacheUponCreation() {
