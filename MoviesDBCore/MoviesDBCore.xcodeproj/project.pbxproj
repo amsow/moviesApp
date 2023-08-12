@@ -11,6 +11,8 @@
 		32307D892A81335A00E84E8C /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32307D882A81335A00E84E8C /* HTTPClient.swift */; };
 		3247A3B32A828C7F00778867 /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3247A3B22A828C7F00778867 /* URLSessionHTTPClientTests.swift */; };
 		324AA3212A87D237007250FD /* LoadMoviesFromCacheUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324AA3202A87D237007250FD /* LoadMoviesFromCacheUseCaseTests.swift */; };
+		324AA3232A87D38A007250FD /* MoviesStoreSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324AA3222A87D38A007250FD /* MoviesStoreSpy.swift */; };
+		324AA3252A87D3ED007250FD /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324AA3242A87D3ED007250FD /* TestHelpers.swift */; };
 		3252554A2A827AC500DE7603 /* MoviesMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325255492A827AC500DE7603 /* MoviesMapper.swift */; };
 		3252554D2A827FA400DE7603 /* HTTPResponse+StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3252554C2A827FA400DE7603 /* HTTPResponse+StatusCode.swift */; };
 		325255502A8282D900DE7603 /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3252554F2A8282D900DE7603 /* XCTestCase+MemoryLeakTracking.swift */; };
@@ -38,6 +40,8 @@
 		32307D882A81335A00E84E8C /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		3247A3B22A828C7F00778867 /* URLSessionHTTPClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClientTests.swift; sourceTree = "<group>"; };
 		324AA3202A87D237007250FD /* LoadMoviesFromCacheUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoviesFromCacheUseCaseTests.swift; sourceTree = "<group>"; };
+		324AA3222A87D38A007250FD /* MoviesStoreSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesStoreSpy.swift; sourceTree = "<group>"; };
+		324AA3242A87D3ED007250FD /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		325255492A827AC500DE7603 /* MoviesMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesMapper.swift; sourceTree = "<group>"; };
 		3252554C2A827FA400DE7603 /* HTTPResponse+StatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HTTPResponse+StatusCode.swift"; sourceTree = "<group>"; };
 		3252554F2A8282D900DE7603 /* XCTestCase+MemoryLeakTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakTracking.swift"; sourceTree = "<group>"; };
@@ -104,8 +108,9 @@
 			isa = PBXGroup;
 			children = (
 				3252554F2A8282D900DE7603 /* XCTestCase+MemoryLeakTracking.swift */,
-				3247A3B22A828C7F00778867 /* URLSessionHTTPClientTests.swift */,
 				32C83D3A2A841671009490D1 /* URLProtocolStub.swift */,
+				324AA3222A87D38A007250FD /* MoviesStoreSpy.swift */,
+				324AA3242A87D3ED007250FD /* TestHelpers.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -142,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				3252554E2A82829C00DE7603 /* Helpers */,
+				3247A3B22A828C7F00778867 /* URLSessionHTTPClientTests.swift */,
 				32B6389D2A7C145D005D39AE /* LoadMoviesFromRemoteUseCaseTests.swift */,
 				32C83D3C2A850F48009490D1 /* CacheMoviesUseCaseTests.swift */,
 				324AA3202A87D237007250FD /* LoadMoviesFromCacheUseCaseTests.swift */,
@@ -277,7 +283,9 @@
 				32C83D3D2A850F48009490D1 /* CacheMoviesUseCaseTests.swift in Sources */,
 				325255502A8282D900DE7603 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
 				32C83D3B2A841671009490D1 /* URLProtocolStub.swift in Sources */,
+				324AA3232A87D38A007250FD /* MoviesStoreSpy.swift in Sources */,
 				324AA3212A87D237007250FD /* LoadMoviesFromCacheUseCaseTests.swift in Sources */,
+				324AA3252A87D3ED007250FD /* TestHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

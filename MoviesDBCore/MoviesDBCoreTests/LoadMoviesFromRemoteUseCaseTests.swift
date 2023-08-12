@@ -211,10 +211,6 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
         
         return try! JSONSerialization.data(withJSONObject: json)
     }
-    
-    private func anyData() -> Data {
-        Data("any data".utf8)
-    }
 }
 
 extension Movie: Equatable {
