@@ -79,6 +79,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		324AA32A2A87D6F5007250FD /* MoviesDBCache */ = {
+			isa = PBXGroup;
+			children = (
+				324AA3262A87D613007250FD /* LocalMoviesLoader.swift */,
+				324AA3282A87D643007250FD /* MoviesStore.swift */,
+			);
+			path = MoviesDBCache;
+			sourceTree = "<group>";
+		};
 		325255472A827A0F00DE7603 /* MovieFeature */ = {
 			isa = PBXGroup;
 			children = (
@@ -143,8 +152,7 @@
 			children = (
 				325255472A827A0F00DE7603 /* MovieFeature */,
 				325255482A827A3400DE7603 /* MovieDBAPI */,
-				324AA3262A87D613007250FD /* LocalMoviesLoader.swift */,
-				324AA3282A87D643007250FD /* MoviesStore.swift */,
+				324AA32A2A87D6F5007250FD /* MoviesDBCache */,
 			);
 			path = MoviesDBCore;
 			sourceTree = "<group>";
