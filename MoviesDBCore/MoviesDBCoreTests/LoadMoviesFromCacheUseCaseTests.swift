@@ -38,6 +38,21 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
         })
     }
     
+    func test_load_doesNotDeliverResultAfterInstanceHasBeedDeallocated() {
+        let store = MoviesStoreSpy()
+        var sut: LocalMoviesLoader? = LocalMoviesLoader(store: store)
+        
+        var receivedResults = [MoviesLoader.Result]()
+        sut?.load { result in
+            receivedResults.append(result)
+        }
+        
+        sut = nil
+        store.completeRetrieval(with: anyNSError())
+        
+        XCTAssertTrue(receivedResults.isEmpty)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (store: MoviesStoreSpy, sut: LocalMoviesLoader) {

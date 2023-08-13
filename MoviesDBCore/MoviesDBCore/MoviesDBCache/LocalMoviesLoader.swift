@@ -11,7 +11,8 @@ public final class LocalMoviesLoader {
     }
     
     public func load(completion: @escaping (Result<[Movie], Error>) -> Void) {
-        store.retrieve { result in
+        store.retrieve { [weak self] result in
+            guard self != nil else { return }
             switch result {
             case .failure(let error):
                 completion(.failure(error))
