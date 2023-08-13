@@ -62,6 +62,15 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
         })
     }
     
+    func test_load_hasNoSideEffectOnEmptyCache() {
+        let (store, sut) = makeSUT()
+        
+        sut.load { _ in }
+        store.completeRetrievalSuccessfully(with: [])
+        
+        XCTAssertEqual(store.messages, [.retrieve])
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (store: MoviesStoreSpy, sut: LocalMoviesLoader) {
