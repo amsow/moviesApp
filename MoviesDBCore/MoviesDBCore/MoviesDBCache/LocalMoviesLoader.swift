@@ -17,8 +17,8 @@ public final class LocalMoviesLoader {
             case .failure(let error):
                 completion(.failure(error))
                 
-            case .success:
-                completion(.success([]))
+            case .success(let cachedMovies):
+                completion(.success(cachedMovies))
             }
         }
     }

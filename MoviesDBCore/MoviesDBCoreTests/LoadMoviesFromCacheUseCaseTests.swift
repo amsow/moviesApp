@@ -53,6 +53,15 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
         XCTAssertTrue(receivedResults.isEmpty)
     }
     
+    func test_load_deliversFoundMoviesOnNonEmptyCache() {
+        let (store, sut) = makeSUT()
+        let movies = makeMovies()
+        
+        expect(sut, toCompleteWith: .success(movies), when: {
+            store.completeRetrievalSuccessfully(with: movies)
+        })
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (store: MoviesStoreSpy, sut: LocalMoviesLoader) {
