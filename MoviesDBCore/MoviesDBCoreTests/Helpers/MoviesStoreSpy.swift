@@ -11,6 +11,7 @@ final class MoviesStoreSpy: MoviesStore {
     enum Message: Equatable {
         case deleteCachedMovies
         case insert([Movie])
+        case retrieve
     }
     
     func deleteCachedMovies(completion: @escaping DeletionCompletion) {
@@ -21,6 +22,10 @@ final class MoviesStoreSpy: MoviesStore {
     func insert(_ movies: [Movie], completion: @escaping InsertionCompletion) {
         messages.append(.insert(movies))
         insertionCompletions.append(completion)
+    }
+    
+    func retrieve() {
+        messages.append(.retrieve)
     }
     
     func completeDeletion(with error: Error, at index: Int = 0) {

@@ -10,6 +10,10 @@ public final class LocalMoviesLoader {
         self.store = store
     }
     
+    public func load() {
+        store.retrieve()
+    }
+    
     public func save(_ movies: [Movie], completion: @escaping (SaveResult) -> Void) {
         store.deleteCachedMovies { [weak self] deletionResult in
             guard let self = self else { return }

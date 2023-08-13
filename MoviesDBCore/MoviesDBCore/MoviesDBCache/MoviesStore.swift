@@ -11,4 +11,5 @@ public protocol MoviesStore {
     
     func deleteCachedMovies(completion: @escaping DeletionCompletion)
     func insert(_ movies: [Movie], completion: @escaping InsertionCompletion)
+    func retrieve()
 }
