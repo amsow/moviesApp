@@ -8,7 +8,7 @@ public protocol MoviesStore {
     
     typealias DeletionCompletion = (DeletionResult) -> Void
     typealias InsertionCompletion = (InsertionResult) -> Void
-    typealias RetrievalCompletion = (Error?) -> Void
+    typealias RetrievalCompletion = ([Movie], Error?) -> Void
     
     func deleteCachedMovies(completion: @escaping DeletionCompletion)
     func insert(_ movies: [Movie], completion: @escaping InsertionCompletion)
