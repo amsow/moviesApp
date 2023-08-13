@@ -16,7 +16,7 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
     func test_load_requestsCacheRetrieval() {
         let (store, sut) = makeSUT()
         
-        sut.load { (_ , _) in }
+        sut.load { _ in }
         
         XCTAssertEqual(store.messages, [.retrieve])
     }
@@ -26,8 +26,13 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
         let retrievalError = anyNSError()
         
         let exp = expectation(description: "Wait for load completion")
-        sut.load { (_, error) in
-            XCTAssertEqual(retrievalError, error as? NSError)
+        sut.load { receivedResult in
+            if case .failure(let receivedError) = receivedResult {
+                XCTAssertEqual(retrievalError, receivedError as NSError)
+            } else {
+                XCTFail("Should receive a failure with error. Got \(receivedResult) instead")
+            }
+            
             exp.fulfill()
         }
         
@@ -40,8 +45,16 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
         let (store, sut) = makeSUT()
         
         let exp = expectation(description: "Wait for load completion")
-        sut.load { (cachedMovies, _) in
-            XCTAssertEqual(cachedMovies, [])
+        sut.load { result in
+            
+            switch result {
+            case .success(let cachedMovies):
+                XCTAssertEqual(cachedMovies, [])
+                
+            default:
+                XCTFail("Should receive a success with cached movies. Got \(result) instead")
+            }
+           
             exp.fulfill()
         }
         

@@ -47,10 +47,10 @@ final class MoviesStoreSpy: MoviesStore {
     }
     
     func completeRetrieval(with error: Error, at index: Int = 0) {
-        retrievalCompletions[index]([], error)
+        retrievalCompletions[index](.failure(error))
     }
     
     func completeRetrievalSuccessfully(with movies: [Movie], at index: Int = 0) {
-        retrievalCompletions[index](movies, nil)
+        retrievalCompletions[index](.success(movies))
     }
 }

@@ -10,12 +10,14 @@ public final class LocalMoviesLoader {
         self.store = store
     }
     
-    public func load(completion: @escaping ([Movie], Error?) -> Void) {
-        store.retrieve { (_, error) in
-            if let error = error {
-                completion([], error)
-            } else {
-                completion([], nil)
+    public func load(completion: @escaping (Result<[Movie], Error>) -> Void) {
+        store.retrieve { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+                
+            case .success:
+                completion(.success([]))
             }
         }
     }
