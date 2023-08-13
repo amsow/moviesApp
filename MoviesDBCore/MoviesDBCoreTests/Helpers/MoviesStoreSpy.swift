@@ -7,6 +7,7 @@ final class MoviesStoreSpy: MoviesStore {
     private(set) var messages = [Message]()
     private var deletionCompletions = [MoviesStore.DeletionCompletion]()
     private var insertionCompletions = [MoviesStore.InsertionCompletion]()
+    private var retrievalCompletions = [MoviesStore.RetrievalCompletion]()
     
     enum Message: Equatable {
         case deleteCachedMovies
@@ -24,8 +25,9 @@ final class MoviesStoreSpy: MoviesStore {
         insertionCompletions.append(completion)
     }
     
-    func retrieve() {
+    func retrieve(completion: @escaping RetrievalCompletion) {
         messages.append(.retrieve)
+        retrievalCompletions.append(completion)
     }
     
     func completeDeletion(with error: Error, at index: Int = 0) {
@@ -42,5 +44,9 @@ final class MoviesStoreSpy: MoviesStore {
     
     func completeInsertion(with error: Error, at index: Int = 0) {
         insertionCompletions[index](.failure(error))
+    }
+    
+    func completeRetrieval(with error: Error, at index: Int = 0) {
+        retrievalCompletions[index](error)
     }
 }
