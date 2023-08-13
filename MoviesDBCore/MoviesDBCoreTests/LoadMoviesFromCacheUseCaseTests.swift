@@ -25,42 +25,17 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
         let (store, sut) = makeSUT()
         let retrievalError = anyNSError()
         
-        let exp = expectation(description: "Wait for load completion")
-        sut.load { receivedResult in
-            if case .failure(let receivedError) = receivedResult {
-                XCTAssertEqual(retrievalError, receivedError as NSError)
-            } else {
-                XCTFail("Should receive a failure with error. Got \(receivedResult) instead")
-            }
-            
-            exp.fulfill()
-        }
-        
-        store.completeRetrieval(with: retrievalError)
-        
-        wait(for: [exp], timeout: 1.0)
+        expect(sut, toCompleteWith: .failure(retrievalError), when: {
+            store.completeRetrieval(with: retrievalError)
+        })
     }
     
     func test_load_deliversNoMoviesOnEmptyCache() {
         let (store, sut) = makeSUT()
         
-        let exp = expectation(description: "Wait for load completion")
-        sut.load { result in
-            
-            switch result {
-            case .success(let cachedMovies):
-                XCTAssertEqual(cachedMovies, [])
-                
-            default:
-                XCTFail("Should receive a success with cached movies. Got \(result) instead")
-            }
-           
-            exp.fulfill()
-        }
-        
-        store.completeRetrievalSuccessfully(with: [])
-        
-        wait(for: [exp], timeout: 1.0)
+        expect(sut, toCompleteWith: .success([]), when: {
+            store.completeRetrievalSuccessfully(with: [])
+        })
     }
     
     // MARK: - Helpers
@@ -72,5 +47,33 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
         trackMemoryLeaks(sut, file: file, line: line)
         
         return (store, sut)
+    }
+    
+    private func expect(
+        _ sut: LocalMoviesLoader,
+        toCompleteWith expectedResult: MoviesLoader.Result,
+        when action: () -> Void,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let exp = expectation(description: "Wait for load completion")
+        sut.load { receivedResult in
+            switch (receivedResult, expectedResult) {
+            case (.success(let cachedMovies), .success(let expectedMovies)):
+                XCTAssertEqual(cachedMovies, expectedMovies, file: file, line: line)
+                
+            case (.failure(let receivedError as NSError), .failure(let expectedError as NSError)):
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+                
+            default:
+                XCTFail("Expected to receive \(expectedResult), got \(receivedResult) instead", file: file, line: line)
+            }
+            
+            exp.fulfill()
+        }
+        
+        action()
+        
+        wait(for: [exp], timeout: 1.0)
     }
 }
