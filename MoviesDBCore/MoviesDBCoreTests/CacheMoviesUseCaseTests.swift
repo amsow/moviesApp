@@ -2,51 +2,6 @@
 import XCTest
 import MoviesDBCore
 
-protocol MoviesStore {
-    typealias DeletionResult = Result<Void, Error>
-    typealias InsertionResult = Result<Void, Error>
-    
-    typealias DeletionCompletion = (DeletionResult) -> Void
-    typealias InsertionCompletion = (InsertionResult) -> Void
-    
-    func deleteCachedMovies(completion: @escaping DeletionCompletion)
-    func insert(_ movies: [Movie], completion: @escaping InsertionCompletion)
-}
-
-final class LocalMoviesLoader {
-    typealias SaveResult = Result<Void, Error>
-    
-    private let store: MoviesStore
-    
-    init(store: MoviesStore) {
-        self.store = store
-    }
-    
-    func save(_ movies: [Movie], completion: @escaping (SaveResult) -> Void) {
-        store.deleteCachedMovies { [weak self] deletionResult in
-            guard let self = self else { return }
-            switch deletionResult {
-            case .success:
-                self.cache(movies, with: completion)
-                
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    private func cache(_ movies: [Movie], with completion: @escaping (SaveResult) -> Void) {
-        self.store.insert(movies) { [weak self] insertionResult in
-            guard self != nil else { return }
-            if case .failure(let error) = insertionResult {
-                completion(.failure(error))
-            } else {
-                completion(insertionResult)
-            }
-        }
-    }
-}
-
 final class CacheMoviesUseCaseTests: XCTestCase {
     
     func test_init_doesNotMessageCacheUponCreation() {
@@ -177,74 +132,5 @@ final class CacheMoviesUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
         
         XCTAssertEqual(receivedError as? NSError, error, file: file, line: line)
-    }
-    
-    final class MoviesStoreSpy: MoviesStore {
-        private(set) var messages = [Message]()
-        private var deletionCompletions = [MoviesStore.DeletionCompletion]()
-        private var insertionCompletions = [MoviesStore.InsertionCompletion]()
-        
-        enum Message: Equatable {
-            case deleteCachedMovies
-            case insert([Movie])
-        }
-        
-        func deleteCachedMovies(completion: @escaping DeletionCompletion) {
-            messages.append(.deleteCachedMovies)
-            deletionCompletions.append(completion)
-        }
-        
-        func insert(_ movies: [Movie], completion: @escaping InsertionCompletion) {
-            messages.append(.insert(movies))
-            insertionCompletions.append(completion)
-        }
-        
-        func completeDeletion(with error: Error, at index: Int = 0) {
-            deletionCompletions[index](.failure(error))
-        }
-        
-        func completeDeletionSuccessfully(at index: Int = 0) {
-            deletionCompletions[index](.success(()))
-        }
-        
-        func completeInsertionSuccessfully(at index: Int = 0) {
-            insertionCompletions[index](.success(()))
-        }
-        
-        func completeInsertion(with error: Error, at index: Int = 0) {
-            insertionCompletions[index](.failure(error))
-        }
-    }
-    
-    private func anyNSError() -> NSError {
-        NSError(domain: "an error", code: 0)
-    }
-    
-    func makeMovies() -> [Movie] {
-        let movie1 = Movie(
-            id: 1,
-            title: "title1",
-            overview: "overview1",
-            releaseDate: Date(timeIntervalSince1970: 1627430400),
-            posterImageURL: URL(string: "http://poster-image-base-url.com/w0cn9vwzkheuCT2a2MStdnadOyh.jpg")!
-        )
-        
-        let movie2 = Movie(
-            id: 2,
-            title: "title2",
-            overview: "overview2",
-            releaseDate: Date(timeIntervalSince1970: 970617600),
-            posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2MStdnadOyh.jpg")!
-        )
-        
-        let movie3 = Movie(
-            id: 3,
-            title: "title3",
-            overview: "overview3",
-            releaseDate: Date(timeIntervalSince1970: 1111276800),
-            posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2a2MStdnadOyh.jpg")!
-        )
-        
-        return [movie1, movie2, movie3]
     }
 }
