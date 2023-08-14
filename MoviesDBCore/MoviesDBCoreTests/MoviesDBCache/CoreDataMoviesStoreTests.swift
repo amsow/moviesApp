@@ -19,15 +19,43 @@ final class CoreDataMoviesStore: MoviesStore {
 }
 
 final class CoreDataMoviesStoreTests: XCTestCase {
-
+    
     func test_retrieve_deliversEmptyOnEmptyCache() {
-        let sut = CoreDataMoviesStore()
+        let sut = makeSUT()
         
+        expect(sut, toRetrieve: .success([]))
+    }
+    
+    func test_retrieve_hasNoSideEffectsOnEmptyCache() {
+        let sut = makeSUT()
+        
+        expect(sut, toRetrieve: .success([]))
+        expect(sut, toRetrieve: .success([]))
+    }
+    
+    // MARK: - Helpers
+    
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CoreDataMoviesStore {
+        let sut = CoreDataMoviesStore()
+        trackMemoryLeaks(sut, file: file, line: line)
+        
+        return sut
+    }
+    
+    private func expect(
+        _ sut: CoreDataMoviesStore,
+        toRetrieve expectedResult: MoviesStore.RetrievalResult,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
         let exp = expectation(description: "Wait for retrieve completion")
         sut.retrieve { receivedResult in
-            if case .success(let cachedMovies) = receivedResult {
-                XCTAssertTrue(cachedMovies.isEmpty)
-            } else {
+            
+            switch (receivedResult, expectedResult) {
+            case let (.success(receivedMovies), .success(expectedMovies)):
+                XCTAssertEqual(receivedMovies, expectedMovies, file: file, line: line)
+                
+            default:
                 XCTFail("Should received a success with an empty movies array, got \(receivedResult) instead")
             }
             
@@ -35,33 +63,5 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         }
         
         wait(for: [exp], timeout: 1.0)
-    }
-    
-    func test_retrieve_hasNoSideEffectsOnEmptyCache() {
-        let sut = CoreDataMoviesStore()
-        
-        let exp1 = expectation(description: "Wait for first retrieve completion")
-        sut.retrieve { receivedResult in
-            if case .success(let cachedMovies) = receivedResult {
-                XCTAssertTrue(cachedMovies.isEmpty)
-            } else {
-                XCTFail("Should received a success with an empty movies array, got \(receivedResult) instead")
-            }
-            
-            exp1.fulfill()
-        }
-        
-        let exp2 = expectation(description: "Wait for second retrieve completion")
-        sut.retrieve { receivedResult in
-            if case .success(let cachedMovies) = receivedResult {
-                XCTAssertTrue(cachedMovies.isEmpty)
-            } else {
-                XCTFail("Should received a success with an empty movies array, got \(receivedResult) instead")
-            }
-            
-            exp2.fulfill()
-        }
-        
-        wait(for: [exp1, exp2], timeout: 1.0)
     }
 }
