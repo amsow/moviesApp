@@ -27,6 +27,8 @@
 		32C83D3B2A841671009490D1 /* URLProtocolStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C83D3A2A841671009490D1 /* URLProtocolStub.swift */; };
 		32C83D3D2A850F48009490D1 /* CacheMoviesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C83D3C2A850F48009490D1 /* CacheMoviesUseCaseTests.swift */; };
 		32D9071A2A8A79FE0096BB67 /* MoviesStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 32D907182A8A79FE0096BB67 /* MoviesStore.xcdatamodeld */; };
+		32D9071C2A8A7B950096BB67 /* ManagedMovie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D9071B2A8A7B950096BB67 /* ManagedMovie.swift */; };
+		32D9071E2A8A88420096BB67 /* ManagedCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D9071D2A8A88420096BB67 /* ManagedCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +64,8 @@
 		32C83D3A2A841671009490D1 /* URLProtocolStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLProtocolStub.swift; sourceTree = "<group>"; };
 		32C83D3C2A850F48009490D1 /* CacheMoviesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheMoviesUseCaseTests.swift; sourceTree = "<group>"; };
 		32D907192A8A79FE0096BB67 /* MoviesStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MoviesStore.xcdatamodel; sourceTree = "<group>"; };
+		32D9071B2A8A7B950096BB67 /* ManagedMovie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedMovie.swift; sourceTree = "<group>"; };
+		32D9071D2A8A88420096BB67 /* ManagedCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +93,8 @@
 				324AA3262A87D613007250FD /* LocalMoviesLoader.swift */,
 				324AA3282A87D643007250FD /* MoviesStore.swift */,
 				32D907182A8A79FE0096BB67 /* MoviesStore.xcdatamodeld */,
+				32D9071B2A8A7B950096BB67 /* ManagedMovie.swift */,
+				32D9071D2A8A88420096BB67 /* ManagedCache.swift */,
 			);
 			path = MoviesDBCache;
 			sourceTree = "<group>";
@@ -306,7 +312,9 @@
 				32B6389C2A7C117E005D39AE /* MoviesLoader.swift in Sources */,
 				32D9071A2A8A79FE0096BB67 /* MoviesStore.xcdatamodeld in Sources */,
 				32307D892A81335A00E84E8C /* HTTPClient.swift in Sources */,
+				32D9071E2A8A88420096BB67 /* ManagedCache.swift in Sources */,
 				3252554A2A827AC500DE7603 /* MoviesMapper.swift in Sources */,
+				32D9071C2A8A7B950096BB67 /* ManagedMovie.swift in Sources */,
 				32307D872A81333900E84E8C /* RemoteMoviesLoader.swift in Sources */,
 				3252554D2A827FA400DE7603 /* HTTPResponse+StatusCode.swift in Sources */,
 				324AA3272A87D613007250FD /* LocalMoviesLoader.swift in Sources */,
