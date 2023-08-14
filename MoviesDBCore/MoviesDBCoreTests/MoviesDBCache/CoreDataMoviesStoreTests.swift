@@ -21,7 +21,8 @@ final class CoreDataMoviesStoreTests: XCTestCase {
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CoreDataMoviesStore {
-        let sut = CoreDataMoviesStore()
+        let storeURL = URL(fileURLWithPath: "dev/null")
+        let sut = CoreDataMoviesStore(storeURL: storeURL)
         trackMemoryLeaks(sut, file: file, line: line)
         
         return sut
