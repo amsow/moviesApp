@@ -18,6 +18,23 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         expect(sut, toRetrieve: .success([]))
     }
     
+    func test_retrieve_deliversFoundMoviesOnNonEmptyCache() {
+        let sut = makeSUT()
+        let movies = makeMovies()
+        
+        let exp = expectation(description: "Wait for insertion completion")
+        sut.insert(movies) { insertionResult in
+            if case .failure(let insertionError) = insertionResult {
+                XCTFail("Expected to insert movies successfully but got error \(insertionError)")
+            }
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
+        
+        expect(sut, toRetrieve: .success(movies))
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CoreDataMoviesStore {

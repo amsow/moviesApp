@@ -2,6 +2,7 @@
 
 import CoreData
 
+@objc(ManagedCache)
 final class ManagedCache: NSManagedObject {
     /// The date when the cache has been made
     @NSManaged var timestamp: Date
