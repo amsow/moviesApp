@@ -36,4 +36,32 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
     }
+    
+    func test_retrieve_hasNoSideEffectsOnEmptyCache() {
+        let sut = CoreDataMoviesStore()
+        
+        let exp1 = expectation(description: "Wait for first retrieve completion")
+        sut.retrieve { receivedResult in
+            if case .success(let cachedMovies) = receivedResult {
+                XCTAssertTrue(cachedMovies.isEmpty)
+            } else {
+                XCTFail("Should received a success with an empty movies array, got \(receivedResult) instead")
+            }
+            
+            exp1.fulfill()
+        }
+        
+        let exp2 = expectation(description: "Wait for second retrieve completion")
+        sut.retrieve { receivedResult in
+            if case .success(let cachedMovies) = receivedResult {
+                XCTAssertTrue(cachedMovies.isEmpty)
+            } else {
+                XCTFail("Should received a success with an empty movies array, got \(receivedResult) instead")
+            }
+            
+            exp2.fulfill()
+        }
+        
+        wait(for: [exp1, exp2], timeout: 1.0)
+    }
 }
