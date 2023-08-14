@@ -82,7 +82,7 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (store: MoviesStoreSpy, sut: LocalMoviesLoader) {
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (store: MoviesStoreSpy, sut: MoviesLoader) {
         let store = MoviesStoreSpy()
         let sut = LocalMoviesLoader(store: store)
         trackMemoryLeaks(store, file: file, line: line)
@@ -92,7 +92,7 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
     }
     
     private func expect(
-        _ sut: LocalMoviesLoader,
+        _ sut: MoviesLoader,
         toCompleteWith expectedResult: MoviesLoader.Result,
         when action: () -> Void,
         file: StaticString = #filePath,
