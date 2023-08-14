@@ -3,21 +3,6 @@
 import XCTest
 import MoviesDBCore
 
-final class CoreDataMoviesStore: MoviesStore {
-    
-    func retrieve(completion: @escaping RetrievalCompletion) {
-        completion(.success([]))
-    }
-    
-    func deleteCachedMovies(completion: @escaping DeletionCompletion) {
-        
-    }
-    
-    func insert(_ movies: [MoviesDBCore.Movie], completion: @escaping InsertionCompletion) {
-        
-    }
-}
-
 final class CoreDataMoviesStoreTests: XCTestCase {
     
     func test_retrieve_deliversEmptyOnEmptyCache() {
