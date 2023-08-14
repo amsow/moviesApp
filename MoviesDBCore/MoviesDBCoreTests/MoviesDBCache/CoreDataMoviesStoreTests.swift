@@ -22,7 +22,7 @@ final class CoreDataMoviesStoreTests: XCTestCase {
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CoreDataMoviesStore {
         /// `dev/null` behaves as a real file url location to enable read/write operations but without any artifact (as it's fake actually :-) )
-        let storeURL = URL(fileURLWithPath: "dev/null")
+        let storeURL = URL(fileURLWithPath: "/dev/null")
         let sut = try! CoreDataMoviesStore(storeURL: storeURL)
         trackMemoryLeaks(sut, file: file, line: line)
         
