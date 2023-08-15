@@ -70,6 +70,14 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         expect(sut, toRetrieve: .success((latestMovies, latestTimestamp)))
     }
     
+    func test_delete_deliversNoErrorOnEmptyCache() {
+        let sut = makeSUT()
+        
+        let deletionError = deleteCache(on: sut)
+        
+        XCTAssertNil(deletionError)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CoreDataMoviesStore {
@@ -102,6 +110,22 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
         
         return insertionError
+    }
+    
+    private func deleteCache(on sut: CoreDataMoviesStore, file: StaticString = #filePath, line: UInt = #line) -> Error? {
+        let exp = expectation(description: "Wait fot deletion completion")
+        var deletionError: Error?
+        sut.deleteCachedMovies { result in
+            if case .failure(let error) = result {
+                deletionError = error
+                XCTFail("Expected to delete cache successfully. Got error \(error) instead", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
+        
+        return deletionError
     }
     
     private func expect(

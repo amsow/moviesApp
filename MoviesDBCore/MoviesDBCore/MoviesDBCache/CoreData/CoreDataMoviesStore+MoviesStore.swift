@@ -15,7 +15,7 @@ extension CoreDataMoviesStore: MoviesStore {
     }
     
     public func deleteCachedMovies(completion: @escaping DeletionCompletion) {
-        
+        completion(.success(()))
     }
     
     public func insert(_ movies: [Movie], timestamp: Date, completion: @escaping InsertionCompletion) {
