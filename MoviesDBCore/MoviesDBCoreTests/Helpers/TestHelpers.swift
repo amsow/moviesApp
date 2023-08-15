@@ -42,3 +42,31 @@ func makeMovies() -> [Movie] {
     
     return [movie1, movie2, movie3]
 }
+
+func makeOtherMovies() -> [Movie] {
+    let movie1 = Movie(
+        id: 100,
+        title: "title100",
+        overview: "overview100",
+        releaseDate: Date(timeIntervalSince1970: 1627430400),
+        posterImageURL: URL(string: "http://poster-image-base-url.com/w0cn9vwzkheuCT2a2MStdnadOyh.jpg")!
+    )
+    
+    let movie2 = Movie(
+        id: 2456,
+        title: "title2456",
+        overview: "overview2456",
+        releaseDate: Date(timeIntervalSince1970: 970617600),
+        posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2MStdnadOyh.jpg")!
+    )
+    
+    let movie3 = Movie(
+        id: 8949234794377539,
+        title: "title8949234794377539",
+        overview: "overview8949234794377539",
+        releaseDate: Date(timeIntervalSince1970: 1111276800),
+        posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2a2MStdnadOyh.jpg")!
+    )
+    
+    return [movie1, movie2, movie3]
+}

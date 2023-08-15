@@ -8,33 +8,35 @@ final class CoreDataMoviesStoreTests: XCTestCase {
     func test_retrieve_deliversEmptyOnEmptyCache() {
         let sut = makeSUT()
         
-        expect(sut, toRetrieve: .success([]))
+        expect(sut, toRetrieve: .success(.none))
     }
     
     func test_retrieve_hasNoSideEffectsOnEmptyCache() {
         let sut = makeSUT()
         
-        expect(sut, toRetrieve: .success([]))
-        expect(sut, toRetrieve: .success([]))
+        expect(sut, toRetrieve: .success(.none))
+        expect(sut, toRetrieve: .success(.none))
     }
     
     func test_retrieve_deliversFoundMoviesOnNonEmptyCache() {
         let sut = makeSUT()
         let movies = makeMovies()
+        let timestamp = Date()
         
-        insert(movies, into: sut)
+        insert(movies, timestamp: timestamp, into: sut)
         
-        expect(sut, toRetrieve: .success(movies))
+        expect(sut, toRetrieve: .success((movies, timestamp)))
     }
     
     func test_retrieve_hasNoSideEffectsOnNonEmptyCache() {
         let sut = makeSUT()
         let movies = makeMovies()
+        let timestamp = Date()
         
-        insert(movies, into: sut)
+        insert(movies, timestamp: timestamp, into: sut)
         
-        expect(sut, toRetrieve: .success(movies))
-        expect(sut, toRetrieve: .success(movies))
+        expect(sut, toRetrieve: .success((movies, timestamp)))
+        expect(sut, toRetrieve: .success((movies, timestamp)))
     }
     
     func test_insert_deliversNoErrorOnEmptyCache() {
@@ -55,6 +57,19 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         XCTAssertNil(seondInsertionError, "Expected to override cache successfully")
     }
     
+    func test_insert_overridePreviouslyInsertedValues() {
+        let sut = makeSUT()
+        let firstInsertionTimestamp = Date()
+        let latestMovies = makeOtherMovies()
+        let latestTimestamp = Date()
+        
+        insert(makeMovies(), timestamp: firstInsertionTimestamp, into: sut)
+        
+        insert(latestMovies, timestamp: latestTimestamp, into: sut)
+        
+        expect(sut, toRetrieve: .success((latestMovies, latestTimestamp)))
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CoreDataMoviesStore {
@@ -69,13 +84,14 @@ final class CoreDataMoviesStoreTests: XCTestCase {
     @discardableResult
     private func insert(
         _ movies: [Movie] = makeMovies(),
+        timestamp: Date = Date(),
         into sut: CoreDataMoviesStore,
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Error? {
         let exp = expectation(description: "Wait for insertion completion")
         var insertionError: Error?
-        sut.insert(movies) { insertionResult in
+        sut.insert(movies, timestamp: timestamp) { insertionResult in
             if case .failure(let error) = insertionResult {
                 insertionError = error
                 XCTFail("Expected to insert movies successfully but got error \(error)", file: file, line: line)
@@ -98,8 +114,9 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         sut.retrieve { receivedResult in
             
             switch (receivedResult, expectedResult) {
-            case let (.success(receivedMovies), .success(expectedMovies)):
-                XCTAssertEqual(receivedMovies, expectedMovies, file: file, line: line)
+            case let (.success(receivedCache), .success(expectedCache)):
+                XCTAssertEqual(receivedCache?.movies, expectedCache?.movies, file: file, line: line)
+                XCTAssertEqual(receivedCache?.timestamp, expectedCache?.timestamp, file: file, line: line)
                 
             default:
                 XCTFail("Should received a success with an empty movies array, got \(receivedResult) instead")

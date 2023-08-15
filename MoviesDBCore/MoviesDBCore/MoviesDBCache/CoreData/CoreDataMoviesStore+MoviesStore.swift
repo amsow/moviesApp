@@ -9,10 +9,12 @@ extension CoreDataMoviesStore: MoviesStore {
             request.returnsObjectsAsFaults = false
             
             do {
-                let movies = try ManagedCache.find(in: context).map { cache in
+                let managedCache = try ManagedCache.find(in: context)
+                let movies = managedCache.map { cache in
                     cache.movies.compactMap { $0 as? ManagedMovie }.map(\.movie)
                 }
-                completion(.success(movies ?? []))
+                
+                managedCache == nil ? completion(.success(nil)) : completion(.success(Cache(movies: movies!, timestamp: managedCache!.timestamp)))
                 
             } catch {
                 completion(.failure(error))
@@ -24,12 +26,12 @@ extension CoreDataMoviesStore: MoviesStore {
         
     }
     
-    public func insert(_ movies: [Movie], completion: @escaping InsertionCompletion) {
+    public func insert(_ movies: [Movie], timestamp: Date, completion: @escaping InsertionCompletion) {
         perform { context in
             do {
                 let managedCache = try ManagedCache.newUniqueInstance(in: context)
                 managedCache.movies = ManagedMovie.managedMovieOrderSet(from: movies, in: context)
-                managedCache.timestamp = Date()
+                managedCache.timestamp = timestamp
                 
                 try context.save()
                 completion(.success(()))

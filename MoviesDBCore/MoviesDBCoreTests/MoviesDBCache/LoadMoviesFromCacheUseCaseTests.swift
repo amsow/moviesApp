@@ -8,7 +8,7 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
     func test_init_doesNotSendMessage() {
         let store = MoviesStoreSpy()
         
-        _ = LocalMoviesLoader(store: store)
+        _ = LocalMoviesLoader(store: store, date: Date.init)
         
         XCTAssertTrue(store.messages.isEmpty)
     }
@@ -40,7 +40,7 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
     
     func test_load_doesNotDeliverResultAfterInstanceHasBeedDeallocated() {
         let store = MoviesStoreSpy()
-        var sut: LocalMoviesLoader? = LocalMoviesLoader(store: store)
+        var sut: LocalMoviesLoader? = LocalMoviesLoader(store: store, date: Date.init)
         
         var receivedResults = [MoviesLoader.Result]()
         sut?.load { result in
@@ -84,7 +84,7 @@ final class LoadMoviesFromCacheUseCaseTests: XCTestCase {
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (store: MoviesStoreSpy, sut: MoviesLoader) {
         let store = MoviesStoreSpy()
-        let sut = LocalMoviesLoader(store: store)
+        let sut = LocalMoviesLoader(store: store, date: Date.init)
         trackMemoryLeaks(store, file: file, line: line)
         trackMemoryLeaks(sut, file: file, line: line)
         
