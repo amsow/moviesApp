@@ -78,6 +78,14 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         XCTAssertNil(deletionError)
     }
     
+    func test_delete_hasNoSideEffectsOnEmptyCache() {
+        let sut = makeSUT()
+        
+        deleteCache(on: sut)
+        
+        expect(sut, toRetrieve: .success(.none))
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CoreDataMoviesStore {
@@ -112,6 +120,7 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         return insertionError
     }
     
+    @discardableResult
     private func deleteCache(on sut: CoreDataMoviesStore, file: StaticString = #filePath, line: UInt = #line) -> Error? {
         let exp = expectation(description: "Wait fot deletion completion")
         var deletionError: Error?
