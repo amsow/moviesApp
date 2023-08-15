@@ -31,25 +31,10 @@ public final class CoreDataMoviesStore: MoviesStore {
             request.returnsObjectsAsFaults = false
             
             do {
-                guard let cache = try context.fetch(request).first else {
-                    completion(.success([]))
-                    return
+                let movies = try ManagedCache.find(in: context).map { cache in
+                    cache.movies.compactMap { $0 as? ManagedMovie }.map(\.movie)
                 }
-                let movies: [Movie] = cache.movies.compactMap { element in
-                    guard let managedMovie = element as? ManagedMovie else {
-                        return nil
-                    }
-                    let movie = Movie(
-                        id: managedMovie.id,
-                        title: managedMovie.title,
-                        overview: managedMovie.overview,
-                        releaseDate: managedMovie.releaseDate,
-                        posterImageURL: managedMovie.posterImageURL
-                    )
-                    
-                    return movie
-                }
-                completion(.success(movies))
+                completion(.success(movies ?? []))
                 
             } catch {
                 completion(.failure(error))

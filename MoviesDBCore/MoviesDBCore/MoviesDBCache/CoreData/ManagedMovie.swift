@@ -11,6 +11,13 @@ final class ManagedMovie: NSManagedObject {
     @NSManaged var posterImageURL: URL
     @NSManaged var posterImageData: Data?
     @NSManaged var cache: ManagedCache
+}
+
+extension ManagedMovie {
+    
+    var movie: Movie {
+        Movie(id: id, title: title, overview: overview, releaseDate: releaseDate, posterImageURL: posterImageURL)
+    }
     
     static func managedMovieOrderSet(from movies: [Movie], in context: NSManagedObjectContext) -> NSOrderedSet {
         NSOrderedSet(
