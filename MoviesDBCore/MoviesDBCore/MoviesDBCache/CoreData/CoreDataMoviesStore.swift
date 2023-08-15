@@ -73,19 +73,9 @@ public final class CoreDataMoviesStore: MoviesStore {
         let context = self.context
         context.perform {
             let managedCache = ManagedCache(context: context)
-            managedCache.movies = NSOrderedSet(array: movies.map { movie in
-                let managedMovie = ManagedMovie(context: context)
-                managedMovie.id = movie.id
-                managedMovie.title = movie.title
-                managedMovie.overview = movie.overview
-                managedMovie.releaseDate = movie.releaseDate
-                managedMovie.posterImageURL = movie.posterImageURL
-                
-                return managedMovie
-                
-            })
-            
+            managedCache.movies = ManagedMovie.managedMovieOrderSet(from: movies, in: context)
             managedCache.timestamp = Date()
+            
             do {
                 try context.save()
                 completion(.success(()))
