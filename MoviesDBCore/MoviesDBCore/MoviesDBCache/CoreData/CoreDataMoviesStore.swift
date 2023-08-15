@@ -2,7 +2,7 @@
 
 import CoreData
 
-public final class CoreDataMoviesStore: MoviesStore {
+public final class CoreDataMoviesStore {
     
     private static let modelName = "MoviesStore"
     private static let model = NSManagedObjectModel.makeWith(name: modelName, in: Bundle(for: CoreDataMoviesStore.self))
@@ -23,7 +23,9 @@ public final class CoreDataMoviesStore: MoviesStore {
         container = try NSPersistentContainer.load(name: Self.modelName, model: model, url: storeURL)
         context = container.newBackgroundContext()
     }
-    
+}
+
+extension CoreDataMoviesStore: MoviesStore {
     public func retrieve(completion: @escaping RetrievalCompletion) {
         let context = self.context
         context.perform {
