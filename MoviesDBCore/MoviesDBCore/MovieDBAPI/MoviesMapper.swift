@@ -30,7 +30,7 @@ struct MoviesMapper {
                 title: title,
                 overview: overview,
                 releaseDate: dateFormatter().date(from: releaseDate)!,
-                posterImageURL: posterImageBaseURL.appending(path: posterPath)
+                posterImageURL: posterImageBaseURL.appendingPathComponent(posterPath)
         )
             
             return movie

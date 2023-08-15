@@ -5,9 +5,11 @@ public final class LocalMoviesLoader {
     public typealias SaveResult = Result<Void, Error>
     
     private let store: MoviesStore
+    private let date: () -> Date
     
-    public init(store: MoviesStore) {
+    public init(store: MoviesStore, date: @escaping () -> Date) {
         self.store = store
+        self.date = date
     }
     
     public func save(_ movies: [Movie], completion: @escaping (SaveResult) -> Void) {
@@ -24,7 +26,7 @@ public final class LocalMoviesLoader {
     }
     
     private func cache(_ movies: [Movie], with completion: @escaping (SaveResult) -> Void) {
-        self.store.insert(movies) { [weak self] insertionResult in
+        self.store.insert(movies, timestamp: date()) { [weak self] insertionResult in
             guard self != nil else { return }
             if case .failure(let error) = insertionResult {
                 completion(.failure(error))
@@ -45,8 +47,11 @@ extension LocalMoviesLoader: MoviesLoader {
             case .failure(let error):
                 completion(.failure(error))
                 
-            case .success(let cachedMovies):
-                completion(.success(cachedMovies))
+            case .success(let .some(cache)):
+                completion(.success(cache.movies))
+                
+            case .success:
+                completion(.success([]))
             }
         }
     }

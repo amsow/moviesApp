@@ -20,7 +20,7 @@ final class MoviesStoreSpy: MoviesStore {
         deletionCompletions.append(completion)
     }
     
-    func insert(_ movies: [Movie], completion: @escaping InsertionCompletion) {
+    func insert(_ movies: [Movie], timestamp: Date, completion: @escaping InsertionCompletion) {
         messages.append(.insert(movies))
         insertionCompletions.append(completion)
     }
@@ -51,6 +51,6 @@ final class MoviesStoreSpy: MoviesStore {
     }
     
     func completeRetrievalSuccessfully(with movies: [Movie], at index: Int = 0) {
-        retrievalCompletions[index](.success(movies))
+        retrievalCompletions[index](.success((movies, Date())))
     }
 }

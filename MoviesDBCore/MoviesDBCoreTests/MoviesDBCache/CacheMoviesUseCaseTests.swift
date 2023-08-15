@@ -68,7 +68,7 @@ final class CacheMoviesUseCaseTests: XCTestCase {
     
     func test_save_doesNotDeliverDeletionErrorAfterSUTHasBeenDeallocated() {
         let store = MoviesStoreSpy()
-        var sut: LocalMoviesLoader? = LocalMoviesLoader(store: store)
+        var sut: LocalMoviesLoader? = LocalMoviesLoader(store: store, date: Date.init)
         
         var receivedResults = [LocalMoviesLoader.SaveResult]()
         sut?.save(makeMovies()) { result in
@@ -83,7 +83,7 @@ final class CacheMoviesUseCaseTests: XCTestCase {
     
     func test_save_doesNotDeliverInsertionErrorAfterSUTHasBeenDeallocated() {
         let store = MoviesStoreSpy()
-        var sut: LocalMoviesLoader? = LocalMoviesLoader(store: store)
+        var sut: LocalMoviesLoader? = LocalMoviesLoader(store: store, date: Date.init)
         
         var receivedResults = [LocalMoviesLoader.SaveResult]()
         sut?.save(makeMovies()) { result in
@@ -104,7 +104,7 @@ final class CacheMoviesUseCaseTests: XCTestCase {
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (store: MoviesStoreSpy, sut: LocalMoviesLoader) {
         let store = MoviesStoreSpy()
-        let sut = LocalMoviesLoader(store: store)
+        let sut = LocalMoviesLoader(store: store, date: Date.init)
         trackMemoryLeaks(store, file: file, line: line)
         trackMemoryLeaks(sut, file: file, line: line)
         
