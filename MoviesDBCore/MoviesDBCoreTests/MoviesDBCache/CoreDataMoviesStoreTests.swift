@@ -22,17 +22,20 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         let sut = makeSUT()
         let movies = makeMovies()
         
-        let exp = expectation(description: "Wait for insertion completion")
-        sut.insert(movies) { insertionResult in
-            if case .failure(let insertionError) = insertionResult {
-                XCTFail("Expected to insert movies successfully but got error \(insertionError)")
-            }
-            exp.fulfill()
-        }
-        
-        wait(for: [exp], timeout: 1.0)
+        insert(movies, into: sut)
         
         expect(sut, toRetrieve: .success(movies))
+    }
+    
+    func test_retrieve_hasNoSideEffectsOnNonEmptyCache() {
+        let sut = makeSUT()
+        let movies = makeMovies()
+        
+        insert(movies, into: sut)
+        
+        expect(sut, toRetrieve: .success(movies))
+        expect(sut, toRetrieve: .success(movies))
+        
     }
     
     // MARK: - Helpers
@@ -44,6 +47,28 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         trackMemoryLeaks(sut, file: file, line: line)
         
         return sut
+    }
+    
+    @discardableResult
+    private func insert(
+        _ movies: [Movie] = makeMovies(),
+        into sut: CoreDataMoviesStore,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Error? {
+        let exp = expectation(description: "Wait for insertion completion")
+        var insertionError: Error?
+        sut.insert(movies) { insertionResult in
+            if case .failure(let error) = insertionResult {
+                insertionError = error
+                XCTFail("Expected to insert movies successfully but got error \(error)", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
+        
+        return insertionError
     }
     
     private func expect(
