@@ -35,7 +35,14 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         
         expect(sut, toRetrieve: .success(movies))
         expect(sut, toRetrieve: .success(movies))
+    }
+    
+    func test_insert_deliversNoErrorOnEmptyCache() {
+        let sut = makeSUT()
         
+        let insertionError = insert(makeMovies(), into: sut)
+        
+        XCTAssertNil(insertionError, "Expected to insert movies successfully")
     }
     
     // MARK: - Helpers
