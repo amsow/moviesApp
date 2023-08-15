@@ -105,6 +105,39 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         expect(sut, toRetrieve: .success(.none))
     }
     
+    func test_storeSideEffects_runSerially_allOperations() {
+        let sut = makeSUT()
+        var completedOperationsInOrder = [XCTestExpectation]()
+        
+        let op1 = expectation(description: "Wait for deletion completion")
+        sut.deleteCachedMovies { _ in
+            completedOperationsInOrder.append(op1)
+            op1.fulfill()
+        }
+        
+        let op2 = expectation(description: "Wait for insertion completion")
+        sut.insert(makeMovies(), timestamp: Date()) { _ in
+            completedOperationsInOrder.append(op2)
+            op2.fulfill()
+        }
+        
+        let op3 = expectation(description: "Wait for retrieve completion")
+        sut.retrieve { _ in
+            completedOperationsInOrder.append(op3)
+            op3.fulfill()
+        }
+        
+        let op4 = expectation(description: "Wait for deletion again completion")
+        sut.deleteCachedMovies { _ in
+            completedOperationsInOrder.append(op4)
+            op4.fulfill()
+        }
+        
+        wait(for: [op1, op2, op3, op4])
+        
+        XCTAssertEqual(completedOperationsInOrder, [op1, op2, op3, op4], "Expected operatrion to be executed exactly in this order op1 -> op2 -> op3 -> op4")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CoreDataMoviesStore {
