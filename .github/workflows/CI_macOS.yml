@@ -7,12 +7,14 @@ jobs:
   build-and-test:
 
     runs-on: macos-latest
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_14.3.app/Contents/Developer
 
     steps:
 
       - uses: actions/checkout@v2
+
+      - name: Select Xcode
+        run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+
 
       - name: Xcode version
         run: /usr/bin/xcodebuild -version
