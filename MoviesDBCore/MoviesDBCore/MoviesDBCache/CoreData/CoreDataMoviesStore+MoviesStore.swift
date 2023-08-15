@@ -5,20 +5,12 @@ import CoreData
 extension CoreDataMoviesStore: MoviesStore {
     public func retrieve(completion: @escaping RetrievalCompletion) {
         perform { context in
-            let request = NSFetchRequest<ManagedCache>(entityName: ManagedCache.entity().name!)
-            request.returnsObjectsAsFaults = false
-            
-            do {
-                let managedCache = try ManagedCache.find(in: context)
-                let movies = managedCache.map { cache in
-                    cache.movies.compactMap { $0 as? ManagedMovie }.map(\.movie)
+            completion(Result {
+                try ManagedCache.find(in: context).map { managedCache in
+                    let movies = managedCache.movies.compactMap { $0 as? ManagedMovie }.map(\.movie)
+                    return Cache(movies, managedCache.timestamp)
                 }
-                
-                managedCache == nil ? completion(.success(nil)) : completion(.success(Cache(movies: movies!, timestamp: managedCache!.timestamp)))
-                
-            } catch {
-                completion(.failure(error))
-            }
+            })
         }
     }
     
@@ -28,17 +20,13 @@ extension CoreDataMoviesStore: MoviesStore {
     
     public func insert(_ movies: [Movie], timestamp: Date, completion: @escaping InsertionCompletion) {
         perform { context in
-            do {
+            completion(Result {
                 let managedCache = try ManagedCache.newUniqueInstance(in: context)
                 managedCache.movies = ManagedMovie.managedMovieOrderSet(from: movies, in: context)
                 managedCache.timestamp = timestamp
                 
                 try context.save()
-                completion(.success(()))
-                
-            } catch {
-                completion(.failure(error))
-            }
+            })
         }
     }
 }
