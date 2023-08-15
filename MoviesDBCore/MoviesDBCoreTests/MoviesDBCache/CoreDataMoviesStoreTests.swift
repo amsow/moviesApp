@@ -45,6 +45,16 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         XCTAssertNil(insertionError, "Expected to insert movies successfully")
     }
     
+    func test_insert_deliversNoErrorOnNonEmptyCache() {
+        let sut = makeSUT()
+        
+        insert(makeMovies(), into: sut)
+        
+        let seondInsertionError = insert(makeMovies(), into: sut)
+        
+        XCTAssertNil(seondInsertionError, "Expected to override cache successfully")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CoreDataMoviesStore {
