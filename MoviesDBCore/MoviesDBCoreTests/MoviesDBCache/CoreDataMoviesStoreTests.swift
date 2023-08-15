@@ -133,7 +133,7 @@ final class CoreDataMoviesStoreTests: XCTestCase {
             op4.fulfill()
         }
         
-        wait(for: [op1, op2, op3, op4])
+        waitForExpectations(timeout: 5)
         
         XCTAssertEqual(completedOperationsInOrder, [op1, op2, op3, op4], "Expected operatrion to be executed exactly in this order op1 -> op2 -> op3 -> op4")
     }
