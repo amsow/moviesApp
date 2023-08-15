@@ -62,21 +62,13 @@ public final class CoreDataMoviesStore: MoviesStore {
     }
     
     public func insert(_ movies: [Movie], completion: @escaping InsertionCompletion) {
-        let request = NSFetchRequest<ManagedCache>(entityName: ManagedCache.entity().name!)
-        request.returnsObjectsAsFaults = false
-            
-        if let oldManagedCache = try? context.fetch(request).first {
-            context.delete(oldManagedCache)
-            try! context.save()
-        }
-        
         let context = self.context
         context.perform {
-            let managedCache = ManagedCache(context: context)
-            managedCache.movies = ManagedMovie.managedMovieOrderSet(from: movies, in: context)
-            managedCache.timestamp = Date()
-            
             do {
+                let managedCache = try ManagedCache.newUniqueInstance(in: context)
+                managedCache.movies = ManagedMovie.managedMovieOrderSet(from: movies, in: context)
+                managedCache.timestamp = Date()
+                
                 try context.save()
                 completion(.success(()))
                 
