@@ -16,13 +16,9 @@ extension CoreDataMoviesStore: MoviesStore {
     
     public func deleteCachedMovies(completion: @escaping DeletionCompletion) {
         perform { context in
-            do {
+            completion(Result {
                 try ManagedCache.find(in: context).map(context.delete).map(context.save)
-                completion(.success(()))
-                
-            } catch {
-                completion(.failure(error))
-            }
+            })
         }
     }
     
