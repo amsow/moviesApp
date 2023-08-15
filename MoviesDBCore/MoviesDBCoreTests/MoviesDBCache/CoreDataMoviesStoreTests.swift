@@ -95,6 +95,16 @@ final class CoreDataMoviesStoreTests: XCTestCase {
         XCTAssertNil(deletionError, "Expected to delete cache successfully")
     }
     
+    func test_delete_emptiesPreviouslyInsertedCache() {
+        let sut = makeSUT()
+        
+        insert(makeMovies(), into: sut)
+        
+        deleteCache(on: sut)
+        
+        expect(sut, toRetrieve: .success(.none))
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CoreDataMoviesStore {
