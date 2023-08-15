@@ -11,18 +11,24 @@ final class URLProtocolStub: URLProtocol {
         let requestObserver: ((URLRequest) -> Void)?
     }
     
-    private static var stub: Stub?
+    private static let queue = DispatchQueue(label: "URLProtocolStub.queue")
+    
+    private static var _stub: Stub?
+    private static var stub: Stub? {
+        get { queue.sync { _stub } }
+        set { queue.sync { _stub = newValue } }
+    }
     
     static func stub(data: Data?, response: URLResponse?, error: Error?) {
-        stub = Stub(data: data, response: response, error: error, requestObserver: nil)
+        _stub = Stub(data: data, response: response, error: error, requestObserver: nil)
     }
     
     static func observeRequests(_ observer: @escaping (URLRequest) -> Void) {
-        stub = Stub(data: nil, response: nil, error: nil, requestObserver: observer)
+        _stub = Stub(data: nil, response: nil, error: nil, requestObserver: observer)
     }
     
     static func removeStub() {
-        stub = nil
+        _stub = nil
     }
     
     override class func canInit(with request: URLRequest) -> Bool {
