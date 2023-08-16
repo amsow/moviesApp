@@ -5,7 +5,7 @@ import CoreData
 public final class CoreDataMoviesStore {
     
     private static let modelName = "MoviesStore"
-    private static let model = NSManagedObjectModel.makeWith(name: modelName, in: Bundle(for: CoreDataMoviesStore.self))
+    private static let model = NSManagedObjectModel.makeWith(name: modelName, in: Bundle.module)
     
     private let container: NSPersistentContainer
     private let context: NSManagedObjectContext
