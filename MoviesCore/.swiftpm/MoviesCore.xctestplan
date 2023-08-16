@@ -1,0 +1,34 @@
+{
+  "configurations" : [
+    {
+      "id" : "E7C9DB4C-FC4E-492B-BA40-E649E4F91231",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "MoviesCore",
+          "name" : "MoviesCore"
+        }
+      ]
+    },
+    "testExecutionOrdering" : "random",
+    "threadSanitizerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "MoviesCoreTests",
+        "name" : "MoviesCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}
