@@ -3,7 +3,27 @@ import UIKit
 
 final class MoviesViewController: UITableViewController {
     
-    private let movies = MovieViewModel.sample
+    private var movies = [MovieViewModel]()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refresh()
+        tableView.setContentOffset(
+            CGPoint(x: 0, y: -tableView.contentInset.top),
+            animated: false
+        )
+    }
+    
+    @IBAction func refresh() {
+        refreshControl?.beginRefreshing()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            if self.movies.isEmpty {
+                self.movies = MovieViewModel.sample
+                self.tableView.reloadData()
+            }
+            self.refreshControl?.endRefreshing()
+        }
+    }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return movies.count
@@ -23,6 +43,6 @@ extension MovieCell {
         titleLabel.text = model.title
         releaseDateLabel.text = model.date
         overviewLabel.text = model.overview
-        movieImageView.image = UIImage(named: model.imageName)
+        fadeIn(UIImage(named: model.imageName))
     }
 }
