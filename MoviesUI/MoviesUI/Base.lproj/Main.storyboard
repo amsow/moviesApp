@@ -16,18 +16,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="jlm-y3-S10">
-                            <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="15"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <view key="tableFooterView" contentMode="scaleToFill" id="4qu-ot-frR">
-                            <rect key="frame" x="0.0" y="616" width="393" height="44"/>
+                            <rect key="frame" x="0.0" y="587" width="393" height="15"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="494" id="U6P-74-kDl">
-                                <rect key="frame" x="0.0" y="94" width="393" height="494"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="494" id="U6P-74-kDl" customClass="MovieCell" customModule="MoviesUI" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="65" width="393" height="494"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="U6P-74-kDl" id="0xy-qm-d4j">
                                     <rect key="frame" x="0.0" y="0.0" width="393" height="494"/>
@@ -93,6 +93,12 @@
                                         <constraint firstItem="fRd-bW-Tdd" firstAttribute="top" secondItem="0xy-qm-d4j" secondAttribute="topMargin" priority="999" constant="6" id="zua-4U-GLD"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="movieImageView" destination="REN-cc-0dT" id="O3e-AQ-h0L"/>
+                                    <outlet property="overviewLabel" destination="IgT-cH-eXj" id="tdp-hF-KzI"/>
+                                    <outlet property="releaseDateLabel" destination="QCa-qT-S1W" id="26G-FB-6WE"/>
+                                    <outlet property="titleLabel" destination="qZ8-2D-24M" id="cbG-lZ-9hF"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

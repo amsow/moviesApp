@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3231AD232A8FBF5D0038218F /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231AD222A8FBF5D0038218F /* MovieCell.swift */; };
+		3231AD252A8FC5F70038218F /* MovieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231AD242A8FC5F70038218F /* MovieViewModel.swift */; };
 		32F37AAD2A8D31FA004190DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37AAC2A8D31FA004190DC /* AppDelegate.swift */; };
 		32F37AAF2A8D31FA004190DC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37AAE2A8D31FA004190DC /* SceneDelegate.swift */; };
 		32F37AB42A8D31FA004190DC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32F37AB22A8D31FA004190DC /* Main.storyboard */; };
@@ -36,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3231AD222A8FBF5D0038218F /* MovieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
+		3231AD242A8FC5F70038218F /* MovieViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieViewModel.swift; sourceTree = "<group>"; };
 		32F37AA92A8D31FA004190DC /* MoviesUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoviesUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32F37AAC2A8D31FA004190DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		32F37AAE2A8D31FA004190DC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -106,6 +110,8 @@
 				32F37AB72A8D31FC004190DC /* LaunchScreen.storyboard */,
 				32F37ABA2A8D31FC004190DC /* Info.plist */,
 				32F37ADC2A8D67FD004190DC /* MoviesViewController.swift */,
+				3231AD222A8FBF5D0038218F /* MovieCell.swift */,
+				3231AD242A8FC5F70038218F /* MovieViewModel.swift */,
 			);
 			path = MoviesUI;
 			sourceTree = "<group>";
@@ -259,7 +265,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				32F37AAD2A8D31FA004190DC /* AppDelegate.swift in Sources */,
+				3231AD252A8FC5F70038218F /* MovieViewModel.swift in Sources */,
 				32F37AAF2A8D31FA004190DC /* SceneDelegate.swift in Sources */,
+				3231AD232A8FBF5D0038218F /* MovieCell.swift in Sources */,
 				32F37ADD2A8D67FD004190DC /* MoviesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
