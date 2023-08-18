@@ -37,12 +37,3 @@ final class MoviesViewController: UITableViewController {
         return cell
     }
 }
-
-extension MovieCell {
-    fileprivate func configure(with model: MovieViewModel) {
-        titleLabel.text = model.title
-        releaseDateLabel.text = model.date
-        overviewLabel.text = model.overview
-        fadeIn(UIImage(named: model.imageName))
-    }
-}
