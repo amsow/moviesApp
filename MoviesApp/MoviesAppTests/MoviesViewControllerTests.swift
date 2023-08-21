@@ -47,6 +47,8 @@ final class MoviesViewControllerTests: XCTestCase {
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (loader: LoaderSpy, sut: MoviesViewController) {
         let loader = LoaderSpy()
         let sut = MoviesViewController(loader: loader)
+        trackForMemoryLeaks(loader, file: file, line: line)
+        trackForMemoryLeaks(sut, file: file, line: line)
         
         return (loader, sut)
     }
