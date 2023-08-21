@@ -66,10 +66,6 @@ final class MoviesViewControllerTests: XCTestCase {
 
 extension MoviesViewController {
     func simulateUserInitiatedMoviesReload() {
-        refreshControl?.allTargets.forEach { target in
-            refreshControl?.actions(forTarget: target, forControlEvent: .valueChanged)?.forEach{
-                (target as NSObject).perform(Selector($0))
-            }
-        }
+        refreshControl?.simulatePullToRefresh()
     }
 }

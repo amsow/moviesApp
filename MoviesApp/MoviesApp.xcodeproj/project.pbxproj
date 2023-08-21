@@ -15,6 +15,8 @@
 		3231ADA12A93C66E0038218F /* MoviesViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADA02A93C66E0038218F /* MoviesViewControllerTests.swift */; };
 		3231ADA42A93CB670038218F /* MoviesCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3231ADA32A93CB670038218F /* MoviesCore */; };
 		3231ADA72A93CDF80038218F /* XCTestCase+MemoryLeakTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADA62A93CDF80038218F /* XCTestCase+MemoryLeakTracker.swift */; };
+		3231ADA92A93DB390038218F /* UIControl+SimulateEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADA82A93DB390038218F /* UIControl+SimulateEvent.swift */; };
+		3231ADAB2A93DBEF0038218F /* UIRefreshControl+SimulatePullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADAA2A93DBEF0038218F /* UIRefreshControl+SimulatePullToRefresh.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +40,8 @@
 		3231AD832A8FFBA90038218F /* MoviesAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoviesAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3231ADA02A93C66E0038218F /* MoviesViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesViewControllerTests.swift; sourceTree = "<group>"; };
 		3231ADA62A93CDF80038218F /* XCTestCase+MemoryLeakTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakTracker.swift"; sourceTree = "<group>"; };
+		3231ADA82A93DB390038218F /* UIControl+SimulateEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+SimulateEvent.swift"; sourceTree = "<group>"; };
+		3231ADAA2A93DBEF0038218F /* UIRefreshControl+SimulatePullToRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+SimulatePullToRefresh.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +115,8 @@
 			isa = PBXGroup;
 			children = (
 				3231ADA62A93CDF80038218F /* XCTestCase+MemoryLeakTracker.swift */,
+				3231ADA82A93DB390038218F /* UIControl+SimulateEvent.swift */,
+				3231ADAA2A93DBEF0038218F /* UIRefreshControl+SimulatePullToRefresh.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -229,8 +235,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3231ADA92A93DB390038218F /* UIControl+SimulateEvent.swift in Sources */,
 				3231ADA12A93C66E0038218F /* MoviesViewControllerTests.swift in Sources */,
 				3231ADA72A93CDF80038218F /* XCTestCase+MemoryLeakTracker.swift in Sources */,
+				3231ADAB2A93DBEF0038218F /* UIRefreshControl+SimulatePullToRefresh.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
