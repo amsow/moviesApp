@@ -2,12 +2,13 @@
 
 import XCTest
 import UIKit
+import MoviesCore
 
 final class MoviesViewController: UIViewController {
     
-    private let loader: MoviesViewControllerTests.LoaderSpy
+    private let loader: MoviesLoader
     
-    init(loader: MoviesViewControllerTests.LoaderSpy) {
+    init(loader: MoviesLoader) {
         self.loader = loader
         super.init(nibName: nil, bundle: nil)
     }
@@ -18,7 +19,9 @@ final class MoviesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loader.load()
+        loader.load { _ in
+            
+        }
     }
 }
 
@@ -43,10 +46,10 @@ final class MoviesViewControllerTests: XCTestCase {
     
     // MARK: - Helpers
     
-    final class LoaderSpy {
+    final class LoaderSpy: MoviesLoader {
         private(set) var loadCallCount = 0
         
-        func load() {
+        func load(completion: @escaping (MoviesLoader.Result) -> Void) {
             loadCallCount += 1
         }
     }
