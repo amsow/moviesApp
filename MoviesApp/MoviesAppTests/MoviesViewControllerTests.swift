@@ -4,7 +4,7 @@ import XCTest
 import UIKit
 import MoviesCore
 
-final class MoviesViewController: UIViewController {
+final class MoviesViewController: UITableViewController {
     
     private let loader: MoviesLoader
     
@@ -19,28 +19,30 @@ final class MoviesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loader.load { _ in
-            
-        }
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: #selector(loadMovies), for: .valueChanged)
+        loadMovies()
+    }
+    
+    @objc
+    private func loadMovies() {
+        loader.load { _ in }
     }
 }
 
 final class MoviesViewControllerTests: XCTestCase {
 
-    func test_init_doesNotLoad() {
-        let (loader, _) = makeSUT()
-        
-        XCTAssertEqual(loader.loadCallCount, 0)
-    }
-    
-    func test_viewDidLoad_loadsMovies() {
+    func test_loadActions_requestsMoviesFromLoader() {
         let (loader, sut) = makeSUT()
         
-        sut.loadViewIfNeeded()
+        XCTAssertEqual(loader.loadCallCount, 0, "Expected no loading request")
         
-        XCTAssertEqual(loader.loadCallCount, 1)
+        sut.loadViewIfNeeded()
+        XCTAssertEqual(loader.loadCallCount, 1, "Expected to request loading once")
+        
+        sut.simulateUserInitiatedMoviesReload()
+        XCTAssertEqual(loader.loadCallCount, 2, "Expected another loading request")
     }
-    
     
     // MARK: - Helpers
     
@@ -58,6 +60,16 @@ final class MoviesViewControllerTests: XCTestCase {
         
         func load(completion: @escaping (MoviesLoader.Result) -> Void) {
             loadCallCount += 1
+        }
+    }
+}
+
+extension MoviesViewController {
+    func simulateUserInitiatedMoviesReload() {
+        refreshControl?.allTargets.forEach { target in
+            refreshControl?.actions(forTarget: target, forControlEvent: .valueChanged)?.forEach{
+                (target as NSObject).perform(Selector($0))
+            }
         }
     }
 }
