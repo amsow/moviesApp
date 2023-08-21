@@ -28,15 +28,13 @@ final class MoviesViewController: UIViewController {
 final class MoviesViewControllerTests: XCTestCase {
 
     func test_init_doesNotLoad() {
-        let loader = LoaderSpy()
-        _ = MoviesViewController(loader: loader)
+        let (loader, _) = makeSUT()
         
         XCTAssertEqual(loader.loadCallCount, 0)
     }
     
     func test_viewDidLoad_loadsMovies() {
-        let loader = LoaderSpy()
-        let sut = MoviesViewController(loader: loader)
+        let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
         
@@ -45,6 +43,13 @@ final class MoviesViewControllerTests: XCTestCase {
     
     
     // MARK: - Helpers
+    
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (loader: LoaderSpy, sut: MoviesViewController) {
+        let loader = LoaderSpy()
+        let sut = MoviesViewController(loader: loader)
+        
+        return (loader, sut)
+    }
     
     final class LoaderSpy: MoviesLoader {
         private(set) var loadCallCount = 0
