@@ -24,6 +24,9 @@ public final class MoviesViewController: UITableViewController {
     
     @objc
     private func loadMovies() {
-        loader.load { _ in }
+        refreshControl?.beginRefreshing()
+        loader.load { [weak self] _ in
+            self?.refreshControl?.endRefreshing()
+        }
     }
 }
