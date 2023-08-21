@@ -13,6 +13,7 @@
 		3231AD7A2A8FFBA90038218F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3231AD792A8FFBA90038218F /* Assets.xcassets */; };
 		3231AD7D2A8FFBA90038218F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3231AD7B2A8FFBA90038218F /* LaunchScreen.storyboard */; };
 		3231ADA12A93C66E0038218F /* MoviesViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADA02A93C66E0038218F /* MoviesViewControllerTests.swift */; };
+		3231ADA42A93CB670038218F /* MoviesCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3231ADA32A93CB670038218F /* MoviesCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3231ADA42A93CB670038218F /* MoviesCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +63,7 @@
 				3231AD6F2A8FFBA80038218F /* MoviesApp */,
 				3231AD862A8FFBA90038218F /* MoviesAppTests */,
 				3231AD6E2A8FFBA80038218F /* Products */,
+				3231ADA22A93CB670038218F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -94,6 +97,13 @@
 			path = MoviesAppTests;
 			sourceTree = "<group>";
 		};
+		3231ADA22A93CB670038218F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -110,6 +120,9 @@
 			dependencies = (
 			);
 			name = MoviesApp;
+			packageProductDependencies = (
+				3231ADA32A93CB670038218F /* MoviesCore */,
+			);
 			productName = MoviesApp;
 			productReference = 3231AD6D2A8FFBA80038218F /* MoviesApp.app */;
 			productType = "com.apple.product-type.application";
@@ -481,6 +494,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3231ADA32A93CB670038218F /* MoviesCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MoviesCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3231AD652A8FFBA70038218F /* Project object */;
 }
