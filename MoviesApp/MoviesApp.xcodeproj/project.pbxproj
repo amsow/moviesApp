@@ -18,6 +18,7 @@
 		3231ADA92A93DB390038218F /* UIControl+SimulateEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADA82A93DB390038218F /* UIControl+SimulateEvent.swift */; };
 		3231ADAB2A93DBEF0038218F /* UIRefreshControl+SimulatePullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADAA2A93DBEF0038218F /* UIRefreshControl+SimulatePullToRefresh.swift */; };
 		3231ADAD2A93DCC50038218F /* MoviesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADAC2A93DCC50038218F /* MoviesViewController.swift */; };
+		3231ADAF2A93E74F0038218F /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADAE2A93E74F0038218F /* MovieCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		3231ADA82A93DB390038218F /* UIControl+SimulateEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+SimulateEvent.swift"; sourceTree = "<group>"; };
 		3231ADAA2A93DBEF0038218F /* UIRefreshControl+SimulatePullToRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+SimulatePullToRefresh.swift"; sourceTree = "<group>"; };
 		3231ADAC2A93DCC50038218F /* MoviesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesViewController.swift; sourceTree = "<group>"; };
+		3231ADAE2A93E74F0038218F /* MovieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 				3231AD7B2A8FFBA90038218F /* LaunchScreen.storyboard */,
 				3231AD7E2A8FFBA90038218F /* Info.plist */,
 				3231ADAC2A93DCC50038218F /* MoviesViewController.swift */,
+				3231ADAE2A93E74F0038218F /* MovieCell.swift */,
 			);
 			path = MoviesApp;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 			files = (
 				3231AD712A8FFBA80038218F /* AppDelegate.swift in Sources */,
 				3231AD732A8FFBA80038218F /* SceneDelegate.swift in Sources */,
+				3231ADAF2A93E74F0038218F /* MovieCell.swift in Sources */,
 				3231ADAD2A93DCC50038218F /* MoviesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
