@@ -20,12 +20,10 @@ public final class MoviePosterImageDataLoader {
         client.request(from: url) { result in
             switch result {
             case .success(let (data, response)):
-                if response.statusCode != 200 {
-                    completion(.failure(.invalidData))
-                } else if data.isEmpty && response.statusCode == 200 {
-                    completion(.failure(.invalidData))
-                } else {
+                if response.isOK && !data.isEmpty {
                     completion(.success(data))
+                } else {
+                    completion(.failure(.invalidData))
                 }
             case .failure:
                 completion(.failure(.connectivity))
