@@ -10,9 +10,13 @@ final class MoviePosterImageDataLoader {
         self.client = client
     }
     
-    func loadImageData(from url: URL) {
+    enum Error: Swift.Error {
+        case connectivity
+    }
+    
+    func loadImageData(from url: URL, completion: @escaping (Error?) -> Void) {
         client.request(from: url) { result in
-            
+            completion(Error.connectivity)
         }
     }
 }
@@ -29,7 +33,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         let url = anyURL()
         let (client, sut) = makeSUT()
         
-        sut.loadImageData(from: url)
+        sut.loadImageData(from: url) { _ in }
         
         XCTAssertEqual(client.requestedURLs, [url])
     }
@@ -38,10 +42,28 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         let url = anyURL()
         let (client, sut) = makeSUT()
         
-        sut.loadImageData(from: url)
-        sut.loadImageData(from: url)
+        sut.loadImageData(from: url) { _ in }
+        sut.loadImageData(from: url) { _ in }
         
         XCTAssertEqual(client.requestedURLs, [url, url])
+    }
+    
+    func test_loadImageDataFromURL_deliversConnectivityErrorOnClientError() {
+        let url = anyURL()
+        let (client, sut) = makeSUT()
+        let clientError = anyNSError()
+        
+        var receivedError: Error?
+        let exp = expectation(description: "Wait for load completion")
+        sut.loadImageData(from: url) { error in
+            receivedError = error
+            exp.fulfill()
+        }
+        
+        client.complete(with: clientError)
+        
+        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(receivedError as? MoviePosterImageDataLoader.Error, .connectivity)
     }
     
     // MARK: - Helpers
