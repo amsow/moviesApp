@@ -20,16 +20,14 @@ final class MoviePosterImageDataLoader {
 final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
    
     func test_init_doesNotPerformAnyURLLoadRequest() {
-        let client = HTTPClientSpy()
-        _ = MoviePosterImageDataLoader(client: client)
+        let (client, _) = makeSUT()
         
         XCTAssertTrue(client.requestedURLs.isEmpty)
     }
     
     func test_loadImageDataFromURL_requestsDataFromURL() {
-        let client = HTTPClientSpy()
         let url = anyURL()
-        let sut = MoviePosterImageDataLoader(client: client)
+        let (client, sut) = makeSUT()
         
         sut.loadImageData(from: url)
         
@@ -37,13 +35,21 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
     }
     
     func test_loadImageDataFromURL_requestsDataFromURLTwice() {
-        let client = HTTPClientSpy()
         let url = anyURL()
-        let sut = MoviePosterImageDataLoader(client: client)
+        let (client, sut) = makeSUT()
         
         sut.loadImageData(from: url)
         sut.loadImageData(from: url)
         
         XCTAssertEqual(client.requestedURLs, [url, url])
+    }
+    
+    // MARK: - Helpers
+    
+    private func makeSUT() -> (client: HTTPClientSpy, sut: MoviePosterImageDataLoader) {
+        let client = HTTPClientSpy()
+        let sut = MoviePosterImageDataLoader(client: client)
+        
+        return (client, sut)
     }
 }
