@@ -8,7 +8,7 @@ public protocol ImageDataLoader {
     func loadImageData(from url: URL, completion: @escaping (Result) -> Void)
 }
 
-public final class MoviePosterImageDataLoader: ImageDataLoader {
+public final class RemoteMoviePosterImageDataLoader: ImageDataLoader {
     
     private let client: HTTPClient
     

@@ -69,16 +69,16 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (client: HTTPClientSpy, sut: MoviePosterImageDataLoader) {
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (client: HTTPClientSpy, sut: RemoteMoviePosterImageDataLoader) {
         let client = HTTPClientSpy()
-        let sut = MoviePosterImageDataLoader(client: client)
+        let sut = RemoteMoviePosterImageDataLoader(client: client)
         trackMemoryLeaks(client, file: file, line: line)
         trackMemoryLeaks(sut, file: file, line: line)
         
         return (client, sut)
     }
     
-    private func failureResult( _ error: MoviePosterImageDataLoader.Error) -> ImageDataLoader.Result {
+    private func failureResult( _ error: RemoteMoviePosterImageDataLoader.Error) -> ImageDataLoader.Result {
         return .failure(error)
     }
     
@@ -95,7 +95,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
             case let (.success(expectedData), .success(receivedData)):
                 XCTAssertEqual(expectedData, receivedData, "Expected to receive \(expectedData) but got \(receivedData) instead", file: file, line: line)
                 
-            case let (.failure(expectedError as MoviePosterImageDataLoader.Error), .failure(receivedError as MoviePosterImageDataLoader.Error)):
+            case let (.failure(expectedError as RemoteMoviePosterImageDataLoader.Error), .failure(receivedError as RemoteMoviePosterImageDataLoader.Error)):
                 XCTAssertEqual(expectedError, receivedError, "Expected to receive \(expectedError) but got \(receivedError) instead", file: file, line: line)
                 
             default:
