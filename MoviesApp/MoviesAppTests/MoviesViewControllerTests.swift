@@ -49,6 +49,20 @@ final class MoviesViewControllerTests: XCTestCase {
         assertThat(sut, isRendering: [movie0, movie1, movie2], at: 0)
     }
     
+    func test_loadCompletion_rendersSuccessfullyLoadedEmptyMoviesAfterNotEmptyMovies() {
+        let (loader, sut) = makeSUT()
+        let movie0 = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
+        let movie1 = makeMovie(id: 1, title: "Movie 1", overview: "Any description")
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        assertThat(sut, isRendering: [movie0, movie1], at: 0)
+        
+        sut.simulateUserInitiatedMoviesReload()
+        loader.completeLoadingSuccessfully(with: [], at: 1)
+        assertThat(sut, isRendering: [], at: 1)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (loader: LoaderSpy, sut: MoviesViewController) {
