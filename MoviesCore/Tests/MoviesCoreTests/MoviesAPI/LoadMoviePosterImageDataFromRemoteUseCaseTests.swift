@@ -15,17 +15,19 @@ final class MoviePosterImageDataLoader {
         case invalidData
     }
     
-    func loadImageData(from url: URL, completion: @escaping (Error?) -> Void) {
+    func loadImageData(from url: URL, completion: @escaping (Data?, Error?) -> Void) {
         client.request(from: url) { result in
             switch result {
             case .success(let (data, response)):
                 if response.statusCode != 200 {
-                    completion(Error.invalidData)
+                    completion(nil, .invalidData)
                 } else if data.isEmpty && response.statusCode == 200 {
-                    completion(.invalidData)
+                    completion(nil, .invalidData)
+                } else {
+                    completion(data, nil)
                 }
             case .failure:
-                completion(Error.connectivity)
+                completion(nil, .connectivity)
             }
         }
     }
@@ -43,7 +45,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         let url = anyURL()
         let (client, sut) = makeSUT()
         
-        sut.loadImageData(from: url) { _ in }
+        sut.loadImageData(from: url) { (_, _) in }
         
         XCTAssertEqual(client.requestedURLs, [url])
     }
@@ -52,8 +54,8 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         let url = anyURL()
         let (client, sut) = makeSUT()
         
-        sut.loadImageData(from: url) { _ in }
-        sut.loadImageData(from: url) { _ in }
+        sut.loadImageData(from: url) { (_, _) in }
+        sut.loadImageData(from: url) { (_, _) in }
         
         XCTAssertEqual(client.requestedURLs, [url, url])
     }
@@ -65,7 +67,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         
         var receivedError: Error?
         let exp = expectation(description: "Wait for load completion")
-        sut.loadImageData(from: url) { error in
+        sut.loadImageData(from: url) { _, error in
             receivedError = error
             exp.fulfill()
         }
@@ -84,7 +86,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         httpURLResponseStatusCodeSample.enumerated().forEach { (index, statusCode) in
             let exp = expectation(description: "Wait for load")
             var receivedError: Error?
-            sut.loadImageData(from: url) { error in
+            sut.loadImageData(from: url) { _, error in
                 receivedError = error
                 exp.fulfill()
             }
@@ -104,7 +106,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         
         var receivedError: Error?
         let exp = expectation(description: "Wait for load")
-        sut.loadImageData(from: url) { error in
+        sut.loadImageData(from: url) { _, error in
             receivedError = error
             exp.fulfill()
         }
@@ -113,6 +115,23 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
         XCTAssertEqual(receivedError as? MoviePosterImageDataLoader.Error, .invalidData)
+    }
+    
+    func test_loadImageDataFromURL_deliversReceivedNonDataOn200HTTPResponse() {
+        let url = anyURL()
+        let (client, sut) = makeSUT()
+        
+        let exp = expectation(description: "Wait for load")
+        sut.loadImageData(from: url) { (data , _) in
+            
+            XCTAssertTrue(data?.isEmpty == false)
+            
+            exp.fulfill()
+        }
+        
+        client.complete(withStatusCode: 200, data: Data("non-empty data".utf8))
+        
+        wait(for: [exp], timeout: 1.0)
     }
     
     // MARK: - Helpers
