@@ -3,38 +3,6 @@
 import XCTest
 import MoviesCore
 
-final class MoviePosterImageDataLoader {
-    typealias Result = Swift.Result<Data, Error>
-    
-    private let client: HTTPClient
-    
-    init(client: HTTPClient) {
-        self.client = client
-    }
-    
-    enum Error: Swift.Error {
-        case connectivity
-        case invalidData
-    }
-    
-    func loadImageData(from url: URL, completion: @escaping (Result) -> Void) {
-        client.request(from: url) { result in
-            switch result {
-            case .success(let (data, response)):
-                if response.statusCode != 200 {
-                    completion(.failure(.invalidData))
-                } else if data.isEmpty && response.statusCode == 200 {
-                    completion(.failure(.invalidData))
-                } else {
-                    completion(.success(data))
-                }
-            case .failure:
-                completion(.failure(.connectivity))
-            }
-        }
-    }
-}
-
 final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
    
     func test_init_doesNotPerformAnyURLLoadRequest() {
