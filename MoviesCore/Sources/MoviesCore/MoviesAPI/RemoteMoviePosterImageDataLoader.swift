@@ -28,6 +28,7 @@ public final class RemoteMoviePosterImageDataLoader: ImageDataLoader {
         }
         
         func cancel() {
+            wrapped?.cancel()
             completion = nil
         }
     }

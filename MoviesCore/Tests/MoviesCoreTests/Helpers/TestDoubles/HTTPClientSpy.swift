@@ -8,16 +8,25 @@ final class HTTPClientSpy: HTTPClient {
         return messages.map(\.url)
     }
     
+    private(set) var cancelledURLs = [URL]()
+    
     private var messages = [(url: URL, completion: (HTTPClient.Result) -> Void)]()
     
     private struct Task: HTTPClientTask {
+        private let onCancel: () -> Void
+        
+        init(onCancel: @escaping () -> Void) {
+            self.onCancel = onCancel
+        }
+        
         func cancel() {
+            onCancel()
         }
     }
     
     func request(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void) -> HTTPClientTask {
         messages.append((url, completion))
-        return Task()
+        return Task(onCancel: { self.cancelledURLs.append(url) })
         
     }
     
