@@ -2,12 +2,6 @@
 
 import Foundation
 
-public protocol ImageDataLoader {
-    typealias Result = Swift.Result<Data, Error>
-    
-    func loadImageData(from url: URL, completion: @escaping (Result) -> Void)
-}
-
 public final class RemoteMoviePosterImageDataLoader: ImageDataLoader {
     
     private let client: HTTPClient
