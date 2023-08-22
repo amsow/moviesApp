@@ -73,17 +73,17 @@ final class MoviesViewControllerTests: XCTestCase {
         
         XCTAssertEqual(cell.titleLabel.text,
                        movie.title,
-                       "Expected title label text to be \(movie.title) for movie cell at \(index)",
+                       "Expected title label text to be \(movie.title) for movie cell at index \(index)",
                        file: file,
                        line: line)
         XCTAssertEqual(cell.overviewLabel.text,
                        movie.overview,
-                       "Expected overview label text to be \(movie.overview) for movie cell at \(index)",
+                       "Expected overview label text to be \(movie.overview) for movie cell at index \(index)",
                        file: file,
                        line: line)
         XCTAssertEqual(cell.releaseDateLabel.text,
                        movie.releaseDate.year(),
-                       "Expected releaseDate label text to be \(movie.releaseDate)'s year for movie cell at \(index)",
+                       "Expected releaseDate label text to be \(movie.releaseDate)'s year for movie cell at index \(index)",
                        file: file,
                        line: line)
     }
@@ -95,6 +95,10 @@ final class MoviesViewControllerTests: XCTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
+        guard sut.numberOfRenderedMovieViews() == movies.count else {
+            return XCTFail("Expected \(movies.count) movies, got \(sut.numberOfRenderedMovieViews()) instead", file: file, line: line)
+        }
+        
         movies.enumerated().forEach { (index, movie) in
             assertThat(sut, viewFor: movie, at: index, file: file, line: line)
         }
