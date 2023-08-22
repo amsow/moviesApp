@@ -94,6 +94,21 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         XCTAssertEqual(client.cancelledURLs, [url], "Expected 1 cancelled url request once task is cancelled")
     }
     
+    func test_loadImageDataFromURL_doesNotDeliversResultAfterCancellingTask() {
+        let (client, sut) = makeSUT()
+        let url = URL(string: "http://image-data-0.com")!
+        
+        var receivedResults = [ImageDataLoader.Result]()
+        let task = sut.loadImageData(from: url) { result in
+            receivedResults.append(result)
+        }
+        
+        task.cancel()
+        client.complete(with: anyNSError())
+        
+        XCTAssertTrue(receivedResults.isEmpty, "Expected no result after cancelling the ongoing url request")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (client: HTTPClientSpy, sut: ImageDataLoader) {

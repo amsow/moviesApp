@@ -31,18 +31,20 @@ public final class RemoteMoviePosterImageDataLoader: ImageDataLoader {
             wrapped?.cancel()
             completion = nil
         }
+        
+        func complete(with result: ImageDataLoader.Result) {
+            completion?(result)
+        }
     }
     
     public func loadImageData(from url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
         let task = Task(completion: completion)
         task.wrapped = client.request(from: url) { [weak self] result in
             guard self != nil else { return }
-            
-            completion(result
+            task.complete(with: result
                 .mapError { _ in Error.connectivity }
                 .flatMap { (data, response) in
                     let isValid = !data.isEmpty && response.isOK
-                    
                     return isValid ? .success(data) : .failure(Error.invalidData)
                 }
             )

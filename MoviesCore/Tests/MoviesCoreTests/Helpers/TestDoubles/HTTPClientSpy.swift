@@ -26,7 +26,10 @@ final class HTTPClientSpy: HTTPClient {
     
     func request(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void) -> HTTPClientTask {
         messages.append((url, completion))
-        return Task(onCancel: { self.cancelledURLs.append(url) })
+        return Task(onCancel: { [weak self] in
+            self?.cancelledURLs.append(url)
+            
+        })
         
     }
     
