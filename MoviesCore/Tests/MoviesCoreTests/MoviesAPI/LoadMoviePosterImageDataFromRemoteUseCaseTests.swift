@@ -67,6 +67,22 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         })
     }
     
+    func test_loadImageDataFromURL_doesNotDeliverResultAfterInstanceHasBeenDeallocated() {
+        let client = HTTPClientSpy()
+        var sut: RemoteMoviePosterImageDataLoader? = .init(client: client)
+        
+        var receivedResults = [ImageDataLoader.Result]()
+        sut?.loadImageData(from: anyURL()) { result in
+            receivedResults.append(result)
+        }
+        
+        sut = nil
+        
+        client.complete(withStatusCode: 200, data: anyData())
+        
+        XCTAssertTrue(receivedResults.isEmpty)
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (client: HTTPClientSpy, sut: ImageDataLoader) {
