@@ -4,11 +4,13 @@ import MoviesCore
 
 public final class MoviesViewController: UITableViewController {
     
-    private let loader: MoviesLoader
+    private let moviesLoader: MoviesLoader
+    private let imageDataLoader: ImageDataLoader
     private var models = [Movie]()
     
-    public init(loader: MoviesLoader) {
-        self.loader = loader
+    public init(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) {
+        self.moviesLoader = moviesLoader
+        self.imageDataLoader = imageDataLoader
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -26,7 +28,7 @@ public final class MoviesViewController: UITableViewController {
     @objc
     private func loadMovies() {
         refreshControl?.beginRefreshing()
-        loader.load { [weak self] result in
+        moviesLoader.load { [weak self] result in
             switch result {
             case .success(let movies):
                 self?.models = movies
@@ -54,6 +56,7 @@ extension MoviesViewController {
         cell.titleLabel.text = model.title
         cell.overviewLabel.text = model.overview
         cell.releaseDateLabel.text = model.releaseDate.year()
+        _ = imageDataLoader.loadImageData(from: model.posterImageURL) { _ in }
         
         return cell
     }

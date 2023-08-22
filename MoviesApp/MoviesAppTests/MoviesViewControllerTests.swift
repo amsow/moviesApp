@@ -77,11 +77,29 @@ final class MoviesViewControllerTests: XCTestCase {
         assertThat(sut, isRendering: [movie0, movie1])
     }
     
+    func test_movieView_loadsImageURLWhenVisible() {
+        let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
+        let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
+        let (loader, sut) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        
+        XCTAssertEqual(loader.loadedImageURLs, [], "Expected no image URLs requests until views become visible")
+        
+        sut.simulateMovieViewVisible(at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL], "Expected first image URL request once first view becomes visible")
+        
+        sut.simulateMovieViewVisible(at: 1)
+        XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL, movie1.posterImageURL], "Expected both first and second image URLs requests once second view become visible")
+    }
+    
+    
     // MARK: - Helpers
     
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (loader: LoaderSpy, sut: MoviesViewController) {
-        let loader = LoaderSpy()
-        let sut = MoviesViewController(loader: loader)
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (loader: MoviesLoaderSpy, sut: MoviesViewController) {
+        let loader = MoviesLoaderSpy()
+        let sut = MoviesViewController(moviesLoader: loader, imageDataLoader: loader)
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         
@@ -131,15 +149,25 @@ final class MoviesViewControllerTests: XCTestCase {
         }
     }
     
-    final class LoaderSpy: MoviesLoader {
+    final class MoviesLoaderSpy: MoviesLoader, ImageDataLoader {
         private var loadCompletions = [(MoviesLoader.Result) -> Void]()
+        private(set) var loadedImageURLs = [URL]()
         
         var loadCallCount: Int {
             loadCompletions.count
         }
         
+        struct Task: ImageDataLoaderTask {
+            func cancel() { }
+        }
+        
         func load(completion: @escaping (MoviesLoader.Result) -> Void) {
             loadCompletions.append(completion)
+        }
+        
+        func loadImageData(from url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
+            loadedImageURLs.append(url)
+            return Task()
         }
         
         func completeLoadingSuccessfully(with movies: [Movie] = [], at index: Int) {
@@ -157,7 +185,7 @@ final class MoviesViewControllerTests: XCTestCase {
         overview: String,
         releaseDate: Date = Date()
     ) -> Movie {
-        Movie(id: id, title: title, overview: overview, releaseDate: releaseDate, posterImageURL: URL(string: "http://image-\(id)")!)
+        Movie(id: id, title: title, overview: overview, releaseDate: releaseDate, posterImageURL: URL(string: "http://image-\(id).com")!)
     }
 }
 
@@ -166,6 +194,10 @@ extension MoviesViewController {
     
     func simulateUserInitiatedMoviesReload() {
         refreshControl?.simulatePullToRefresh()
+    }
+    
+    func simulateMovieViewVisible(at index: Int) {
+        _ = movieCell(at: index)
     }
     
     func isShowingLoadingIndicator() -> Bool {
