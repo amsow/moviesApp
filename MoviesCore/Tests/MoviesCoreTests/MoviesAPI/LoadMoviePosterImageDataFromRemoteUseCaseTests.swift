@@ -35,4 +35,15 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         
         XCTAssertEqual(client.requestedURLs, [url])
     }
+    
+    func test_loadImageDataFromURL_requestsDataFromURLTwice() {
+        let client = HTTPClientSpy()
+        let url = anyURL()
+        let sut = MoviePosterImageDataLoader(client: client)
+        
+        sut.loadImageData(from: url)
+        sut.loadImageData(from: url)
+        
+        XCTAssertEqual(client.requestedURLs, [url, url])
+    }
 }
