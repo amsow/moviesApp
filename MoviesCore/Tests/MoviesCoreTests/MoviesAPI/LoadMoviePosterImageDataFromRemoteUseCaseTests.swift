@@ -34,7 +34,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         let (client, sut) = makeSUT()
         let clientError = anyNSError()
         
-        expect(sut, toCompleteWith: .failure(.connectivity), when: {
+        expect(sut, toCompleteWith: failureResult(.connectivity), when: {
             client.complete(with: clientError)
         })
     }
@@ -44,7 +44,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         let httpURLResponseStatusCodeSample = [203, 400, 500, 305, 150]
         
         httpURLResponseStatusCodeSample.enumerated().forEach { (index, statusCode) in
-            expect(sut, toCompleteWith: .failure(.invalidData), when: {
+            expect(sut, toCompleteWith: failureResult(.invalidData), when: {
                 client.complete(withStatusCode: statusCode, data: anyData(), at: index)
             })
         }
@@ -54,7 +54,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         let (client, sut) = makeSUT()
         let emptyData = Data()
         
-        expect(sut, toCompleteWith: .failure(.invalidData), when: {
+        expect(sut, toCompleteWith: failureResult(.invalidData), when: {
             client.complete(withStatusCode: 200, data: emptyData)
         })
     }
@@ -76,9 +76,13 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         return (client, sut)
     }
     
+    private func failureResult( _ error: MoviePosterImageDataLoader.Error) -> ImageDataLoader.Result {
+        return .failure(error)
+    }
+    
     private func expect(
-        _ sut: MoviePosterImageDataLoader,
-        toCompleteWith expectedResult: MoviePosterImageDataLoader.Result,
+        _ sut: ImageDataLoader,
+        toCompleteWith expectedResult: ImageDataLoader.Result,
         when action: () -> Void,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -89,7 +93,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
             case let (.success(expectedData), .success(receivedData)):
                 XCTAssertEqual(expectedData, receivedData, "Expected to receive \(expectedData) but got \(receivedData) instead", file: file, line: line)
                 
-            case let (.failure(expectedError), .failure(receivedError)):
+            case let (.failure(expectedError as MoviePosterImageDataLoader.Error), .failure(receivedError as MoviePosterImageDataLoader.Error)):
                 XCTAssertEqual(expectedError, receivedError, "Expected to receive \(expectedError) but got \(receivedError) instead", file: file, line: line)
                 
             default:
