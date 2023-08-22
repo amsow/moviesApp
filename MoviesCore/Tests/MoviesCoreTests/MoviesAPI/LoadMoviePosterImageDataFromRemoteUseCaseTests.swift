@@ -18,9 +18,11 @@ final class MoviePosterImageDataLoader {
     func loadImageData(from url: URL, completion: @escaping (Error?) -> Void) {
         client.request(from: url) { result in
             switch result {
-            case .success(let (_, response)):
+            case .success(let (data, response)):
                 if response.statusCode != 200 {
                     completion(Error.invalidData)
+                } else if data.isEmpty && response.statusCode == 200 {
+                    completion(.invalidData)
                 }
             case .failure:
                 completion(Error.connectivity)
@@ -93,6 +95,24 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
             
             XCTAssertEqual(receivedError as? MoviePosterImageDataLoader.Error, .invalidData)
         }
+    }
+    
+    func test_loadImageDataFromURL_deliversInvalidDataErrorOn200HTTPEmptyDataResponse() {
+        let url = anyURL()
+        let (client, sut) = makeSUT()
+        let emptyData = Data()
+        
+        var receivedError: Error?
+        let exp = expectation(description: "Wait for load")
+        sut.loadImageData(from: url) { error in
+            receivedError = error
+            exp.fulfill()
+        }
+        
+        client.complete(withStatusCode: 200, data: emptyData)
+        
+        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(receivedError as? MoviePosterImageDataLoader.Error, .invalidData)
     }
     
     // MARK: - Helpers
