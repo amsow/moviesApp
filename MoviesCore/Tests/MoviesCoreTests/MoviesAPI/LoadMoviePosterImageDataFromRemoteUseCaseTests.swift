@@ -1,11 +1,12 @@
 
 
 import XCTest
+import MoviesCore
 
 final class MoviePosterImageDataLoader {
-    private let client: HTTPClientSpy
+    private let client: HTTPClient
     
-    init(client: HTTPClientSpy) {
+    init(client: HTTPClient) {
         self.client = client
     }
     
