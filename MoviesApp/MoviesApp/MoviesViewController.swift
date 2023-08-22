@@ -27,8 +27,15 @@ public final class MoviesViewController: UITableViewController {
     private func loadMovies() {
         refreshControl?.beginRefreshing()
         loader.load { [weak self] result in
-            self?.models = (try? result.get()) ?? []
-            self?.tableView.reloadData()
+            switch result {
+            case .success(let movies):
+                self?.models = movies
+                self?.tableView.reloadData()
+        
+            case .failure:
+                break
+            }
+            
             self?.refreshControl?.endRefreshing()
         }
     }

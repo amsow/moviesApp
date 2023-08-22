@@ -42,11 +42,11 @@ final class MoviesViewControllerTests: XCTestCase {
         
         sut.loadViewIfNeeded()
         loader.completeLoadingSuccessfully(with: [movie0], at: 0)
-        assertThat(sut, isRendering: [movie0], at: 0)
+        assertThat(sut, isRendering: [movie0])
         
         sut.simulateUserInitiatedMoviesReload()
         loader.completeLoadingSuccessfully(with: [movie0, movie1, movie2], at: 1)
-        assertThat(sut, isRendering: [movie0, movie1, movie2], at: 0)
+        assertThat(sut, isRendering: [movie0, movie1, movie2])
     }
     
     func test_loadCompletion_rendersSuccessfullyLoadedEmptyMoviesAfterNotEmptyMovies() {
@@ -56,11 +56,25 @@ final class MoviesViewControllerTests: XCTestCase {
         
         sut.loadViewIfNeeded()
         loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
-        assertThat(sut, isRendering: [movie0, movie1], at: 0)
+        assertThat(sut, isRendering: [movie0, movie1])
         
         sut.simulateUserInitiatedMoviesReload()
         loader.completeLoadingSuccessfully(with: [], at: 1)
-        assertThat(sut, isRendering: [], at: 1)
+        assertThat(sut, isRendering: [])
+    }
+    
+    func test_loadFeedCompletion_doesNotAlterCurrentRenderingStateOnError() {
+        let (loader, sut) = makeSUT()
+        let movie0 = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
+        let movie1 = makeMovie(id: 1, title: "Movie 1", overview: "Any description")
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        assertThat(sut, isRendering: [movie0, movie1])
+        
+        sut.simulateUserInitiatedMoviesReload()
+        loader.completeLoadingWithError(at: 1)
+        assertThat(sut, isRendering: [movie0, movie1])
     }
     
     // MARK: - Helpers
@@ -105,7 +119,6 @@ final class MoviesViewControllerTests: XCTestCase {
     private func assertThat(
         _ sut: MoviesViewController,
         isRendering movies: [Movie],
-        at index: Int,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
