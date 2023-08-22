@@ -3,7 +3,17 @@
 import XCTest
 
 final class MoviePosterImageDataLoader {
-    init(client: Any) {}
+    private let client: HTTPClientSpy
+    
+    init(client: HTTPClientSpy) {
+        self.client = client
+    }
+    
+    func loadImageData(from url: URL) {
+        client.request(from: url) { result in
+            
+        }
+    }
 }
 
 final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
@@ -15,9 +25,13 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         XCTAssertTrue(client.requestedURLs.isEmpty)
     }
     
-    // MARK: - Helpers
-    
-    private final class HTTPClientSpy {
-        private(set) var requestedURLs = [URL]()
+    func test_loadImageDataFromURL_requestsDataFromURL() {
+        let client = HTTPClientSpy()
+        let url = anyURL()
+        let sut = MoviePosterImageDataLoader(client: client)
+        
+        sut.loadImageData(from: url)
+        
+        XCTAssertEqual(client.requestedURLs, [url])
     }
 }
