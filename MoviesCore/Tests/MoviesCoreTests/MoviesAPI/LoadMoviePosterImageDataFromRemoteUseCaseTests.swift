@@ -69,7 +69,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (client: HTTPClientSpy, sut: RemoteMoviePosterImageDataLoader) {
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (client: HTTPClientSpy, sut: ImageDataLoader) {
         let client = HTTPClientSpy()
         let sut = RemoteMoviePosterImageDataLoader(client: client)
         trackMemoryLeaks(client, file: file, line: line)
