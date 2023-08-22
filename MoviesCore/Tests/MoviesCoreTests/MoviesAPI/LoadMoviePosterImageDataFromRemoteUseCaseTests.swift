@@ -12,11 +12,19 @@ final class MoviePosterImageDataLoader {
     
     enum Error: Swift.Error {
         case connectivity
+        case invalidData
     }
     
     func loadImageData(from url: URL, completion: @escaping (Error?) -> Void) {
         client.request(from: url) { result in
-            completion(Error.connectivity)
+            switch result {
+            case .success(let (_, response)):
+                if response.statusCode != 200 {
+                    completion(Error.invalidData)
+                }
+            case .failure:
+                completion(Error.connectivity)
+            }
         }
     }
 }
@@ -64,6 +72,27 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
         XCTAssertEqual(receivedError as? MoviePosterImageDataLoader.Error, .connectivity)
+    }
+    
+    func test_loadImageDataFromURL_deliversInvalidDataErrorOnNon200HTTPResponse() {
+        let url = anyURL()
+        let (client, sut) = makeSUT()
+        let httpURLResponseStatusCodeSample = [203, 400, 500, 305, 150]
+        
+        httpURLResponseStatusCodeSample.enumerated().forEach { (index, statusCode) in
+            let exp = expectation(description: "Wait for load")
+            var receivedError: Error?
+            sut.loadImageData(from: url) { error in
+                receivedError = error
+                exp.fulfill()
+            }
+            
+            client.complete(withStatusCode: statusCode, data: Data(), at: index)
+            
+            wait(for: [exp], timeout: 1.0)
+            
+            XCTAssertEqual(receivedError as? MoviePosterImageDataLoader.Error, .invalidData)
+        }
     }
     
     // MARK: - Helpers
