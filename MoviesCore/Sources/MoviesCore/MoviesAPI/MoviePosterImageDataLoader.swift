@@ -23,16 +23,14 @@ public final class MoviePosterImageDataLoader: ImageDataLoader {
     
     public func loadImageData(from url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) {
         client.request(from: url) { result in
-            switch result {
-            case .success(let (data, response)):
-                if response.isOK && !data.isEmpty {
-                    completion(.success(data))
-                } else {
-                    completion(.failure(Error.invalidData))
+            completion(result
+                .mapError { _ in Error.connectivity }
+                .flatMap { (data, response) in
+                    let isValid = !data.isEmpty && response.isOK
+                    
+                    return isValid ? .success(data) : .failure(Error.invalidData)
                 }
-            case .failure:
-                completion(.failure(Error.connectivity))
-            }
+            )
         }
     }
 }
