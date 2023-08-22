@@ -10,8 +10,15 @@ final class HTTPClientSpy: HTTPClient {
     
     private var messages = [(url: URL, completion: (HTTPClient.Result) -> Void)]()
     
-    func request(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void) {
+    private struct Task: HTTPClientTask {
+        func cancel() {
+        }
+    }
+    
+    func request(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> Void) -> HTTPClientTask {
         messages.append((url, completion))
+        return Task()
+        
     }
     
     func complete(with error: Error, at index: Int = 0) {

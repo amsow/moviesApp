@@ -15,7 +15,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         let url = anyURL()
         let (client, sut) = makeSUT()
         
-        sut.loadImageData(from: url) { _ in }
+        _ = sut.loadImageData(from: url) { _ in }
         
         XCTAssertEqual(client.requestedURLs, [url])
     }
@@ -24,8 +24,8 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         let url = anyURL()
         let (client, sut) = makeSUT()
         
-        sut.loadImageData(from: url) { _ in }
-        sut.loadImageData(from: url) { _ in }
+        _ = sut.loadImageData(from: url) { _ in }
+        _ = sut.loadImageData(from: url) { _ in }
         
         XCTAssertEqual(client.requestedURLs, [url, url])
     }
@@ -72,7 +72,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         var sut: RemoteMoviePosterImageDataLoader? = .init(client: client)
         
         var receivedResults = [ImageDataLoader.Result]()
-        sut?.loadImageData(from: anyURL()) { result in
+        _ = sut?.loadImageData(from: anyURL()) { result in
             receivedResults.append(result)
         }
         
@@ -106,7 +106,7 @@ final class LoadMoviePosterImageDataFromRemoteUseCaseTests: XCTestCase {
         line: UInt = #line
     ) {
         let exp = expectation(description: "Wait for load completion")
-        sut.loadImageData(from: anyURL()) { receivedResult in
+        _ = sut.loadImageData(from: anyURL()) { receivedResult in
             switch (expectedResult, receivedResult) {
             case let (.success(expectedData), .success(receivedData)):
                 XCTAssertEqual(expectedData, receivedData, "Expected to receive \(expectedData) but got \(receivedData) instead", file: file, line: line)
