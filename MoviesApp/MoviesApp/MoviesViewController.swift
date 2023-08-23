@@ -7,7 +7,6 @@ public final class MoviesViewController: UITableViewController {
     private let moviesLoader: MoviesLoader
     private let imageDataLoader: ImageDataLoader
     private var imageDataLoaderTasks = [IndexPath: ImageDataLoaderTask]()
-    private var imageDataLoaders = [IndexPath: ImageDataLoader]()
     private var models = [Movie]()
     
     public init(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) {
@@ -94,6 +93,13 @@ extension MoviesViewController: UITableViewDataSourcePrefetching {
              imageDataLoaderTasks[indexPath] = imageDataLoader.loadImageData(from: movie.posterImageURL) { _ in
                 
             }
+        }
+    }
+    
+    public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        indexPaths.forEach { indexPath in
+            imageDataLoaderTasks[indexPath]?.cancel()
+            imageDataLoaderTasks[indexPath] = nil
         }
     }
 }

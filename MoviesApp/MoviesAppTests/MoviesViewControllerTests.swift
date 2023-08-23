@@ -252,6 +252,26 @@ final class MoviesViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL])
     }
     
+    func test_movieView_cancelsImageURLPreloadingWhenNotNearVisibleAnymore() {
+        let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
+        let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
+        let (loader, sut) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        
+        sut.simulateMovieViewNearVisible(at: 0)
+        sut.simulateMovieViewNearVisible(at: 1)
+        XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL, movie1.posterImageURL])
+        XCTAssertTrue(loader.cancelledURLs.isEmpty)
+        
+        sut.simulateMovieViewNotNearVisibleAnymore(at: 0)
+        XCTAssertEqual(loader.cancelledURLs, [movie0.posterImageURL])
+        
+        sut.simulateMovieViewNotNearVisibleAnymore(at: 1)
+        XCTAssertEqual(loader.cancelledURLs, [movie0.posterImageURL, movie1.posterImageURL])
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (loader: MoviesLoaderSpy, sut: MoviesViewController) {
@@ -376,6 +396,11 @@ extension MoviesViewController {
     func simulateMovieViewNearVisible(at index: Int) {
         let datasource = tableView.prefetchDataSource
         datasource?.tableView(tableView, prefetchRowsAt: [IndexPath(row: index, section: 0)])
+    }
+    
+    func simulateMovieViewNotNearVisibleAnymore(at index: Int) {
+        let datasource = tableView.prefetchDataSource
+        datasource?.tableView?(tableView, cancelPrefetchingForRowsAt: [IndexPath(row: index, section: section)])
     }
     
     func simulateMovieViewNotVisible(at index: Int) {
