@@ -24,13 +24,13 @@ final class MoviesViewControllerTests: XCTestCase {
         sut.loadViewIfNeeded()
         XCTAssertTrue(sut.isShowingLoadingIndicator(), "Expected to show loading indicator")
         
-        loader.completeLoadingSuccessfully(at: 0)
+        loader.completeMoviesLoadingSuccessfully(at: 0)
         XCTAssertFalse(sut.isShowingLoadingIndicator(), "Expected no loading indicator once loading completes successfully")
         
         sut.simulateUserInitiatedMoviesReload()
         XCTAssertTrue(sut.isShowingLoadingIndicator(), "Expected to show loading indicator a second time")
         
-        loader.completeLoadingWithError(at: 1)
+        loader.completeMoviesLoadingWithError(at: 1)
         XCTAssertFalse(sut.isShowingLoadingIndicator(), "Expected no loading indicator once loading completes with error")
     }
     
@@ -41,11 +41,11 @@ final class MoviesViewControllerTests: XCTestCase {
         let movie2 = makeMovie(id: 2, title: "Movie 2", overview: "Any description")
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0], at: 0)
         assertThat(sut, isRendering: [movie0])
         
         sut.simulateUserInitiatedMoviesReload()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1, movie2], at: 1)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1, movie2], at: 1)
         assertThat(sut, isRendering: [movie0, movie1, movie2])
     }
     
@@ -55,11 +55,11 @@ final class MoviesViewControllerTests: XCTestCase {
         let movie1 = makeMovie(id: 1, title: "Movie 1", overview: "Any description")
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1], at: 0)
         assertThat(sut, isRendering: [movie0, movie1])
         
         sut.simulateUserInitiatedMoviesReload()
-        loader.completeLoadingSuccessfully(with: [], at: 1)
+        loader.completeMoviesLoadingSuccessfully(with: [], at: 1)
         assertThat(sut, isRendering: [])
     }
     
@@ -69,11 +69,11 @@ final class MoviesViewControllerTests: XCTestCase {
         let movie1 = makeMovie(id: 1, title: "Movie 1", overview: "Any description")
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1], at: 0)
         assertThat(sut, isRendering: [movie0, movie1])
         
         sut.simulateUserInitiatedMoviesReload()
-        loader.completeLoadingWithError(at: 1)
+        loader.completeMoviesLoadingWithError(at: 1)
         assertThat(sut, isRendering: [movie0, movie1])
     }
     
@@ -83,7 +83,7 @@ final class MoviesViewControllerTests: XCTestCase {
         let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1], at: 0)
         
         XCTAssertEqual(loader.loadedImageURLs, [], "Expected no image URLs requests until views become visible")
         
@@ -101,7 +101,7 @@ final class MoviesViewControllerTests: XCTestCase {
         let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1, movie2], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1, movie2], at: 0)
         XCTAssertTrue(loader.cancelledURLs.isEmpty, "Expected no cancelled URLs")
         
         sut.simulateMovieViewNotVisible(at: 1)
@@ -117,7 +117,7 @@ final class MoviesViewControllerTests: XCTestCase {
         let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1], at: 0)
         
         let movieCell0 = sut.simulateMovieViewVisible(at: 0)
         let movieCell1 = sut.simulateMovieViewVisible(at: 1)
@@ -153,7 +153,7 @@ final class MoviesViewControllerTests: XCTestCase {
         let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1], at: 0)
         
         let movieCell0 = sut.simulateMovieViewVisible(at: 0)
         let movieCell1 = sut.simulateMovieViewVisible(at: 1)
@@ -179,7 +179,7 @@ final class MoviesViewControllerTests: XCTestCase {
         let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1], at: 0)
         
         let movieCell0 = sut.simulateMovieViewVisible(at: 0)
         let movieCell1 = sut.simulateMovieViewVisible(at: 1)
@@ -200,7 +200,7 @@ final class MoviesViewControllerTests: XCTestCase {
         let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1], at: 0)
         
         let validImageData = UIImage.makeWithColor().pngData()!
         let invalidImageData = Data("invalid-data".utf8)
@@ -222,7 +222,7 @@ final class MoviesViewControllerTests: XCTestCase {
         let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1], at: 0)
         
         let movieCell0 = sut.simulateMovieViewVisible(at: 0)
         let movieCell1 = sut.simulateMovieViewVisible(at: 1)
@@ -245,7 +245,7 @@ final class MoviesViewControllerTests: XCTestCase {
         let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1, movie3], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1, movie3], at: 0)
         XCTAssertTrue(loader.loadedImageURLs.isEmpty)
         
         sut.simulateMovieViewNearVisible(at: 0)
@@ -258,7 +258,7 @@ final class MoviesViewControllerTests: XCTestCase {
         let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        loader.completeMoviesLoadingSuccessfully(with: [movie0, movie1], at: 0)
         
         sut.simulateMovieViewNearVisible(at: 0)
         sut.simulateMovieViewNearVisible(at: 1)
@@ -354,11 +354,11 @@ final class MoviesViewControllerTests: XCTestCase {
             return Task { self.cancelledURLs.append(url) }
         }
         
-        func completeLoadingSuccessfully(with movies: [Movie] = [], at index: Int) {
+        func completeMoviesLoadingSuccessfully(with movies: [Movie] = [], at index: Int) {
             loadMoviesCompletions[index](.success(movies))
         }
         
-        func completeLoadingWithError(_ error: Error = NSError(domain: "an error", code: 0), at index: Int) {
+        func completeMoviesLoadingWithError(_ error: Error = NSError(domain: "an error", code: 0), at index: Int) {
             loadMoviesCompletions[index](.failure(error))
         }
         
