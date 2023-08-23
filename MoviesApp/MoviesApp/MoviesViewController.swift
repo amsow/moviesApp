@@ -57,7 +57,10 @@ extension MoviesViewController {
         cell.titleLabel.text = model.title
         cell.overviewLabel.text = model.overview
         cell.releaseDateLabel.text = model.releaseDate.year()
-        imageDataLoaderTasks[indexPath] = imageDataLoader.loadImageData(from: model.posterImageURL) { _ in }
+        cell.posterImageContainer.startShimmering()
+        imageDataLoaderTasks[indexPath] = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak cell] _ in
+            cell?.posterImageContainer.stopShimmering()
+        }
         
         return cell
     }

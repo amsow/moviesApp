@@ -9,13 +9,13 @@ final class MoviesViewControllerTests: XCTestCase {
     func test_loadActions_requestsMoviesFromLoader() {
         let (loader, sut) = makeSUT()
         
-        XCTAssertEqual(loader.loadCallCount, 0, "Expected no loading request")
+        XCTAssertEqual(loader.loadMoviesCallCount, 0, "Expected no loading request")
         
         sut.loadViewIfNeeded()
-        XCTAssertEqual(loader.loadCallCount, 1, "Expected to request loading once")
+        XCTAssertEqual(loader.loadMoviesCallCount, 1, "Expected to request loading once")
         
         sut.simulateUserInitiatedMoviesReload()
-        XCTAssertEqual(loader.loadCallCount, 2, "Expected another loading request")
+        XCTAssertEqual(loader.loadMoviesCallCount, 2, "Expected another loading request")
     }
     
     func test_loadingIndicator_isVisibleWhileLoadingMovies() {
@@ -111,6 +111,42 @@ final class MoviesViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.cancelledURLs, [movie1.posterImageURL, movie2.posterImageURL], "Expected cancelled url request for the second view and third view as they are no more visible")
     }
     
+    func test_movieViewLoadingIndicator_isVisibleWhileLoadingPosterImage() {
+        let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
+        let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
+        let (loader, sut) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        
+        let movieCell0 = sut.simulateMovieViewVisible(at: 0)
+        let movieCell1 = sut.simulateMovieViewVisible(at: 1)
+        
+        XCTAssertEqual(movieCell0?.isShowingLoadingIndicator(),
+                       true,
+                       "Expected to showing loading indicator while loading poster image for movie cell 0")
+        
+        XCTAssertEqual(movieCell1?.isShowingLoadingIndicator(),
+                       true,
+                       "Expected to showing loading indicator while loading poster image for movie cell 1")
+        
+        loader.completeImageDataLoadingSuccessfully(at: 0)
+        XCTAssertEqual(movieCell0?.isShowingLoadingIndicator(),
+                       false,
+                       "Expected not to showing loading indicator since the poster image loading for movie cell 0 is complete with sucess")
+        XCTAssertEqual(movieCell1?.isShowingLoadingIndicator(),
+                       true,
+                       "Expected to showing loading indicator while still loading poster image for movie cell 1")
+        
+        loader.completeImageDataLoadingWithError(at: 1)
+        XCTAssertEqual(movieCell0?.isShowingLoadingIndicator(),
+                       false,
+                       "Expected not to showing loading indicator since the loading of poster image for movie cell 0 is already complete wit success")
+        XCTAssertEqual(movieCell1?.isShowingLoadingIndicator(),
+                       false,
+                       "Expected not to showing loading indicator since the poster image loading for movie cell 1 is done with error")
+    }
+    
     
     // MARK: - Helpers
     
@@ -167,12 +203,13 @@ final class MoviesViewControllerTests: XCTestCase {
     }
     
     final class MoviesLoaderSpy: MoviesLoader, ImageDataLoader {
-        private var loadCompletions = [(MoviesLoader.Result) -> Void]()
+        private var loadMoviesCompletions = [(MoviesLoader.Result) -> Void]()
+        private var loadImageDataCompletions = [(ImageDataLoader.Result) -> Void]()
         private(set) var loadedImageURLs = [URL]()
         private(set) var cancelledURLs = [URL]()
         
-        var loadCallCount: Int {
-            loadCompletions.count
+        var loadMoviesCallCount: Int {
+            loadMoviesCompletions.count
         }
         
         struct Task: ImageDataLoaderTask {
@@ -184,20 +221,29 @@ final class MoviesViewControllerTests: XCTestCase {
         }
         
         func load(completion: @escaping (MoviesLoader.Result) -> Void) {
-            loadCompletions.append(completion)
+            loadMoviesCompletions.append(completion)
         }
         
         func loadImageData(from url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
             loadedImageURLs.append(url)
+            loadImageDataCompletions.append(completion)
             return Task { self.cancelledURLs.append(url) }
         }
         
         func completeLoadingSuccessfully(with movies: [Movie] = [], at index: Int) {
-            loadCompletions[index](.success(movies))
+            loadMoviesCompletions[index](.success(movies))
         }
         
         func completeLoadingWithError(_ error: Error = NSError(domain: "an error", code: 0), at index: Int) {
-            loadCompletions[index](.failure(error))
+            loadMoviesCompletions[index](.failure(error))
+        }
+        
+        func completeImageDataLoadingSuccessfully(with data: Data = .init(), at index: Int) {
+            loadImageDataCompletions[index](.success(data))
+        }
+        
+        func completeImageDataLoadingWithError(at index: Int) {
+            loadImageDataCompletions[index](.failure(NSError(domain: "an error", code: 0)))
         }
     }
     
@@ -219,8 +265,8 @@ extension MoviesViewController {
     }
     
     @discardableResult
-    func simulateMovieViewVisible(at index: Int) -> UITableViewCell? {
-        return movieCell(at: index)
+    func simulateMovieViewVisible(at index: Int) -> MovieCell? {
+        return movieCell(at: index) as? MovieCell
     }
     
     func simulateMovieViewNotVisible(at index: Int) {
@@ -240,6 +286,12 @@ extension MoviesViewController {
     func movieCell(at row: Int) -> UITableViewCell? {
         let datasource = tableView.dataSource
        return datasource?.tableView(tableView, cellForRowAt: IndexPath(row: row, section: section))
+    }
+}
+
+extension MovieCell {
+    func isShowingLoadingIndicator() -> Bool {
+        return posterImageContainer.isShimmering
     }
 }
 
