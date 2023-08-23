@@ -62,8 +62,9 @@ extension MoviesViewController {
         imageDataLoaderTasks[indexPath] = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak cell] result in
             switch result {
             case .success(let data):
-                cell?.posterImageView.image = UIImage(data: data)
-                cell?.retryButton.isHidden = true
+                let img = UIImage(data: data)
+                cell?.posterImageView.image = img
+                cell?.retryButton.isHidden = img != nil
             case .failure:
                 cell?.retryButton.isHidden = false
             }

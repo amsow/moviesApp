@@ -188,10 +188,32 @@ final class MoviesViewControllerTests: XCTestCase {
         XCTAssertEqual(movieCell0?.isRetryButtonVisibleOnImageView(), true)
         XCTAssertEqual(movieCell1?.isRetryButtonVisibleOnImageView(), false)
         
-        
-        loader.completeImageDataLoadingSuccessfully(at: 1)
+        let imgData1 = UIImage.makeWithColor(.green).pngData()!
+        loader.completeImageDataLoadingSuccessfully(with: imgData1, at: 1)
         XCTAssertEqual(movieCell0?.isRetryButtonVisibleOnImageView(), true)
         XCTAssertEqual(movieCell1?.isRetryButtonVisibleOnImageView(), false)
+    }
+    
+    func test_movieViewRetryButton_isVisibleOnInvalidImageData() {
+        let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
+        let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
+        let (loader, sut) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        
+        let validImageData = UIImage.makeWithColor().pngData()!
+        let invalidImageData = Data("invalid-data".utf8)
+        let movieCell0 = sut.simulateMovieViewVisible(at: 0)
+        let movieCell1 = sut.simulateMovieViewVisible(at: 1)
+        
+        loader.completeImageDataLoadingSuccessfully(with: validImageData, at: 0)
+        XCTAssertEqual(movieCell0?.isRetryButtonVisibleOnImageView(), false)
+        XCTAssertEqual(movieCell1?.isRetryButtonVisibleOnImageView(), false)
+        
+        loader.completeImageDataLoadingSuccessfully(with: invalidImageData, at: 1)
+        XCTAssertEqual(movieCell0?.isRetryButtonVisibleOnImageView(), false)
+        XCTAssertEqual(movieCell1?.isRetryButtonVisibleOnImageView(), true)
     }
     
     // MARK: - Helpers
