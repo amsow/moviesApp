@@ -97,14 +97,18 @@ final class MoviesViewControllerTests: XCTestCase {
     func test_movieView_cancelsImageLoadingWhenNotVisibleAnymore() {
         let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
         let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
+        let movie2 = makeMovie(id: 3, title: "title 3", overview: "any overview")
         let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
-        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        loader.completeLoadingSuccessfully(with: [movie0, movie1, movie2], at: 0)
         XCTAssertTrue(loader.cancelledURLs.isEmpty, "Expected no cancelled URLs")
         
         sut.simulateMovieViewNotVisible(at: 1)
         XCTAssertEqual(loader.cancelledURLs, [movie1.posterImageURL], "Expected cancelled url request for the second view as it's no more visible")
+        
+        sut.simulateMovieViewNotVisible(at: 2)
+        XCTAssertEqual(loader.cancelledURLs, [movie1.posterImageURL, movie2.posterImageURL], "Expected cancelled url request for the second view and third view as they are no more visible")
     }
     
     

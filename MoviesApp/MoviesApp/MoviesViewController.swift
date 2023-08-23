@@ -6,7 +6,7 @@ public final class MoviesViewController: UITableViewController {
     
     private let moviesLoader: MoviesLoader
     private let imageDataLoader: ImageDataLoader
-    private var imageDataLoaderTask: ImageDataLoaderTask?
+    private var imageDataLoaderTasks = [IndexPath: ImageDataLoaderTask]()
     private var models = [Movie]()
     
     public init(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) {
@@ -57,7 +57,7 @@ extension MoviesViewController {
         cell.titleLabel.text = model.title
         cell.overviewLabel.text = model.overview
         cell.releaseDateLabel.text = model.releaseDate.year()
-        imageDataLoaderTask = imageDataLoader.loadImageData(from: model.posterImageURL) { _ in }
+        imageDataLoaderTasks[indexPath] = imageDataLoader.loadImageData(from: model.posterImageURL) { _ in }
         
         return cell
     }
@@ -67,7 +67,7 @@ extension MoviesViewController {
 
 extension MoviesViewController {
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        imageDataLoaderTask?.cancel()
+        imageDataLoaderTasks[indexPath]?.cancel()
     }
 }
 
