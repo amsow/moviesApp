@@ -6,4 +6,5 @@ public final class MovieCell: UITableViewCell {
     public let overviewLabel = UILabel()
     public let releaseDateLabel = UILabel()
     public let posterImageContainer = UIView()
+    public let posterImageView = UIImageView()
 }

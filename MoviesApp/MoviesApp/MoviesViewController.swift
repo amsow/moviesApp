@@ -58,7 +58,11 @@ extension MoviesViewController {
         cell.overviewLabel.text = model.overview
         cell.releaseDateLabel.text = model.releaseDate.year()
         cell.posterImageContainer.startShimmering()
-        imageDataLoaderTasks[indexPath] = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak cell] _ in
+        imageDataLoaderTasks[indexPath] = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak cell] result in
+            if case .success(let data) = result {
+                cell?.posterImageView.image = UIImage(data: data)
+            }
+            
             cell?.posterImageContainer.stopShimmering()
         }
         
