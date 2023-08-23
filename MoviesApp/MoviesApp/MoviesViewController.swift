@@ -59,7 +59,16 @@ extension MoviesViewController {
         cell.releaseDateLabel.text = model.releaseDate.year()
         cell.posterImageContainer.startShimmering()
         cell.retryButton.isHidden = true
-        imageDataLoaderTasks[indexPath] = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak cell] result in
+        loadImageData(url: model.posterImageURL, forCell: cell, at: indexPath)
+        cell.onRetry = { [weak self] in
+            self?.loadImageData(url: model.posterImageURL, forCell: cell, at: indexPath)
+        }
+        
+        return cell
+    }
+    
+    private func loadImageData(url: URL, forCell cell: MovieCell, at indexPath: IndexPath) {
+        imageDataLoaderTasks[indexPath] = imageDataLoader.loadImageData(from: url) { [weak cell] result in
             switch result {
             case .success(let data):
                 let img = UIImage(data: data)
@@ -71,8 +80,6 @@ extension MoviesViewController {
             
             cell?.posterImageContainer.stopShimmering()
         }
-        
-        return cell
     }
 }
 

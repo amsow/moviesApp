@@ -7,5 +7,16 @@ public final class MovieCell: UITableViewCell {
     public let releaseDateLabel = UILabel()
     public let posterImageContainer = UIView()
     public let posterImageView = UIImageView()
-    public let retryButton = UIButton(type: .system)
+    public private(set) lazy var retryButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.addTarget(self, action: #selector(retryButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
+    var onRetry: (() -> Void)?
+    
+    @objc
+    private func retryButtonTapped() {
+        onRetry?()
+    }
 }

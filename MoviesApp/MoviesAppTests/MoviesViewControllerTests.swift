@@ -216,6 +216,28 @@ final class MoviesViewControllerTests: XCTestCase {
         XCTAssertEqual(movieCell1?.isRetryButtonVisibleOnImageView(), true)
     }
     
+    func test_movieViewRetryAction_retriesImageLoad() {
+        let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
+        let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
+        let (loader, sut) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        
+        let movieCell0 = sut.simulateMovieViewVisible(at: 0)
+        let movieCell1 = sut.simulateMovieViewVisible(at: 1)
+        XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL, movie1.posterImageURL])
+        
+        loader.completeImageDataLoadingWithError(at: 0)
+        loader.completeImageDataLoadingWithError(at: 1)
+        
+        movieCell0?.simulateRetryAction()
+        XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL, movie1.posterImageURL, movie0.posterImageURL])
+        
+        movieCell1?.simulateRetryAction()
+        XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL, movie1.posterImageURL, movie0.posterImageURL, movie1.posterImageURL])
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (loader: MoviesLoaderSpy, sut: MoviesViewController) {
@@ -364,6 +386,10 @@ extension MovieCell {
     
     func isRetryButtonVisibleOnImageView() -> Bool {
         return retryButton.isHidden == false
+    }
+    
+    func simulateRetryAction() {
+        retryButton.simulate(event: .touchUpInside)
     }
     
     var renderedImageData: Data? {
