@@ -214,13 +214,14 @@ extension MoviesViewController {
         refreshControl?.simulatePullToRefresh()
     }
     
-    func simulateMovieViewVisible(at index: Int) {
-        _ = movieCell(at: index)
+    @discardableResult
+    func simulateMovieViewVisible(at index: Int) -> UITableViewCell? {
+        return movieCell(at: index)
     }
     
     func simulateMovieViewNotVisible(at index: Int) {
         let delegate = tableView.delegate
-        guard let cell = movieCell(at: index) else { return }
+        guard let cell = simulateMovieViewVisible(at: index) else { return }
         delegate?.tableView?(tableView, didEndDisplaying: cell, forRowAt: IndexPath(row: index, section: section))
     }
     
