@@ -7,6 +7,7 @@ public final class MoviesViewController: UITableViewController {
     private let moviesLoader: MoviesLoader
     private let imageDataLoader: ImageDataLoader
     private var imageDataLoaderTasks = [IndexPath: ImageDataLoaderTask]()
+    private var imageDataLoaders = [IndexPath: ImageDataLoader]()
     private var models = [Movie]()
     
     public init(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) {
@@ -21,6 +22,7 @@ public final class MoviesViewController: UITableViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
+        tableView.prefetchDataSource = self
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(loadMovies), for: .valueChanged)
         loadMovies()
@@ -79,6 +81,19 @@ extension MoviesViewController {
             }
             
             cell?.posterImageContainer.stopShimmering()
+        }
+    }
+}
+
+// MARK: - UITableViewDataSourcePrefetching
+
+extension MoviesViewController: UITableViewDataSourcePrefetching {
+    public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        indexPaths.forEach { indexPath in
+            let movie = models[indexPath.row]
+             imageDataLoaderTasks[indexPath] = imageDataLoader.loadImageData(from: movie.posterImageURL) { _ in
+                
+            }
         }
     }
 }

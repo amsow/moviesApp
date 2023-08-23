@@ -238,6 +238,20 @@ final class MoviesViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL, movie1.posterImageURL, movie0.posterImageURL, movie1.posterImageURL])
     }
     
+    func test_movieView_preloadsImageURLWhenNearVisible() {
+        let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
+        let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
+        let movie3 = makeMovie(id: 3, title: "title 3", overview: "any overview")
+        let (loader, sut) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoadingSuccessfully(with: [movie0, movie1, movie3], at: 0)
+        XCTAssertTrue(loader.loadedImageURLs.isEmpty)
+        
+        sut.simulateMovieViewNearVisible(at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL])
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (loader: MoviesLoaderSpy, sut: MoviesViewController) {
@@ -357,6 +371,11 @@ extension MoviesViewController {
     @discardableResult
     func simulateMovieViewVisible(at index: Int) -> MovieCell? {
         return movieCell(at: index) as? MovieCell
+    }
+    
+    func simulateMovieViewNearVisible(at index: Int) {
+        let datasource = tableView.prefetchDataSource
+        datasource?.tableView(tableView, prefetchRowsAt: [IndexPath(row: index, section: 0)])
     }
     
     func simulateMovieViewNotVisible(at index: Int) {
