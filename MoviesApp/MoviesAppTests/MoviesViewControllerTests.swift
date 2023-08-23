@@ -94,6 +94,19 @@ final class MoviesViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL, movie1.posterImageURL], "Expected both first and second image URLs requests once second view become visible")
     }
     
+    func test_movieView_cancelsImageLoadingWhenNotVisibleAnymore() {
+        let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
+        let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
+        let (loader, sut) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        XCTAssertTrue(loader.cancelledURLs.isEmpty, "Expected no cancelled URLs")
+        
+        sut.simulateMovieViewNotVisible(at: 1)
+        XCTAssertEqual(loader.cancelledURLs, [movie1.posterImageURL], "Expected cancelled url request for the second view as it's no more visible")
+    }
+    
     
     // MARK: - Helpers
     
@@ -152,13 +165,18 @@ final class MoviesViewControllerTests: XCTestCase {
     final class MoviesLoaderSpy: MoviesLoader, ImageDataLoader {
         private var loadCompletions = [(MoviesLoader.Result) -> Void]()
         private(set) var loadedImageURLs = [URL]()
+        private(set) var cancelledURLs = [URL]()
         
         var loadCallCount: Int {
             loadCompletions.count
         }
         
         struct Task: ImageDataLoaderTask {
-            func cancel() { }
+            let onCancel: () -> Void
+            
+            func cancel() {
+                onCancel()
+            }
         }
         
         func load(completion: @escaping (MoviesLoader.Result) -> Void) {
@@ -167,7 +185,7 @@ final class MoviesViewControllerTests: XCTestCase {
         
         func loadImageData(from url: URL, completion: @escaping (ImageDataLoader.Result) -> Void) -> ImageDataLoaderTask {
             loadedImageURLs.append(url)
-            return Task()
+            return Task { self.cancelledURLs.append(url) }
         }
         
         func completeLoadingSuccessfully(with movies: [Movie] = [], at index: Int) {
@@ -200,8 +218,14 @@ extension MoviesViewController {
         _ = movieCell(at: index)
     }
     
+    func simulateMovieViewNotVisible(at index: Int) {
+        let delegate = tableView.delegate
+        guard let cell = movieCell(at: index) else { return }
+        delegate?.tableView?(tableView, didEndDisplaying: cell, forRowAt: IndexPath(row: index, section: section))
+    }
+    
     func isShowingLoadingIndicator() -> Bool {
-        refreshControl?.isRefreshing ?? false
+        refreshControl?.isRefreshing == true
     }
     
     func numberOfRenderedMovieViews() -> Int {
