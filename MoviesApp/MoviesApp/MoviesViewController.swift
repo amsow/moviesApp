@@ -58,9 +58,14 @@ extension MoviesViewController {
         cell.overviewLabel.text = model.overview
         cell.releaseDateLabel.text = model.releaseDate.year()
         cell.posterImageContainer.startShimmering()
+        cell.retryButton.isHidden = true
         imageDataLoaderTasks[indexPath] = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak cell] result in
-            if case .success(let data) = result {
+            switch result {
+            case .success(let data):
                 cell?.posterImageView.image = UIImage(data: data)
+                cell?.retryButton.isHidden = true
+            case .failure:
+                cell?.retryButton.isHidden = false
             }
             
             cell?.posterImageContainer.stopShimmering()

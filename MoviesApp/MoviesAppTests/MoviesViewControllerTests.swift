@@ -173,6 +173,26 @@ final class MoviesViewControllerTests: XCTestCase {
         XCTAssertNotNil(movieCell1?.renderedImageData)
     }
     
+    func test_moviewViewRetryButton_isVisibleOnImageURLLoadError() {
+        let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
+        let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
+        let (loader, sut) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoadingSuccessfully(with: [movie0, movie1], at: 0)
+        
+        let movieCell0 = sut.simulateMovieViewVisible(at: 0)
+        let movieCell1 = sut.simulateMovieViewVisible(at: 1)
+        
+        loader.completeImageDataLoadingWithError(at: 0)
+        XCTAssertEqual(movieCell0?.isRetryButtonVisibleOnImageView(), true)
+        XCTAssertEqual(movieCell1?.isRetryButtonVisibleOnImageView(), false)
+        
+        
+        loader.completeImageDataLoadingSuccessfully(at: 1)
+        XCTAssertEqual(movieCell0?.isRetryButtonVisibleOnImageView(), true)
+        XCTAssertEqual(movieCell1?.isRetryButtonVisibleOnImageView(), false)
+    }
     
     // MARK: - Helpers
     
@@ -318,6 +338,10 @@ extension MoviesViewController {
 extension MovieCell {
     func isShowingLoadingIndicator() -> Bool {
         return posterImageContainer.isShimmering
+    }
+    
+    func isRetryButtonVisibleOnImageView() -> Bool {
+        return retryButton.isHidden == false
     }
     
     var renderedImageData: Data? {

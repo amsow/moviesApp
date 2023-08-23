@@ -7,4 +7,5 @@ public final class MovieCell: UITableViewCell {
     public let releaseDateLabel = UILabel()
     public let posterImageContainer = UIView()
     public let posterImageView = UIImageView()
+    public let retryButton = UIButton(type: .system)
 }
