@@ -2,7 +2,7 @@
 import UIKit
 import MoviesCore
 
-public final class MoviesViewController: UITableViewController {
+public final class MoviesListViewController: UITableViewController {
     
     private let moviesLoader: MoviesLoader
     private let imageDataLoader: ImageDataLoader
@@ -47,7 +47,7 @@ public final class MoviesViewController: UITableViewController {
 
 // MARK: - UITableViewDataSource
 
-extension MoviesViewController {
+extension MoviesListViewController {
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return models.count
     }
@@ -86,7 +86,7 @@ extension MoviesViewController {
 
 // MARK: - UITableViewDataSourcePrefetching
 
-extension MoviesViewController: UITableViewDataSourcePrefetching {
+extension MoviesListViewController: UITableViewDataSourcePrefetching {
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
             let movie = models[indexPath.row]
@@ -106,7 +106,7 @@ extension MoviesViewController: UITableViewDataSourcePrefetching {
 
 // MARK: - UITableViewDelegate
 
-extension MoviesViewController {
+extension MoviesListViewController {
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         imageDataLoaderTasks[indexPath]?.cancel()
     }
