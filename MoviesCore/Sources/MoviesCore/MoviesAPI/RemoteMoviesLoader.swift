@@ -26,7 +26,7 @@ public final class RemoteMoviesLoader: MoviesLoader {
     }
     
     public func load(completion: @escaping (Result<[Movie], Swift.Error>) -> Void) {
-        client.request(from: url) { [weak self] result in
+        _ = client.request(from: url) { [weak self] result in
             guard self != nil else { return }
             
             switch result {
