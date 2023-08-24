@@ -1,0 +1,62 @@
+
+import UIKit
+import MoviesCore
+
+final class MovieCellController {
+    
+    /// Properties to manage the state of the controller
+    private let model: Movie
+    private let imageDataLoader: ImageDataLoader
+    private var imageDataLoaderTask: ImageDataLoaderTask?
+    
+    init(model: Movie, imageDataLoader: ImageDataLoader) {
+        self.model = model
+        self.imageDataLoader = imageDataLoader
+    }
+    
+    ///  The associated View for the controller
+    /// - Returns: UITableViewCell
+    func view() -> UITableViewCell? {
+        let cell = MovieCell()
+        cell.titleLabel.text = model.title
+        cell.overviewLabel.text = model.overview
+        cell.releaseDateLabel.text = model.releaseDate.year()
+        cell.posterImageContainer.startShimmering()
+        cell.retryButton.isHidden = true
+        let loadImage = { [ weak self, weak cell] in
+            guard let self, let cell else { return }
+            loadImageData(forCell: cell)
+        }
+        cell.onRetry = loadImage
+        
+        loadImage()
+        
+        return cell
+    }
+    
+    // MARK: - Load image data for each cell
+    
+    private func loadImageData(forCell cell: MovieCell) {
+        imageDataLoaderTask = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak cell] result in
+            switch result {
+            case .success(let data):
+                let img = UIImage(data: data)
+                cell?.posterImageView.image = img
+                cell?.retryButton.isHidden = img != nil
+            case .failure:
+                cell?.retryButton.isHidden = false
+            }
+            
+            cell?.posterImageContainer.stopShimmering()
+        }
+    }
+    
+    func preloadImageData() {
+        imageDataLoaderTask = imageDataLoader.loadImageData(from: model.posterImageURL) { _ in }
+    }
+    
+    func cancelImageDataLoadTask() {
+        imageDataLoaderTask?.cancel()
+        imageDataLoaderTask = nil
+    }
+}

@@ -21,6 +21,7 @@
 		3231ADAF2A93E74F0038218F /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADAE2A93E74F0038218F /* MovieCell.swift */; };
 		3261732A2A96BC64004808B9 /* MoviesListViewController+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326173292A96BC64004808B9 /* MoviesListViewController+TestHelpers.swift */; };
 		3261732C2A96BCC7004808B9 /* MovieCell+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3261732B2A96BCC7004808B9 /* MovieCell+TestHelpers.swift */; };
+		326173302A9788E6004808B9 /* MovieCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3261732F2A9788E6004808B9 /* MovieCellController.swift */; };
 		32995B5D2A964C3200BFC448 /* UIView+Shimmering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32995B5C2A964C3200BFC448 /* UIView+Shimmering.swift */; };
 		32C1C2172A96B99100938858 /* UIImage+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C1C2162A96B99100938858 /* UIImage+TestHelpers.swift */; };
 /* End PBXBuildFile section */
@@ -52,6 +53,7 @@
 		3231ADAE2A93E74F0038218F /* MovieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
 		326173292A96BC64004808B9 /* MoviesListViewController+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoviesListViewController+TestHelpers.swift"; sourceTree = "<group>"; };
 		3261732B2A96BCC7004808B9 /* MovieCell+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MovieCell+TestHelpers.swift"; sourceTree = "<group>"; };
+		3261732F2A9788E6004808B9 /* MovieCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCellController.swift; sourceTree = "<group>"; };
 		32995B5C2A964C3200BFC448 /* UIView+Shimmering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Shimmering.swift"; sourceTree = "<group>"; };
 		32C1C2162A96B99100938858 /* UIImage+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TestHelpers.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -159,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				3231ADAC2A93DCC50038218F /* MoviesListViewController.swift */,
+				3261732F2A9788E6004808B9 /* MovieCellController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -276,6 +279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				326173302A9788E6004808B9 /* MovieCellController.swift in Sources */,
 				3231AD712A8FFBA80038218F /* AppDelegate.swift in Sources */,
 				32995B5D2A964C3200BFC448 /* UIView+Shimmering.swift in Sources */,
 				3231AD732A8FFBA80038218F /* SceneDelegate.swift in Sources */,
