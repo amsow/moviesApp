@@ -1,0 +1,40 @@
+{
+  "configurations" : [
+    {
+      "id" : "FA9225EA-2D8A-4F4A-9A8E-ADE73E42761C",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:MoviesApp.xcodeproj",
+          "identifier" : "3231AD6C2A8FFBA80038218F",
+          "name" : "MoviesApp"
+        }
+      ]
+    },
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:MoviesApp.xcodeproj",
+      "identifier" : "3231AD6C2A8FFBA80038218F",
+      "name" : "MoviesApp"
+    },
+    "testExecutionOrdering" : "random",
+    "threadSanitizerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:MoviesApp.xcodeproj",
+        "identifier" : "3231AD822A8FFBA90038218F",
+        "name" : "MoviesAppTests"
+      }
+    }
+  ],
+  "version" : 1
+}

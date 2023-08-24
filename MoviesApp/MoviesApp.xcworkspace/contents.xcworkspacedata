@@ -7,4 +7,7 @@
    <FileRef
       location = "container:MoviesApp.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:MoviesApp.xctestplan">
+   </FileRef>
 </Workspace>
