@@ -95,12 +95,3 @@ extension MoviesListViewController {
         movieCellController(at: indexPath)?.cancelImageDataLoadTask()
     }
 }
-
-extension Date {
-    func year() -> String {
-        let calendar = Calendar(identifier: .gregorian)
-        let yearComponent = calendar.component(.year, from: self)
-        
-        return yearComponent.description
-    }
-}

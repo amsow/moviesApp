@@ -55,3 +55,12 @@ final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Ima
         )
     }
 }
+
+private extension Date {
+    func year() -> String {
+        let calendar = Calendar(identifier: .gregorian)
+        let yearComponent = calendar.component(.year, from: self)
+        
+        return yearComponent.description
+    }
+}
