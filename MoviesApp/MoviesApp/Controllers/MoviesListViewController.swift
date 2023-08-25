@@ -2,17 +2,49 @@
 import UIKit
 import MoviesCore
 
+final class MoviesListViewModel {
+    
+    typealias Observer<P> = (P) -> Void
+    
+    var onLoading: Observer<Bool>?
+    var onLoadSucceeded: Observer<[Movie]>?
+    var onLoadFailed: Observer<Error>?
+    
+    private let loader: MoviesLoader
+    
+    init(loader: MoviesLoader) {
+        self.loader = loader
+    }
+    
+    func loadMovies() {
+        onLoading?(true)
+        loader.load { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let movies):
+               onLoadSucceeded?(movies)
+        
+            case .failure(let error):
+                onLoadFailed?(error)
+            }
+            
+            onLoading?(false)
+        }
+    }
+}
+
 public final class MoviesListViewController: UITableViewController {
     
-    private let moviesLoader: MoviesLoader
     private let imageDataLoader: ImageDataLoader
     
     private var tableModels = [MovieCellController]() {
         didSet { tableView.reloadData() }
     }
     
+    private let viewModel: MoviesListViewModel
+    
     public init(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) {
-        self.moviesLoader = moviesLoader
+        self.viewModel = MoviesListViewModel(loader: moviesLoader)
         self.imageDataLoader = imageDataLoader
         super.init(nibName: nil, bundle: nil)
     }
@@ -26,24 +58,28 @@ public final class MoviesListViewController: UITableViewController {
         tableView.prefetchDataSource = self
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(loadMovies), for: .valueChanged)
+        bindViewModel()
         loadMovies()
     }
     
+    //MARK: - Private
+    
     @objc
     private func loadMovies() {
-        refreshControl?.beginRefreshing()
-        moviesLoader.load { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let movies):
-                tableModels = AppComposer.moviesCellControllers(for: movies, imageDataLoader: imageDataLoader)
-        
-            case .failure:
-                break
-            }
-            
-            refreshControl?.endRefreshing()
+        viewModel.loadMovies()
+    }
+    
+    private func bindViewModel() {
+        viewModel.onLoading = { [ weak self] isLoading in
+            isLoading ? self?.refreshControl?.beginRefreshing() : self?.refreshControl?.endRefreshing()
         }
+        
+        viewModel.onLoadSucceeded = { [weak self] movies in
+            guard let self else { return }
+            tableModels = AppComposer.moviesCellControllers(for: movies, imageDataLoader: imageDataLoader)
+        }
+        
+        viewModel.onLoadFailed = { _ in }
     }
 }
 
