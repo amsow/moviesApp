@@ -2,6 +2,20 @@
 import UIKit
 import MoviesCore
 
+struct MovieViewModel<Image> {
+    let title: String
+    let overview: String
+    let releaseDate: String?
+    let posterImage: Image
+    let isLoading: Bool
+    let shouldRetry: Bool
+}
+
+protocol MovieCellPresentable {
+    associatedtype Image
+    func display(_ viewModel: MovieViewModel<Image>)
+}
+
 final class MovieCellController {
     
     /// Properties to manage the state of the controller
