@@ -35,13 +35,23 @@ public final class MoviesListViewController: UITableViewController {
         moviesLoader.load { [weak self] result in
             switch result {
             case .success(let movies):
-                self?.tableModels = movies.compactMap { MovieCellController(model: $0, imageDataLoader: self!.imageDataLoader) }
+                self?.mapCellControllers(for: movies)
         
             case .failure:
                 break
             }
             
             self?.refreshControl?.endRefreshing()
+        }
+    }
+    
+    private func mapCellControllers(for movies: [Movie]) {
+        tableModels = movies.map { movie in
+            let controller = MovieCellController(model: movie, imageDataLoader: imageDataLoader)
+            let presenter = MovieCellPresenter(view: controller, imageTransformer: UIImage.init)
+            controller.presenter = presenter
+            
+            return controller
         }
     }
 }

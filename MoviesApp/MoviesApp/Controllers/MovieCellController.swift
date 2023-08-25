@@ -11,14 +11,14 @@ struct MovieViewModel<Image> {
     let shouldRetry: Bool
 }
 
-protocol MovieCellPresentable {
+protocol MovieCellPresentable: AnyObject {
     associatedtype Image
     func display(_ viewModel: MovieViewModel<Image>)
 }
 
 final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Image == Image {
     
-    private var view: View
+    private weak var view: View?
     private let imageTransformer: (Data) -> Image?
     
     init(view: View, imageTransformer: @escaping (Data) -> Image?) {
@@ -27,7 +27,7 @@ final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Ima
     }
     
     func didStartLoadingImageData(for model: Movie) {
-        view.display(
+        view?.display(
             MovieViewModel(
                 title: model.title,
                 overview: model.overview,
@@ -40,7 +40,7 @@ final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Ima
     
     func didFinishLoadingImageDataWithData(_ data: Data, for model: Movie) {
         let img = imageTransformer(data)
-        view.display(
+        view?.display(
             MovieViewModel(
                 title: model.title,
                 overview: model.overview,
@@ -52,7 +52,7 @@ final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Ima
     }
     
     func didFinishLoadingImageDataWithError(_ error: Error, for model: Movie) {
-        view.display(
+        view?.display(
             MovieViewModel(
                 title: model.title,
                 overview: model.overview,
@@ -73,6 +73,8 @@ final class MovieCellController: MovieCellPresentable {
     
     private var cell: MovieCell?
     
+    var presenter: MovieCellPresenter<MovieCellController, UIImage>?
+    
     init(model: Movie, imageDataLoader: ImageDataLoader) {
         self.model = model
         self.imageDataLoader = imageDataLoader
@@ -82,11 +84,6 @@ final class MovieCellController: MovieCellPresentable {
     /// - Returns: UITableViewCell
     func view() -> UITableViewCell? {
         cell = MovieCell()
-        cell?.titleLabel.text = model.title
-        cell?.overviewLabel.text = model.overview
-        cell?.releaseDateLabel.text = model.releaseDate.year()
-        cell?.posterImageContainer.startShimmering()
-        cell?.retryButton.isHidden = true
         let loadImage = { [ weak self] in
             guard let self else { return }
             loadImageData()
@@ -110,18 +107,17 @@ final class MovieCellController: MovieCellPresentable {
     // MARK: - Load image data for each cell
     
     private func loadImageData() {
+        let movie = self.model
+        presenter?.didStartLoadingImageData(for: movie)
         imageDataLoaderTask = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let data):
-                let img = UIImage(data: data)
-                cell?.posterImageView.image = img
-                cell?.retryButton.isHidden = img != nil
-            case .failure:
-                cell?.retryButton.isHidden = false
+                presenter?.didFinishLoadingImageDataWithData(data, for: movie)
+                
+            case .failure(let error):
+                presenter?.didFinishLoadingImageDataWithError(error, for: movie)
             }
-            
-            cell?.posterImageContainer.stopShimmering()
         }
     }
     
