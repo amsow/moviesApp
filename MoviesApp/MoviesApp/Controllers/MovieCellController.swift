@@ -63,12 +63,15 @@ final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Ima
         )
     }
 }
-final class MovieCellController {
+
+final class MovieCellController: MovieCellPresentable {
     
     /// Properties to manage the state of the controller
     private let model: Movie
     private let imageDataLoader: ImageDataLoader
     private var imageDataLoaderTask: ImageDataLoaderTask?
+    
+    private var cell: MovieCell?
     
     init(model: Movie, imageDataLoader: ImageDataLoader) {
         self.model = model
@@ -78,27 +81,37 @@ final class MovieCellController {
     ///  The associated View for the controller
     /// - Returns: UITableViewCell
     func view() -> UITableViewCell? {
-        let cell = MovieCell()
-        cell.titleLabel.text = model.title
-        cell.overviewLabel.text = model.overview
-        cell.releaseDateLabel.text = model.releaseDate.year()
-        cell.posterImageContainer.startShimmering()
-        cell.retryButton.isHidden = true
-        let loadImage = { [ weak self, weak cell] in
-            guard let self, let cell else { return }
-            loadImageData(forCell: cell)
+        cell = MovieCell()
+        cell?.titleLabel.text = model.title
+        cell?.overviewLabel.text = model.overview
+        cell?.releaseDateLabel.text = model.releaseDate.year()
+        cell?.posterImageContainer.startShimmering()
+        cell?.retryButton.isHidden = true
+        let loadImage = { [ weak self] in
+            guard let self else { return }
+            loadImageData()
         }
-        cell.onRetry = loadImage
+        cell?.onRetry = loadImage
         
         loadImage()
         
         return cell
     }
     
+    func display(_ viewModel: MovieViewModel<UIImage>) {
+        cell?.titleLabel.text = viewModel.title
+        cell?.overviewLabel.text = viewModel.overview
+        cell?.releaseDateLabel.text = viewModel.releaseDate
+        viewModel.isLoading ? cell?.posterImageContainer.startShimmering() : cell?.posterImageContainer.stopShimmering()
+        cell?.posterImageView.image = viewModel.posterImage
+        cell?.retryButton.isHidden = !viewModel.shouldRetry
+    }
+    
     // MARK: - Load image data for each cell
     
-    private func loadImageData(forCell cell: MovieCell) {
-        imageDataLoaderTask = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak cell] result in
+    private func loadImageData() {
+        imageDataLoaderTask = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success(let data):
                 let img = UIImage(data: data)
