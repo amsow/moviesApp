@@ -3,7 +3,7 @@
 import MoviesApp
 import UIKit
 
-extension MoviesViewController {
+extension MoviesListViewController {
     private var section: Int { return 0 }
     
     func simulateUserInitiatedMoviesReload() {

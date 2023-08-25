@@ -4,7 +4,7 @@ import XCTest
 import MoviesCore
 import MoviesApp
 
-final class MoviesViewControllerTests: XCTestCase {
+final class MoviesListViewControllerTests: XCTestCase {
 
     func test_loadActions_requestsMoviesFromLoader() {
         let (loader, sut) = makeSUT()
@@ -274,9 +274,12 @@ final class MoviesViewControllerTests: XCTestCase {
     
     // MARK: - Helpers
     
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (loader: MoviesLoaderSpy, sut: MoviesViewController) {
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (loader: MoviesLoaderSpy, sut: MoviesListViewController) {
         let loader = MoviesLoaderSpy()
-        let sut = MoviesViewController(moviesLoader: loader, imageDataLoader: loader)
+        let sut = AppComposer.moviesListViewController(
+            moviesLoader: loader,
+            imageDataLoader: loader
+        )
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         
@@ -284,7 +287,7 @@ final class MoviesViewControllerTests: XCTestCase {
     }
     
     private func assertThat(
-        _ sut: MoviesViewController,
+        _ sut: MoviesListViewController,
         viewFor movie: Movie, at index: Int,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -312,7 +315,7 @@ final class MoviesViewControllerTests: XCTestCase {
     }
     
     private func assertThat(
-        _ sut: MoviesViewController,
+        _ sut: MoviesListViewController,
         isRendering movies: [Movie],
         file: StaticString = #filePath,
         line: UInt = #line
