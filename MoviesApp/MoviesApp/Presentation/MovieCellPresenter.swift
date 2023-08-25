@@ -3,14 +3,14 @@
 import Foundation
 import MoviesCore
 
-protocol MovieCellPresentable: AnyObject {
+protocol MovieCellPresentable {
     associatedtype Image
     func display(_ viewModel: MovieViewModel<Image>)
 }
 
 final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Image == Image {
     
-    private weak var view: View?
+    private var view: View
     private let imageTransformer: (Data) -> Image?
     
     init(view: View, imageTransformer: @escaping (Data) -> Image?) {
@@ -19,7 +19,7 @@ final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Ima
     }
     
     func didStartLoadingImageData(for model: Movie) {
-        view?.display(
+        view.display(
             MovieViewModel(
                 title: model.title,
                 overview: model.overview,
@@ -32,7 +32,7 @@ final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Ima
     
     func didFinishLoadingImageDataWithData(_ data: Data, for model: Movie) {
         let img = imageTransformer(data)
-        view?.display(
+        view.display(
             MovieViewModel(
                 title: model.title,
                 overview: model.overview,
@@ -44,7 +44,7 @@ final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Ima
     }
     
     func didFinishLoadingImageDataWithError(_ error: Error, for model: Movie) {
-        view?.display(
+        view.display(
             MovieViewModel(
                 title: model.title,
                 overview: model.overview,

@@ -7,7 +7,7 @@ protocol MovieCellControllerDelegate {
     func didCancelImageDataLoadingRequest()
 }
 
-final class MovieCellController: MovieCellPresentable {
+final class MovieCellController: NSObject, MovieCellPresentable {
     
     private var cell: MovieCell?
     

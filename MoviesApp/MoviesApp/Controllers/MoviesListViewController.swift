@@ -47,9 +47,9 @@ public final class MoviesListViewController: UITableViewController {
     
     private func mapCellControllers(for movies: [Movie]) {
         tableModels = movies.map { movie in
-            let adapter = MoviePosterImageDataLoaderPresentationAdapter<MovieCellController, UIImage>(model: movie, imageDataLoader: imageDataLoader)
+            let adapter = MoviePosterImageDataLoaderPresentationAdapter<WeakReferenceProxy<MovieCellController>, UIImage>(model: movie, imageDataLoader: imageDataLoader)
             let controller = MovieCellController(delegate: adapter)
-            adapter.presenter = MovieCellPresenter(view: controller, imageTransformer: UIImage.init)
+            adapter.presenter = MovieCellPresenter(view: WeakReferenceProxy(controller), imageTransformer: UIImage.init)
             
             return controller
         }
@@ -111,5 +111,19 @@ extension Date {
         let yearComponent = calendar.component(.year, from: self)
         
         return yearComponent.description
+    }
+}
+
+final class WeakReferenceProxy<Object: AnyObject> {
+    private weak var object: Object?
+
+    init(_ object: Object) {
+        self.object = object
+    }
+}
+
+extension WeakReferenceProxy: MovieCellPresentable where Object: MovieCellPresentable, Object.Image == UIImage {
+    func display(_ viewModel: MovieViewModel<UIImage>) {
+        object?.display(viewModel)
     }
 }
