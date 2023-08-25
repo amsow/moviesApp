@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -11,7 +12,7 @@
         <!--Movies-->
         <scene sceneID="dVd-E5-9D3">
             <objects>
-                <tableViewController id="6cB-3f-4nk" customClass="MoviesViewController" customModule="MoviesUI" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="6cB-3f-4nk" customClass="MoviesViewController" customModule="MoviesApp" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="nco-by-AUR">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -27,7 +28,7 @@
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="494" id="9S2-LZ-A1v" customClass="MovieCell" customModule="MoviesUI" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="494" id="9S2-LZ-A1v" customClass="MovieCell" customModule="MoviesApp" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="65" width="393" height="494"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="9S2-LZ-A1v" id="F5O-O4-E7W">
@@ -43,12 +44,26 @@
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="k4h-Bi-qgo">
                                                             <rect key="frame" x="0.0" y="0.0" width="353" height="353"/>
                                                         </imageView>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0PU-09-6GV">
+                                                            <rect key="frame" x="0.0" y="0.0" width="353" height="353"/>
+                                                            <color key="tintColor" systemColor="systemBackgroundColor"/>
+                                                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                            <state key="normal">
+                                                                <color key="titleColor" systemColor="systemBackgroundColor"/>
+                                                                <imageReference key="image" image="arrow.clockwise" catalog="system" symbolScale="large" renderingMode="template" variableValue="1"/>
+                                                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="60"/>
+                                                            </state>
+                                                        </button>
                                                     </subviews>
                                                     <color key="backgroundColor" red="0.89019607840000003" green="0.89019607840000003" blue="0.89019607840000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="Rwe-Du-Vey" secondAttribute="height" multiplier="1:1" id="21y-iW-VWe"/>
                                                         <constraint firstAttribute="trailing" secondItem="k4h-Bi-qgo" secondAttribute="trailing" id="4Jc-9l-WlX"/>
+                                                        <constraint firstAttribute="bottom" secondItem="0PU-09-6GV" secondAttribute="bottom" id="63D-cX-yrM"/>
                                                         <constraint firstItem="k4h-Bi-qgo" firstAttribute="top" secondItem="Rwe-Du-Vey" secondAttribute="top" id="PMP-O1-IHx"/>
+                                                        <constraint firstAttribute="trailing" secondItem="0PU-09-6GV" secondAttribute="trailing" id="Uhw-1L-lB0"/>
+                                                        <constraint firstItem="0PU-09-6GV" firstAttribute="leading" secondItem="Rwe-Du-Vey" secondAttribute="leading" id="WgA-Hx-sZs"/>
+                                                        <constraint firstItem="0PU-09-6GV" firstAttribute="top" secondItem="Rwe-Du-Vey" secondAttribute="top" id="bj7-IE-vlx"/>
                                                         <constraint firstItem="k4h-Bi-qgo" firstAttribute="leading" secondItem="Rwe-Du-Vey" secondAttribute="leading" id="jie-7n-11Z"/>
                                                         <constraint firstAttribute="bottom" secondItem="k4h-Bi-qgo" secondAttribute="bottom" id="uYM-on-e4j"/>
                                                     </constraints>
@@ -123,6 +138,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="arrow.clockwise" catalog="system" width="113" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
