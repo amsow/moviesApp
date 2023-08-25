@@ -4,17 +4,16 @@ import MoviesCore
 
 public final class MoviesListViewController: UITableViewController {
     
-    private let imageDataLoader: ImageDataLoader
-    
     private var tableModels = [MovieCellController]() {
         didSet { tableView.reloadData() }
     }
     
+    private let cellControllerFactory: MovieCellControllerFactory
     private let viewModel: MoviesListViewModel
     
-    init(viewModel: MoviesListViewModel, imageDataLoader: ImageDataLoader) {
+    init(viewModel: MoviesListViewModel, cellControllerFactory: MovieCellControllerFactory) {
         self.viewModel = viewModel
-        self.imageDataLoader = imageDataLoader
+        self.cellControllerFactory = cellControllerFactory
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -26,7 +25,6 @@ public final class MoviesListViewController: UITableViewController {
         super.viewDidLoad()
         tableView.prefetchDataSource = self
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: #selector(loadMovies), for: .valueChanged)
         bindViewModel()
         loadMovies()
     }
@@ -39,16 +37,21 @@ public final class MoviesListViewController: UITableViewController {
     }
     
     private func bindViewModel() {
-        viewModel.onLoading = { [ weak self] isLoading in
-            isLoading ? self?.refreshControl?.beginRefreshing() : self?.refreshControl?.endRefreshing()
-        }
+        viewModel.onLoading = { [ weak self] isLoading in self?.updateLoadingState(isLoading) }
         
-        viewModel.onLoadSucceeded = { [weak self] movies in
-            guard let self else { return }
-            tableModels = AppComposer.moviesCellControllers(for: movies, imageDataLoader: imageDataLoader)
-        }
+        viewModel.onLoadSucceeded = { [weak self] movies in self?.updateTable(with: movies) }
         
         viewModel.onLoadFailed = { _ in }
+        
+        refreshControl?.addTarget(self, action: #selector(loadMovies), for: .valueChanged)
+    }
+    
+    private func updateTable(with movies: [Movie]) {
+        tableModels = movies.map(cellControllerFactory.makeCellController)
+    }
+    
+    private func updateLoadingState(_ isLoading: Bool) {
+        isLoading ? refreshControl?.beginRefreshing() : refreshControl?.endRefreshing()
     }
 }
 
