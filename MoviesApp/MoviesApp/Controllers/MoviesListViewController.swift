@@ -12,8 +12,8 @@ public final class MoviesListViewController: UITableViewController {
     
     private let viewModel: MoviesListViewModel
     
-    public init(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) {
-        self.viewModel = MoviesListViewModel(loader: moviesLoader)
+    init(viewModel: MoviesListViewModel, imageDataLoader: ImageDataLoader) {
+        self.viewModel = viewModel
         self.imageDataLoader = imageDataLoader
         super.init(nibName: nil, bundle: nil)
     }

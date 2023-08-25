@@ -5,7 +5,8 @@ import MoviesCore
 public final class AppComposer {
     
     public static func moviesListViewController(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) -> MoviesListViewController {
-        let controller = MoviesListViewController(moviesLoader: moviesLoader, imageDataLoader: imageDataLoader)
+        let viewModel = MoviesListViewModel(loader: moviesLoader)
+        let controller = MoviesListViewController(viewModel: viewModel, imageDataLoader: imageDataLoader)
         
         return controller
     }
