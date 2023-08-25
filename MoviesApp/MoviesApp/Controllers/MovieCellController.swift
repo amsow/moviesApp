@@ -2,34 +2,60 @@
 import UIKit
 import MoviesCore
 
-final class MovieCellController: MovieCellPresentable {
+protocol MovieCellControllerDelegate {
+    func didRequestImageDataLoading()
+    func didCancelImageDataLoadingRequest()
+}
+
+final class MoviePosterImageDataLoaderPresentationAdapter<View: MovieCellPresentable, Image>: MovieCellControllerDelegate where View.Image == Image {
     
-    /// Properties to manage the state of the controller
     private let model: Movie
     private let imageDataLoader: ImageDataLoader
     private var imageDataLoaderTask: ImageDataLoaderTask?
     
-    private var cell: MovieCell?
-    
-    var presenter: MovieCellPresenter<MovieCellController, UIImage>?
+    var presenter: MovieCellPresenter<View, Image>?
     
     init(model: Movie, imageDataLoader: ImageDataLoader) {
         self.model = model
         self.imageDataLoader = imageDataLoader
     }
     
+    func didRequestImageDataLoading() {
+        let model = self.model
+        presenter?.didStartLoadingImageData(for: model)
+        imageDataLoaderTask = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let data):
+                presenter?.didFinishLoadingImageDataWithData(data, for: model)
+                
+            case .failure(let error):
+                presenter?.didFinishLoadingImageDataWithError(error, for: model)
+            }
+        }
+    }
+    
+    func didCancelImageDataLoadingRequest() {
+        imageDataLoaderTask?.cancel()
+        imageDataLoaderTask = nil
+    }
+}
+
+final class MovieCellController: MovieCellPresentable {
+    
+    private var cell: MovieCell?
+    
+    private let delegate: MovieCellControllerDelegate
+    
+    init(delegate: MovieCellControllerDelegate) {
+        self.delegate = delegate
+    }
+    
     ///  The associated View for the controller
     /// - Returns: UITableViewCell
     func view() -> UITableViewCell? {
         cell = MovieCell()
-        let loadImage = { [ weak self] in
-            guard let self else { return }
-            loadImageData()
-        }
-        cell?.onRetry = loadImage
-        
-        loadImage()
-        
+        loadImageData()
         return cell
     }
     
@@ -37,34 +63,31 @@ final class MovieCellController: MovieCellPresentable {
         cell?.titleLabel.text = viewModel.title
         cell?.overviewLabel.text = viewModel.overview
         cell?.releaseDateLabel.text = viewModel.releaseDate
-        viewModel.isLoading ? cell?.posterImageContainer.startShimmering() : cell?.posterImageContainer.stopShimmering()
+        onLoadingStateChange(viewModel.isLoading)
         cell?.posterImageView.image = viewModel.posterImage
         cell?.retryButton.isHidden = !viewModel.shouldRetry
+        cell?.onRetry = delegate.didRequestImageDataLoading
+    }
+    
+    private func onLoadingStateChange(_ isLoading: Bool) {
+        isLoading ? cell?.posterImageContainer.startShimmering() : cell?.posterImageContainer.stopShimmering()
     }
     
     // MARK: - Load image data for each cell
     
     private func loadImageData() {
-        let movie = self.model
-        presenter?.didStartLoadingImageData(for: movie)
-        imageDataLoaderTask = imageDataLoader.loadImageData(from: model.posterImageURL) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let data):
-                presenter?.didFinishLoadingImageDataWithData(data, for: movie)
-                
-            case .failure(let error):
-                presenter?.didFinishLoadingImageDataWithError(error, for: movie)
-            }
-        }
+        delegate.didRequestImageDataLoading()
     }
     
     func preloadImageData() {
-        imageDataLoaderTask = imageDataLoader.loadImageData(from: model.posterImageURL) { _ in }
+        loadImageData()
     }
     
+    // MARK: - Cancel load image data for each cell
+    
     func cancelImageDataLoadTask() {
-        imageDataLoaderTask?.cancel()
-        imageDataLoaderTask = nil
+        // Release the cell as it's no longer visible
+        cell = nil
+        delegate.didCancelImageDataLoadingRequest()
     }
 }

@@ -47,9 +47,9 @@ public final class MoviesListViewController: UITableViewController {
     
     private func mapCellControllers(for movies: [Movie]) {
         tableModels = movies.map { movie in
-            let controller = MovieCellController(model: movie, imageDataLoader: imageDataLoader)
-            let presenter = MovieCellPresenter(view: controller, imageTransformer: UIImage.init)
-            controller.presenter = presenter
+            let adapter = MoviePosterImageDataLoaderPresentationAdapter<MovieCellController, UIImage>(model: movie, imageDataLoader: imageDataLoader)
+            let controller = MovieCellController(delegate: adapter)
+            adapter.presenter = MovieCellPresenter(view: controller, imageTransformer: UIImage.init)
             
             return controller
         }

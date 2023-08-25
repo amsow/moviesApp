@@ -103,8 +103,8 @@
 		3231AD6F2A8FFBA80038218F /* MoviesApp */ = {
 			isa = PBXGroup;
 			children = (
-				3257E9832A98E00C00A9BBC3 /* Presentation */,
 				3231AD7E2A8FFBA90038218F /* Info.plist */,
+				3257E9832A98E00C00A9BBC3 /* Presentation */,
 				32C1C2182A96BA2200938858 /* Application */,
 				32995B5B2A964C1700BFC448 /* Views */,
 				32C1C2192A96BA5900938858 /* Controllers */,
