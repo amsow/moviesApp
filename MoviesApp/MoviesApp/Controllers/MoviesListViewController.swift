@@ -33,25 +33,16 @@ public final class MoviesListViewController: UITableViewController {
     private func loadMovies() {
         refreshControl?.beginRefreshing()
         moviesLoader.load { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success(let movies):
-                self?.mapCellControllers(for: movies)
+                tableModels = AppComposer.moviesCellControllers(for: movies, imageDataLoader: imageDataLoader)
         
             case .failure:
                 break
             }
             
-            self?.refreshControl?.endRefreshing()
-        }
-    }
-    
-    private func mapCellControllers(for movies: [Movie]) {
-        tableModels = movies.map { movie in
-            let adapter = MoviePosterImageDataLoaderPresentationAdapter<WeakReferenceProxy<MovieCellController>, UIImage>(model: movie, imageDataLoader: imageDataLoader)
-            let controller = MovieCellController(delegate: adapter)
-            adapter.presenter = MovieCellPresenter(view: WeakReferenceProxy(controller), imageTransformer: UIImage.init)
-            
-            return controller
+            refreshControl?.endRefreshing()
         }
     }
 }
