@@ -1,6 +1,5 @@
 
 import UIKit
-import MoviesCore
 
 protocol MovieCellControllerDelegate {
     func didRequestImageDataLoading()
