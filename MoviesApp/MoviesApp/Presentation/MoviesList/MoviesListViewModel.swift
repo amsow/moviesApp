@@ -16,6 +16,10 @@ public final class MoviesListViewModel {
     
     private let loader: MoviesLoader
     
+    static var moviesListTitle: String {
+        return NSLocalizedString("MOVIES_TITLE", comment: "The title of movies list")
+    }
+    
     private var loadErrorMessage: String {
         return NSLocalizedString(
             "MOVIES_LOAD_ERROR",
