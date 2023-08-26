@@ -4,7 +4,15 @@ import UIKit
 public final class MoviesListViewController: UITableViewController {
     
     private var tableModels = [MovieCellController]() {
-        didSet { tableView.reloadData() }
+        didSet {
+            if Thread.isMainThread {
+                tableView.reloadData()
+            } else {
+                DispatchQueue.main.async { [weak self] in
+                    self?.tableView.reloadData()
+                }
+            }
+        }
     }
     
     var cellControllerFactory: MovieCellControllerFactory?
@@ -41,7 +49,13 @@ public final class MoviesListViewController: UITableViewController {
     }
     
     private func updateLoadingState(_ isLoading: Bool) {
-        isLoading ? refreshControl?.beginRefreshing() : refreshControl?.endRefreshing()
+        if Thread.isMainThread {
+            isLoading ? refreshControl?.beginRefreshing() : refreshControl?.endRefreshing()
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                isLoading ? self?.refreshControl?.beginRefreshing() : self?.refreshControl?.endRefreshing()
+            }
+        }
     }
 }
 
