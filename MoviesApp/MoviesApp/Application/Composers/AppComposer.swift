@@ -11,6 +11,7 @@ public final class AppComposer {
     private static func makeListViewController(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) -> MoviesListViewController {
         let storyboard = UIStoryboard(name: "MoviesScene", bundle: Bundle(for: MoviesListViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! MoviesListViewController
+        controller.title = MoviesListViewModel.moviesListTitle
         controller.viewModel = MoviesListViewModel(loader: MainQueueDispatchDecorator(decoratee: moviesLoader))
         controller.cellControllerFactory = MovieCellControllerFactory(imageDataLoader: MainQueueDispatchDecorator(decoratee: imageDataLoader))
         
