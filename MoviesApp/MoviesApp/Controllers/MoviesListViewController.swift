@@ -3,6 +3,8 @@ import UIKit
 
 public final class MoviesListViewController: UITableViewController {
     
+    public let errorView = UILabel()
+    
     private var tableModels = [MovieCellController]() {
         didSet { tableView.reloadData() }
     }
@@ -35,13 +37,17 @@ public final class MoviesListViewController: UITableViewController {
             tableModels = movies.map(cellControllerFactory.makeCellController)
         }
         
-        viewModel?.onLoadFailed = { _ in }
+        viewModel?.onLoadFailed = { [weak self] error in self?.showErrorMessage(error.localizedDescription) }
         
         refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
     }
     
     private func updateLoadingState(_ isLoading: Bool) {
         isLoading ? refreshControl?.beginRefreshing() : refreshControl?.endRefreshing()
+    }
+    
+    private func showErrorMessage(_ message: String?) {
+        errorView.text = message
     }
 }
 

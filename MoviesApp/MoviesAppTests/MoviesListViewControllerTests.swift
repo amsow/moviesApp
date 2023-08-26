@@ -92,6 +92,15 @@ final class MoviesListViewControllerTests: XCTestCase {
         assertThat(sut, isRendering: [movie0, movie1])
     }
     
+    func test_loadMoviesCompletion_rendersErrorMessageOnError() {
+        let (loader, sut) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeMoviesLoadingWithError(at: 0)
+        
+        XCTAssertNotNil(sut.errorMessage)
+    }
+    
     func test_loadImageDataCompletion_dispatchesFromBackgroundToMainThread() {
         let (loader, sut) = makeSUT()
         let movie = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
