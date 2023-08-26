@@ -53,6 +53,9 @@
                                                                 <imageReference key="image" image="arrow.clockwise" catalog="system" symbolScale="large" renderingMode="template" variableValue="1"/>
                                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="60"/>
                                                             </state>
+                                                            <connections>
+                                                                <action selector="retryButtonTapped" destination="9S2-LZ-A1v" eventType="touchUpInside" id="N6W-HS-qkn"/>
+                                                            </connections>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" red="0.89019607840000003" green="0.89019607840000003" blue="0.89019607840000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -110,11 +113,12 @@
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="movieImageContainer" destination="Rwe-Du-Vey" id="l4e-m9-ehf"/>
-                                    <outlet property="movieImageView" destination="k4h-Bi-qgo" id="ruy-nX-wSX"/>
-                                    <outlet property="overviewLabel" destination="qBJ-7G-XF7" id="t7c-8K-Rh8"/>
+                                    <outlet property="overviewLabel" destination="qBJ-7G-XF7" id="DRe-Ob-7u7"/>
+                                    <outlet property="posterImageContainer" destination="Rwe-Du-Vey" id="OQM-oI-gxc"/>
+                                    <outlet property="posterImageView" destination="k4h-Bi-qgo" id="W21-gv-miD"/>
                                     <outlet property="releaseDateLabel" destination="4C7-Pf-oKF" id="ITv-YH-cCb"/>
-                                    <outlet property="titleLabel" destination="59k-ZH-5E5" id="6s9-tJ-Tw4"/>
+                                    <outlet property="retryButton" destination="0PU-09-6GV" id="Mci-ED-shp"/>
+                                    <outlet property="titleLabel" destination="59k-ZH-5E5" id="eD8-Gy-GuN"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

@@ -2,20 +2,16 @@
 import UIKit
 
 public final class MovieCell: UITableViewCell {
-    public let titleLabel = UILabel()
-    public let overviewLabel = UILabel()
-    public let releaseDateLabel = UILabel()
-    public let posterImageContainer = UIView()
-    public let posterImageView = UIImageView()
-    public private(set) lazy var retryButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.addTarget(self, action: #selector(retryButtonTapped), for: .touchUpInside)
-        return button
-    }()
+    @IBOutlet public private(set) weak var titleLabel: UILabel!
+    @IBOutlet public private(set) weak var overviewLabel: UILabel!
+    @IBOutlet public private(set) weak var releaseDateLabel: UILabel!
+    @IBOutlet public private(set) weak var posterImageContainer: UIView!
+    @IBOutlet public private(set) weak var posterImageView: UIImageView!
+    @IBOutlet public private(set) weak var retryButton: UIButton!
     
     var onRetry: (() -> Void)?
     
-    @objc
+    @IBAction
     private func retryButtonTapped() {
         onRetry?()
     }
