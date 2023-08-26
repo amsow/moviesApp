@@ -3,7 +3,7 @@ import UIKit
 
 public final class MoviesListViewController: UITableViewController {
     
-    public let errorView = UILabel()
+    @IBOutlet public private(set) weak var errorView: LoadMoviesErrorView!
     
     private var tableModels = [MovieCellController]() {
         didSet { tableView.reloadData() }
@@ -47,7 +47,7 @@ public final class MoviesListViewController: UITableViewController {
     }
     
     private func updateErrorState(_ message: String?) {
-        errorView.text = message
+        errorView?.message = message
     }
 }
 

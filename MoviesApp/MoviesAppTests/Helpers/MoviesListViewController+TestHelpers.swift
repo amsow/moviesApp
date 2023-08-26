@@ -7,7 +7,7 @@ extension MoviesListViewController {
     private var section: Int { return 0 }
     
     var errorMessage: String? {
-        errorView.text
+        errorView.message
     }
     
     func simulateUserInitiatedMoviesReload() {

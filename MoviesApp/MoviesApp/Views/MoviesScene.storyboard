@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" id="PeH-bP-BhJ">
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="PeH-bP-BhJ" customClass="LoadMoviesErrorView" customModule="MoviesApp" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="393" height="15"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -135,6 +135,9 @@
                             <action selector="refresh" destination="6cB-3f-4nk" eventType="valueChanged" id="nmT-iU-Uft"/>
                         </connections>
                     </refreshControl>
+                    <connections>
+                        <outlet property="errorView" destination="PeH-bP-BhJ" id="yXR-8t-HfA"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GqD-7V-UKx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
