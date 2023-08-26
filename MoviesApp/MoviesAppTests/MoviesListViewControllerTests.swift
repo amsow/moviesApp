@@ -63,7 +63,22 @@ final class MoviesListViewControllerTests: XCTestCase {
         assertThat(sut, isRendering: [])
     }
     
-    func test_loadFeedCompletion_doesNotAlterCurrentRenderingStateOnError() {
+    func test_loadCompletion_dispatchesFromBackgroundToMainThread() {
+        let (loader, sut) = makeSUT()
+        let movie = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
+        
+        sut.loadViewIfNeeded()
+        let exp = expectation(description: "Wait for load completion in background thread")
+        
+        DispatchQueue.global().async {
+            loader.completeMoviesLoadingSuccessfully(with: [movie], at: 0)
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
+    }
+    
+    func test_loadCompletion_doesNotAlterCurrentRenderingStateOnError() {
         let (loader, sut) = makeSUT()
         let movie0 = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
         let movie1 = makeMovie(id: 1, title: "Movie 1", overview: "Any description")
@@ -75,6 +90,24 @@ final class MoviesListViewControllerTests: XCTestCase {
         sut.simulateUserInitiatedMoviesReload()
         loader.completeMoviesLoadingWithError(at: 1)
         assertThat(sut, isRendering: [movie0, movie1])
+    }
+    
+    func test_loadImageDataCompletion_dispatchesFromBackgroundToMainThread() {
+        let (loader, sut) = makeSUT()
+        let movie = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
+        
+        sut.loadViewIfNeeded()
+        loader.completeMoviesLoadingSuccessfully(with: [movie], at: 0)
+        
+        sut.simulateMovieViewVisible(at: 0)
+        
+        let exp = expectation(description: "Wait for image data loading completion in background thread")
+        DispatchQueue.global().async {
+            loader.completeImageDataLoadingSuccessfully(with: UIImage.makeWithColor().pngData()!, at: 0)
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
     }
     
     func test_movieView_loadsImageURLWhenVisible() {

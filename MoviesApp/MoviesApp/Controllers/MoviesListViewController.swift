@@ -53,7 +53,7 @@ extension MoviesListViewController {
     }
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-          
+        
         guard let cellController = movieCellController(at: indexPath), let cell = cellController.view(in: tableView) else {
             assertionFailure("Unable to create \(MovieCell.self)")
             return UITableViewCell()
