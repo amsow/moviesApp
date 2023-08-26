@@ -92,6 +92,24 @@ final class MoviesListViewControllerTests: XCTestCase {
         assertThat(sut, isRendering: [movie0, movie1])
     }
     
+    func test_loadImageDataCompletion_dispatchesFromBackgroundToMainThread() {
+        let (loader, sut) = makeSUT()
+        let movie = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
+        
+        sut.loadViewIfNeeded()
+        loader.completeMoviesLoadingSuccessfully(with: [movie], at: 0)
+        
+        sut.simulateMovieViewVisible(at: 0)
+        
+        let exp = expectation(description: "Wait for image data loading completion in background thread")
+        DispatchQueue.global().async {
+            loader.completeImageDataLoadingSuccessfully(with: UIImage.makeWithColor().pngData()!, at: 0)
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
+    }
+    
     func test_movieView_loadsImageURLWhenVisible() {
         let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
         let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
