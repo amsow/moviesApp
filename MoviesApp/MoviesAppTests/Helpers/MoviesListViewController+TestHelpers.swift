@@ -25,10 +25,12 @@ extension MoviesListViewController {
         datasource?.tableView?(tableView, cancelPrefetchingForRowsAt: [IndexPath(row: index, section: section)])
     }
     
-    func simulateMovieViewNotVisible(at index: Int) {
+    @discardableResult
+    func simulateMovieViewNotVisible(at index: Int) -> MovieCell? {
         let delegate = tableView.delegate
-        guard let cell = simulateMovieViewVisible(at: index) else { return }
+        guard let cell = simulateMovieViewVisible(at: index) else { return nil }
         delegate?.tableView?(tableView, didEndDisplaying: cell, forRowAt: IndexPath(row: index, section: section))
+        return cell
     }
     
     func isShowingLoadingIndicator() -> Bool {

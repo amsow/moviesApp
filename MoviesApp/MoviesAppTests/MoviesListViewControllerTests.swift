@@ -173,6 +173,18 @@ final class MoviesListViewControllerTests: XCTestCase {
         XCTAssertNotNil(movieCell1?.renderedImageData)
     }
     
+    func test_movieView_doesNotRenderLoadedImageWhenNotVisibleAnyMore() {
+        let (loader, sut) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeMoviesLoadingSuccessfully(with: [makeMovie(id: 1, title: "title", overview: "overview")], at: 0)
+        
+        let movieCell0 = sut.simulateMovieViewNotVisible(at: 0)
+        loader.completeImageDataLoadingSuccessfully(with: UIImage.makeWithColor().pngData()!, at: 0)
+        
+        XCTAssertNil(movieCell0?.renderedImageData)
+    }
+    
     func test_moviewViewRetryButton_isVisibleOnImageURLLoadError() {
         let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
         let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
