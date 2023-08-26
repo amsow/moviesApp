@@ -6,6 +6,10 @@ import UIKit
 extension MoviesListViewController {
     private var section: Int { return 0 }
     
+    var errorMessage: String? {
+        errorView.message
+    }
+    
     func simulateUserInitiatedMoviesReload() {
         refreshControl?.simulatePullToRefresh()
     }

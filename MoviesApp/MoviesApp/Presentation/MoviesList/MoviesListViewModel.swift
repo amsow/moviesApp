@@ -9,11 +9,15 @@ final class MoviesListViewModel {
     
     var onLoading: Observer<Bool>?
     var onLoadSucceeded: Observer<[Movie]>?
-    var onLoadFailed: Observer<Error>?
+    var onLoadFailed: Observer<String?>?
     
     // MARK: - Properties
     
     private let loader: MoviesLoader
+    
+    private var loadErrorMessage: String {
+        return "Something went wrong. Please try again later!"
+    }
     
     
     // MARK: - Init
@@ -23,6 +27,7 @@ final class MoviesListViewModel {
     }
     
     func loadMovies() {
+        onLoadFailed?(.none)
         onLoading?(true)
         loader.load { [weak self] result in
             guard let self else { return }
@@ -30,8 +35,8 @@ final class MoviesListViewModel {
             case .success(let movies):
                onLoadSucceeded?(movies)
         
-            case .failure(let error):
-                onLoadFailed?(error)
+            case .failure:
+                onLoadFailed?(loadErrorMessage)
             }
             
             onLoading?(false)
