@@ -34,7 +34,7 @@ final class MoviesListViewControllerTests: XCTestCase {
         XCTAssertFalse(sut.isShowingLoadingIndicator(), "Expected no loading indicator once loading completes with error")
     }
     
-    func test_loadCompletion_rendersSuccessfullyLoadedMovies() {
+    func test_loadMoviesCompletion_rendersSuccessfullyLoadedMovies() {
         let (loader, sut) = makeSUT()
         let movie0 = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
         let movie1 = makeMovie(id: 1, title: "Movie 1", overview: "Any description")
@@ -49,7 +49,7 @@ final class MoviesListViewControllerTests: XCTestCase {
         assertThat(sut, isRendering: [movie0, movie1, movie2])
     }
     
-    func test_loadCompletion_rendersSuccessfullyLoadedEmptyMoviesAfterNotEmptyMovies() {
+    func test_loadMoviesCompletion_rendersSuccessfullyLoadedEmptyMoviesAfterNotEmptyMovies() {
         let (loader, sut) = makeSUT()
         let movie0 = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
         let movie1 = makeMovie(id: 1, title: "Movie 1", overview: "Any description")
@@ -63,7 +63,7 @@ final class MoviesListViewControllerTests: XCTestCase {
         assertThat(sut, isRendering: [])
     }
     
-    func test_loadCompletion_dispatchesFromBackgroundToMainThread() {
+    func test_loadMoviesCompletion_dispatchesFromBackgroundToMainThread() {
         let (loader, sut) = makeSUT()
         let movie = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
         
@@ -78,7 +78,7 @@ final class MoviesListViewControllerTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
-    func test_loadCompletion_doesNotAlterCurrentRenderingStateOnError() {
+    func test_loadMoviesCompletion_doesNotAlterCurrentRenderingStateOnError() {
         let (loader, sut) = makeSUT()
         let movie0 = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
         let movie1 = makeMovie(id: 1, title: "Movie 1", overview: "Any description")
