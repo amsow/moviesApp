@@ -9,7 +9,7 @@ final class MoviesListViewModel {
     
     var onLoading: Observer<Bool>?
     var onLoadSucceeded: Observer<[Movie]>?
-    var onLoadFailed: Observer<String>?
+    var onLoadFailed: Observer<String?>?
     
     // MARK: - Properties
     
@@ -27,6 +27,7 @@ final class MoviesListViewModel {
     }
     
     func loadMovies() {
+        onLoadFailed?(.none)
         onLoading?(true)
         loader.load { [weak self] result in
             guard let self else { return }

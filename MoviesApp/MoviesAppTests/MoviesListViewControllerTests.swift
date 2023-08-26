@@ -92,13 +92,15 @@ final class MoviesListViewControllerTests: XCTestCase {
         assertThat(sut, isRendering: [movie0, movie1])
     }
     
-    func test_loadMoviesCompletion_rendersErrorMessageOnError() {
+    func test_loadMoviesCompletion_rendersErrorMessageOnErrorUntilNextReload() {
         let (loader, sut) = makeSUT()
         
         sut.loadViewIfNeeded()
         loader.completeMoviesLoadingWithError(at: 0)
-        
         XCTAssertEqual(sut.errorMessage, "Something went wrong. Please try again later!")
+        
+        sut.simulateUserInitiatedMoviesReload()
+        XCTAssertEqual(sut.errorMessage, nil, "Expected error message to be cleared on reload again")
     }
     
     func test_loadImageDataCompletion_dispatchesFromBackgroundToMainThread() {

@@ -37,7 +37,7 @@ public final class MoviesListViewController: UITableViewController {
             tableModels = movies.map(cellControllerFactory.makeCellController)
         }
         
-        viewModel?.onLoadFailed = { [weak self] errorMessage in self?.showErrorMessage(errorMessage) }
+        viewModel?.onLoadFailed = { [weak self] errorMessage in self?.updateErrorState(errorMessage) }
         
         refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
     }
@@ -46,7 +46,7 @@ public final class MoviesListViewController: UITableViewController {
         isLoading ? refreshControl?.beginRefreshing() : refreshControl?.endRefreshing()
     }
     
-    private func showErrorMessage(_ message: String?) {
+    private func updateErrorState(_ message: String?) {
         errorView.text = message
     }
 }
