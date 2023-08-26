@@ -13,15 +13,14 @@ public final class MoviesListViewController: UITableViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         tableView.prefetchDataSource = self
-        refreshControl = UIRefreshControl()
         bindViewModel()
-        loadMovies()
+        refresh()
     }
     
     //MARK: - Private
     
-    @objc
-    private func loadMovies() {
+    @IBAction
+    private func refresh() {
         viewModel?.loadMovies()
     }
     
@@ -38,7 +37,7 @@ public final class MoviesListViewController: UITableViewController {
         
         viewModel?.onLoadFailed = { _ in }
         
-        refreshControl?.addTarget(self, action: #selector(loadMovies), for: .valueChanged)
+        refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
     }
     
     private func updateLoadingState(_ isLoading: Bool) {
