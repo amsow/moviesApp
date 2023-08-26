@@ -25,6 +25,8 @@
 		3257E98C2A99060D00A9BBC3 /* AppComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3257E98B2A99060D00A9BBC3 /* AppComposer.swift */; };
 		3257E98E2A990D2A00A9BBC3 /* WeakReferenceProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3257E98D2A990D2A00A9BBC3 /* WeakReferenceProxy.swift */; };
 		3257E9932A991BEE00A9BBC3 /* MoviesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3257E9922A991BEE00A9BBC3 /* MoviesListViewModel.swift */; };
+		3257E9952A994F7F00A9BBC3 /* MoviesScene.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3257E9942A994F7F00A9BBC3 /* MoviesScene.storyboard */; };
+		3257E9972A9A3CD500A9BBC3 /* UITableView+dequeuingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3257E9962A9A3CD500A9BBC3 /* UITableView+dequeuingCell.swift */; };
 		3261732A2A96BC64004808B9 /* MoviesListViewController+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326173292A96BC64004808B9 /* MoviesListViewController+TestHelpers.swift */; };
 		3261732C2A96BCC7004808B9 /* MovieCell+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3261732B2A96BCC7004808B9 /* MovieCell+TestHelpers.swift */; };
 		326173302A9788E6004808B9 /* MovieCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3261732F2A9788E6004808B9 /* MovieCellController.swift */; };
@@ -63,6 +65,8 @@
 		3257E98B2A99060D00A9BBC3 /* AppComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComposer.swift; sourceTree = "<group>"; };
 		3257E98D2A990D2A00A9BBC3 /* WeakReferenceProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakReferenceProxy.swift; sourceTree = "<group>"; };
 		3257E9922A991BEE00A9BBC3 /* MoviesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesListViewModel.swift; sourceTree = "<group>"; };
+		3257E9942A994F7F00A9BBC3 /* MoviesScene.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MoviesScene.storyboard; sourceTree = "<group>"; };
+		3257E9962A9A3CD500A9BBC3 /* UITableView+dequeuingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+dequeuingCell.swift"; sourceTree = "<group>"; };
 		326173292A96BC64004808B9 /* MoviesListViewController+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoviesListViewController+TestHelpers.swift"; sourceTree = "<group>"; };
 		3261732B2A96BCC7004808B9 /* MovieCell+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MovieCell+TestHelpers.swift"; sourceTree = "<group>"; };
 		3261732F2A9788E6004808B9 /* MovieCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCellController.swift; sourceTree = "<group>"; };
@@ -185,13 +189,23 @@
 			path = MoviesList;
 			sourceTree = "<group>";
 		};
+		3257E9982A9A3E6E00A9BBC3 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				32995B5C2A964C3200BFC448 /* UIView+Shimmering.swift */,
+				3257E9962A9A3CD500A9BBC3 /* UITableView+dequeuingCell.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		32995B5B2A964C1700BFC448 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				3257E9982A9A3E6E00A9BBC3 /* Helpers */,
 				3231ADAE2A93E74F0038218F /* MovieCell.swift */,
 				3231AD7B2A8FFBA90038218F /* LaunchScreen.storyboard */,
 				3231AD762A8FFBA80038218F /* Main.storyboard */,
-				32995B5C2A964C3200BFC448 /* UIView+Shimmering.swift */,
+				3257E9942A994F7F00A9BBC3 /* MoviesScene.storyboard */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -311,6 +325,7 @@
 			files = (
 				3231AD7D2A8FFBA90038218F /* LaunchScreen.storyboard in Resources */,
 				3231AD7A2A8FFBA90038218F /* Assets.xcassets in Resources */,
+				3257E9952A994F7F00A9BBC3 /* MoviesScene.storyboard in Resources */,
 				3231AD782A8FFBA80038218F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -332,6 +347,7 @@
 				3257E98E2A990D2A00A9BBC3 /* WeakReferenceProxy.swift in Sources */,
 				326173302A9788E6004808B9 /* MovieCellController.swift in Sources */,
 				3231AD712A8FFBA80038218F /* AppDelegate.swift in Sources */,
+				3257E9972A9A3CD500A9BBC3 /* UITableView+dequeuingCell.swift in Sources */,
 				3257E9932A991BEE00A9BBC3 /* MoviesListViewModel.swift in Sources */,
 				32995B5D2A964C3200BFC448 /* UIView+Shimmering.swift in Sources */,
 				3257E9882A98E06A00A9BBC3 /* MovieCellPresenter.swift in Sources */,

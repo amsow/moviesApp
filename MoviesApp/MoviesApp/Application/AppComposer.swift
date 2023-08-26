@@ -5,9 +5,15 @@ import MoviesCore
 public final class AppComposer {
     
     public static func moviesListViewController(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) -> MoviesListViewController {
-        let viewModel = MoviesListViewModel(loader: moviesLoader)
-        let cellControllerFactory = MovieCellControllerFactory(imageDataLoader: imageDataLoader)
-        let controller = MoviesListViewController(viewModel: viewModel, cellControllerFactory: cellControllerFactory)
+        return makeListViewController(moviesLoader: moviesLoader, imageDataLoader: imageDataLoader)
+    }
+    
+    private static func makeListViewController(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) -> MoviesListViewController {
+        let storyboard = UIStoryboard(name: "MoviesScene", bundle: Bundle(for: MoviesListViewController.self))
+        let controller = storyboard.instantiateInitialViewController() as! MoviesListViewController
+        controller.viewModel = MoviesListViewModel(loader: moviesLoader)
+        controller.cellControllerFactory = MovieCellControllerFactory(imageDataLoader: imageDataLoader)
+        
         return controller
     }
 }

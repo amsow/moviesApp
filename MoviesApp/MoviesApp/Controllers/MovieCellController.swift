@@ -18,8 +18,8 @@ final class MovieCellController: NSObject, MovieCellPresentable {
     
     ///  The associated View for the controller
     /// - Returns: UITableViewCell
-    func view() -> UITableViewCell? {
-        cell = MovieCell()
+    func view(in tableView: UITableView) -> UITableViewCell? {
+        cell = tableView.dequeueCell()
         loadImageData()
         return cell
     }
@@ -51,8 +51,12 @@ final class MovieCellController: NSObject, MovieCellPresentable {
     // MARK: - Cancel load image data for each cell
     
     func cancelImageDataLoadTask() {
-        // Release the cell as it's no longer visible
-        cell = nil
+        releaseCellForReuse()
         delegate.didCancelImageDataLoadingRequest()
+    }
+    
+    // Release the cell as it's no longer visible and avoid image loaded inconsistency
+    private func releaseCellForReuse() {
+        cell = nil
     }
 }
