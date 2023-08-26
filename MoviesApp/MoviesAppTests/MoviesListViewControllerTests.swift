@@ -94,10 +94,10 @@ final class MoviesListViewControllerTests: XCTestCase {
     
     func test_loadMoviesCompletion_rendersErrorMessageOnErrorUntilNextReload() {
         let (loader, sut) = makeSUT()
-        
+
         sut.loadViewIfNeeded()
         loader.completeMoviesLoadingWithError(at: 0)
-        XCTAssertEqual(sut.errorMessage, "Something went wrong. Please try again later!")
+        XCTAssertEqual(sut.errorMessage, localized(key: "MOVIES_LOAD_ERROR"))
         
         sut.simulateUserInitiatedMoviesReload()
         XCTAssertEqual(sut.errorMessage, nil, "Expected error message to be cleared on reload again")
@@ -437,6 +437,16 @@ final class MoviesListViewControllerTests: XCTestCase {
         releaseDate: Date = Date()
     ) -> Movie {
         Movie(id: id, title: title, overview: overview, releaseDate: releaseDate, posterImageURL: URL(string: "http://image-\(id).com")!)
+    }
+    
+    private func localized(key: String, file: StaticString = #filePath, line: UInt = #line) -> String {
+        let bundle = Bundle(for: MoviesListViewModel.self)
+        let table = "Movies"
+        let value = bundle.localizedString(forKey: key, value: nil, table: table)
+        if value.isEmpty || key == value {
+            XCTFail("Missing localiazed string for key \(key) in table \"\(table)\"", file: file, line: line)
+        }
+        return value
     }
 }
 

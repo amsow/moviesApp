@@ -1,7 +1,8 @@
 
+import Foundation
 import MoviesCore
 
-final class MoviesListViewModel {
+public final class MoviesListViewModel {
     
     typealias Observer<P> = (P) -> Void
     
@@ -16,7 +17,10 @@ final class MoviesListViewModel {
     private let loader: MoviesLoader
     
     private var loadErrorMessage: String {
-        return "Something went wrong. Please try again later!"
+        return NSLocalizedString(
+            "MOVIES_LOAD_ERROR",
+            tableName: "Movies",
+            comment: "The message to be shown when an error occurs while loading movies")
     }
     
     
