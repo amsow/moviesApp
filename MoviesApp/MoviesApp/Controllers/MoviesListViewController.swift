@@ -1,6 +1,5 @@
 
 import UIKit
-import MoviesCore
 
 public final class MoviesListViewController: UITableViewController {
     
@@ -8,18 +7,8 @@ public final class MoviesListViewController: UITableViewController {
         didSet { tableView.reloadData() }
     }
     
-    private let cellControllerFactory: MovieCellControllerFactory
-    private let viewModel: MoviesListViewModel
-    
-    init(viewModel: MoviesListViewModel, cellControllerFactory: MovieCellControllerFactory) {
-        self.viewModel = viewModel
-        self.cellControllerFactory = cellControllerFactory
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    var cellControllerFactory: MovieCellControllerFactory?
+    var viewModel: MoviesListViewModel?
     
     override public func viewDidLoad() {
         super.viewDidLoad()
@@ -33,21 +22,23 @@ public final class MoviesListViewController: UITableViewController {
     
     @objc
     private func loadMovies() {
-        viewModel.loadMovies()
+        viewModel?.loadMovies()
     }
     
     private func bindViewModel() {
-        viewModel.onLoading = { [ weak self] isLoading in self?.updateLoadingState(isLoading) }
         
-        viewModel.onLoadSucceeded = { [weak self] movies in self?.updateTable(with: movies) }
+        viewModel?.onLoading = { [ weak self] isLoading in self?.updateLoadingState(isLoading) }
         
-        viewModel.onLoadFailed = { _ in }
+        viewModel?.onLoadSucceeded = { [weak self] movies in
+            guard let self, let cellControllerFactory = cellControllerFactory else {
+                return
+            }
+            tableModels = movies.map(cellControllerFactory.makeCellController)
+        }
+        
+        viewModel?.onLoadFailed = { _ in }
         
         refreshControl?.addTarget(self, action: #selector(loadMovies), for: .valueChanged)
-    }
-    
-    private func updateTable(with movies: [Movie]) {
-        tableModels = movies.map(cellControllerFactory.makeCellController)
     }
     
     private func updateLoadingState(_ isLoading: Bool) {
