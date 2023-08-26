@@ -98,7 +98,7 @@ final class MoviesListViewControllerTests: XCTestCase {
         sut.loadViewIfNeeded()
         loader.completeMoviesLoadingWithError(at: 0)
         
-        XCTAssertNotNil(sut.errorMessage)
+        XCTAssertEqual(sut.errorMessage, "Something went wrong. Please try again later!")
     }
     
     func test_loadImageDataCompletion_dispatchesFromBackgroundToMainThread() {

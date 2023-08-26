@@ -37,7 +37,7 @@ public final class MoviesListViewController: UITableViewController {
             tableModels = movies.map(cellControllerFactory.makeCellController)
         }
         
-        viewModel?.onLoadFailed = { [weak self] error in self?.showErrorMessage(error.localizedDescription) }
+        viewModel?.onLoadFailed = { [weak self] errorMessage in self?.showErrorMessage(errorMessage) }
         
         refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
     }
