@@ -19,7 +19,7 @@ final class MovieCellController: NSObject, MovieCellPresentable {
     ///  The associated View for the controller
     /// - Returns: UITableViewCell
     func view(in tableView: UITableView) -> UITableViewCell? {
-        cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell") as? MovieCell
+        cell = tableView.dequeueCell()
         loadImageData()
         return cell
     }
