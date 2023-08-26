@@ -200,6 +200,15 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		325A63832A9A6D1F00ABB9A0 /* Composers */ = {
+			isa = PBXGroup;
+			children = (
+				3257E98B2A99060D00A9BBC3 /* AppComposer.swift */,
+				325A63812A9A607400ABB9A0 /* MainQueueDispatchDecorator.swift */,
+			);
+			path = Composers;
+			sourceTree = "<group>";
+		};
 		32995B5B2A964C1700BFC448 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -215,10 +224,9 @@
 		32C1C2182A96BA2200938858 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				325A63832A9A6D1F00ABB9A0 /* Composers */,
 				3231AD702A8FFBA80038218F /* AppDelegate.swift */,
 				3231AD722A8FFBA80038218F /* SceneDelegate.swift */,
-				3257E98B2A99060D00A9BBC3 /* AppComposer.swift */,
-				325A63812A9A607400ABB9A0 /* MainQueueDispatchDecorator.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
