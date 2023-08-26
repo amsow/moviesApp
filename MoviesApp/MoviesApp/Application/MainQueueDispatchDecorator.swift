@@ -10,18 +10,19 @@ final class MainQueueDispatchDecorator<Decoratee> {
     init(decoratee: Decoratee) {
         self.decoratee = decoratee
     }
+    
+    func dispatch(completion: @escaping () -> Void) {
+        guard Thread.isMainThread else {
+            return DispatchQueue.main.async(execute: completion)
+        }
+        completion()
+    }
 }
 
 extension MainQueueDispatchDecorator: MoviesLoader where Decoratee == MoviesLoader {
     func load(completion: @escaping (MoviesLoader.Result) -> Void) {
-        decoratee.load { result in
-            if Thread.isMainThread {
-                completion(result)
-            } else {
-                DispatchQueue.main.async {
-                    completion(result)
-                }
-            }
+        decoratee.load { [weak self] result in
+            self?.dispatch { completion(result) }
         }
     }
 }
