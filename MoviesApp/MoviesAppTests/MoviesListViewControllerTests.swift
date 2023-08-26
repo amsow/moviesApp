@@ -5,6 +5,12 @@ import MoviesCore
 import MoviesApp
 
 final class MoviesListViewControllerTests: XCTestCase {
+    
+    func test_moviesListView_hasATitle() {
+        let (_, sut) = makeSUT()
+        
+        XCTAssertEqual(sut.title, localized(key: "MOVIES_TITLE"))
+    }
 
     func test_loadActions_requestsMoviesFromLoader() {
         let (loader, sut) = makeSUT()

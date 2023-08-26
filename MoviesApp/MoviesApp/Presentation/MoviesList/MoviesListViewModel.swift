@@ -17,14 +17,19 @@ public final class MoviesListViewModel {
     private let loader: MoviesLoader
     
     static var moviesListTitle: String {
-        return NSLocalizedString("MOVIES_TITLE", comment: "The title of movies list")
+        return NSLocalizedString(
+            "MOVIES_TITLE",
+            tableName: "Movies",
+            comment: "The title of movies list"
+        )
     }
     
     private var loadErrorMessage: String {
         return NSLocalizedString(
             "MOVIES_LOAD_ERROR",
             tableName: "Movies",
-            comment: "The message to be shown when an error occurs while loading movies")
+            comment: "The message to be shown when an error occurs while loading movies"
+        )
     }
     
     
