@@ -4,15 +4,7 @@ import UIKit
 public final class MoviesListViewController: UITableViewController {
     
     private var tableModels = [MovieCellController]() {
-        didSet {
-            if Thread.isMainThread {
-                tableView.reloadData()
-            } else {
-                DispatchQueue.main.async { [weak self] in
-                    self?.tableView.reloadData()
-                }
-            }
-        }
+        didSet { tableView.reloadData() }
     }
     
     var cellControllerFactory: MovieCellControllerFactory?
@@ -49,13 +41,7 @@ public final class MoviesListViewController: UITableViewController {
     }
     
     private func updateLoadingState(_ isLoading: Bool) {
-        if Thread.isMainThread {
-            isLoading ? refreshControl?.beginRefreshing() : refreshControl?.endRefreshing()
-        } else {
-            DispatchQueue.main.async { [weak self] in
-                isLoading ? self?.refreshControl?.beginRefreshing() : self?.refreshControl?.endRefreshing()
-            }
-        }
+        isLoading ? refreshControl?.beginRefreshing() : refreshControl?.endRefreshing()
     }
 }
 
@@ -67,7 +53,7 @@ extension MoviesListViewController {
     }
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-          
+        
         guard let cellController = movieCellController(at: indexPath), let cell = cellController.view(in: tableView) else {
             assertionFailure("Unable to create \(MovieCell.self)")
             return UITableViewCell()
