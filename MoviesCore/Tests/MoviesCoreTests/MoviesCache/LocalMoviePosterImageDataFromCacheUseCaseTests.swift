@@ -4,7 +4,9 @@ import XCTest
 import MoviesCore
 
 protocol ImageDataStore {
-    func retrieveData(for url: URL, completion: @escaping (Result<Data?, Error>) -> Void)
+    typealias RetrievalResult = Result<Data?, Error>
+    
+    func retrieveData(for url: URL, completion: @escaping (RetrievalResult) -> Void)
 }
 
 final class LocalMoviePosterImageDataLoader {
@@ -20,19 +22,19 @@ final class LocalMoviePosterImageDataLoader {
         case failed
     }
     
-    func loadImageData(from url: URL, completion: @escaping (Data?, Error?) -> Void) {
+    func loadImageData(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
         store.retrieveData(for: url) { result in
             
             switch result {
             case .success(let data):
                 if data == nil {
-                    completion(nil, RetrievalError.notFound)
+                    completion(.failure(RetrievalError.notFound))
                 } else {
-                    completion(data!, nil)
+                    completion(.success(data!))
                 }
                 
             case .failure:
-                completion(nil, RetrievalError.failed)
+                completion(.failure(RetrievalError.failed))
             }
         }
     }
@@ -50,7 +52,7 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
         let (store, sut) = makeSUT()
         
         let url = anyURL()
-        sut.loadImageData(from: url) { (_, _) in }
+        sut.loadImageData(from: url) { _ in }
         
         XCTAssertEqual(store.messages, [.retrieve(dataForURL: url)])
     }
@@ -62,8 +64,10 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
         let exp = expectation(description: "Wait for retrive completion")
         
         var receivedError: Error?
-        sut.loadImageData(from: anyURL()) { (_, error) in
+        sut.loadImageData(from: anyURL()) { result in
+            if case .failure(let error) = result {
                 receivedError = error
+            }
             exp.fulfill()
         }
         
@@ -78,10 +82,10 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
         let (store, sut) = makeSUT()
         
         let exp = expectation(description: "wait for retrieval completion")
-        sut.loadImageData(from: anyURL()) { (_, error) in
-           // if case .failure(let error) = result {
+        sut.loadImageData(from: anyURL()) { result in
+            if case .failure(let error) = result {
                 XCTAssertEqual(error as? LocalMoviePosterImageDataLoader.RetrievalError, .notFound)
-       //     }
+          }
            
             exp.fulfill()
         }
@@ -95,8 +99,10 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
         let expectedData = anyData()
         let exp = expectation(description: "Wait for retrieval completion")
         var receivedData: Data?
-        sut.loadImageData(from: anyURL()) { (data, _) in
-            receivedData = data
+        sut.loadImageData(from: anyURL()) { result in
+            if case .success(let data) = result {
+                receivedData = data
+            }
             exp.fulfill()
         }
         
@@ -120,13 +126,13 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
     
     final class ImageDataStoreSpy: ImageDataStore {
         private(set) var messages = [Message]()
-        private var retrievalCompletions = [(Result<Data?, Error>) -> Void]()
+        private var retrievalCompletions = [(ImageDataStore.RetrievalResult) -> Void]()
         
         enum Message: Equatable {
             case retrieve(dataForURL: URL)
         }
         
-        func retrieveData(for url: URL, completion: @escaping (Result<Data?, Error>) -> Void) {
+        func retrieveData(for url: URL, completion: @escaping (ImageDataStore.RetrievalResult) -> Void) {
             messages.append(.retrieve(dataForURL: url))
             retrievalCompletions.append(completion)
         }
