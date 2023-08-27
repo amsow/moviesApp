@@ -5,7 +5,7 @@ struct NetworkConfig {
     static var apiBaseURL: NSString = "https://api.themoviedb.org/3"
     
     static var apiKey: String = {
-        guard let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String else {
+        guard let apiKey = Bundle.main.object(forInfoDictionaryKey: "ApiKey") as? String else {
             assertionFailure("API_KEY not found")
             return ""
         }
