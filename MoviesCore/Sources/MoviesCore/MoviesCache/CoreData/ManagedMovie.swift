@@ -19,6 +19,15 @@ extension ManagedMovie {
         Movie(id: id, title: title, overview: overview, releaseDate: releaseDate, posterImageURL: posterImageURL)
     }
     
+    static func first(with url: URL, in context: NSManagedObjectContext) throws -> ManagedMovie? {
+        let request = NSFetchRequest<ManagedMovie>(entityName: entity().name!)
+        request.predicate = NSPredicate(format: "%K = %@", argumentArray: [#keyPath(ManagedMovie.posterImageURL), url])
+        request.returnsObjectsAsFaults = false
+        request.fetchLimit = 1
+        
+        return try context.fetch(request).first
+    }
+    
     static func managedMovieOrderSet(from movies: [Movie], in context: NSManagedObjectContext) -> NSOrderedSet {
         NSOrderedSet(
             array: movies.map { movie in
