@@ -15,8 +15,14 @@ final class LocalMoviePosterImageDataLoader {
         self.store = store
     }
     
+    enum RetrievalError: Error {
+        case notFound
+        case failed
+    }
+    
     func loadImageData(from url: URL, completion: @escaping (Error?) -> Void) {
-        store.retrieveData(for: url) { error in
+        store.retrieveData(for: url) { (error) in
+            
             completion(error)
         }
     }
@@ -42,7 +48,7 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
     func test_loadImageDataFromURL_failsOnStoreError() {
         let (store, sut) = makeSUT()
         
-        let retrievalError = anyNSError()
+        let retrievalError = LocalMoviePosterImageDataLoader.RetrievalError.failed
         let exp = expectation(description: "Wait for retrive completion")
         
         var receivedError: Error?
@@ -55,7 +61,21 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
         
-        XCTAssertEqual(retrievalError, receivedError as? NSError)
+        XCTAssertEqual(receivedError as? LocalMoviePosterImageDataLoader.RetrievalError, .failed)
+    }
+    
+    func test_loadImageFataFromURL_deliversNotFoundErrorOnNotFound() {
+        let (store, sut) = makeSUT()
+        
+        let notFoundError = LocalMoviePosterImageDataLoader.RetrievalError.notFound
+        let exp = expectation(description: "wait for retrieval completion")
+       
+        sut.loadImageData(from: anyURL()) { error in
+            XCTAssertEqual(error as? LocalMoviePosterImageDataLoader.RetrievalError, .notFound)
+            exp.fulfill()
+        }
+        store.completeWithError(notFoundError, at: 0)
+        wait(for: [exp], timeout: 1.0)
     }
     
     // MARK: - Private Helpers
