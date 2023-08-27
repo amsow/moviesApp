@@ -24,9 +24,17 @@ final class CacheMoviePosterImageDataUseCaseTests: XCTestCase {
     func test_saveImageDataForURL_failsOnStoreInsertionError() {
         let (sut, store) = makeSUT()
         
-        expect(sut, toCompleteWith: .failure(LocalMoviePosterImageDataLoader.SaveError.failed), action: {
+        expect(sut, toCompleteWith: .failure(LocalMoviePosterImageDataLoader.SaveError.failed), when: {
             let insertionError = anyNSError()
             store.completeInsertion(with: insertionError)
+        })
+    }
+    
+    func test_saveImageDataForURL_succeedsOnSuccessfulStoreInsertion() {
+        let (sut, store) = makeSUT()
+        
+        expect(sut, toCompleteWith: .success(()), when: {
+            store.completeInsertionSuccessfully()
         })
     }
     
@@ -44,7 +52,7 @@ final class CacheMoviePosterImageDataUseCaseTests: XCTestCase {
     
     private func expect(_ sut: LocalMoviePosterImageDataLoader,
                         toCompleteWith expectedResut: LocalMoviePosterImageDataLoader.SaveResult,
-                        action: () -> Void,
+                        when action: () -> Void,
                         file: StaticString = #file,
                         line: UInt = #line
     ) {
