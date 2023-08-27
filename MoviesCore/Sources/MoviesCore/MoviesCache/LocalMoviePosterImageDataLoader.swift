@@ -43,9 +43,19 @@ public final class LocalMoviePosterImageDataLoader: ImageDataLoader {
         
         return task
     }
+}
+
+extension LocalMoviePosterImageDataLoader {
+    public typealias SaveResult = ImageDataStore.InsertionResult
     
-    public func save(_ data: Data, for url: URL) {
-        store.insert(data, for: url)
+    public enum SaveError: Error {
+        case failed
+    }
+    
+    public func save(_ data: Data, for url: URL, completion: @escaping (SaveResult) -> Void) {
+        store.insert(data, for: url) { _ in
+            completion(.failure(SaveError.failed))
+        }
     }
 }
 
