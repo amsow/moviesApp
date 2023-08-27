@@ -1,14 +1,18 @@
 
 import Foundation
 
-public final class LocalMoviePosterImageDataLoader: ImageDataLoader {
+public final class LocalMoviePosterImageDataLoader {
     
     private let store: ImageDataStore
     
     public init(store: ImageDataStore) {
         self.store = store
     }
-    
+}
+
+// MARK: - ImageDataLoader
+
+extension LocalMoviePosterImageDataLoader: ImageDataLoader {
     public enum RetrievalError: Error {
         case notFound
         case failed
@@ -45,8 +49,9 @@ public final class LocalMoviePosterImageDataLoader: ImageDataLoader {
     }
 }
 
-extension LocalMoviePosterImageDataLoader {
-    public typealias SaveResult = ImageDataStore.InsertionResult
+// MARK: - ImageDataCache
+
+extension LocalMoviePosterImageDataLoader: ImageDataCache {
     
     public enum SaveError: Error {
         case failed
