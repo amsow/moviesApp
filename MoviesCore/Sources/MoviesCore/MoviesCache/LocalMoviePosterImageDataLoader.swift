@@ -61,13 +61,10 @@ extension LocalMoviePosterImageDataLoader: ImageDataCache {
         store.insert(data, for: url) { [weak self] result in
             guard self != nil else { return }
             
-            switch result {
-            case .failure:
-                completion(.failure(SaveError.failed))
-                
-            case .success:
-                completion(.success(()))
-            }
+            completion(result
+                .mapError { _ in SaveError.failed }
+                .flatMap { .success(()) }
+            )
         }
     }
 }
