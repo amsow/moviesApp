@@ -13,13 +13,13 @@ struct NetworkConfig {
     }()
 }
 
-struct MoviesEndpoint {
+public struct MoviesEndpoint {
     
     static var path: String {
         return "discover/movie"
     }
     
-    static func url() -> URL? {
+    public static func url() -> URL? {
         let urlString = NetworkConfig.apiBaseURL.appendingPathComponent(path)
         var urlComponents = URLComponents(string: urlString)
         urlComponents?.queryItems = [

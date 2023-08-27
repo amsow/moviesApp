@@ -213,13 +213,6 @@
 			path = Composers;
 			sourceTree = "<group>";
 		};
-		327C6FC02A9BED02005AB8B0 /* Infrastructure */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Infrastructure;
-			sourceTree = "<group>";
-		};
 		32995B5B2A964C1700BFC448 /* Views */ = {
 			isa = PBXGroup;
 			children = (
