@@ -32,7 +32,7 @@ struct MoviesMapper {
                 id: id,
                 title: title,
                 overview: overview,
-                releaseDate: dateFormatter().date(from: releaseDate)!,
+                releaseDate: dateFormatter().date(from: releaseDate),
                 posterImageURL: posterImageURL
         )
             

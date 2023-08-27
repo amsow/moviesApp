@@ -84,7 +84,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
             title: "title1",
             overview: "overview1",
             releaseDate: (Date(timeIntervalSince1970: 1627430400), "2021-07-28"),
-            posterImageURL: URL(string: "http://poster-image-base-url.com/w0cn9vwzkheuCT2a2MStdnadOyh.jpg")!
+            posterImageURL: URL(string: "https://image.tmdb.org/t/p/w780/w0cn9vwzkheuCT2a2MStdnadOyh.jpg")!
         )
         
         let movie2 = makeMovie(
@@ -92,7 +92,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
             title: "title2",
             overview: "overview2",
             releaseDate: (Date(timeIntervalSince1970: 970617600), "2000-10-04"),
-            posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2MStdnadOyh.jpg")!
+            posterImageURL: URL(string: "https://image.tmdb.org/t/p/w780/9vwzkheuCT2MStdnadOyh.jpg")!
         )
         
         let movie3 = makeMovie(
@@ -100,7 +100,7 @@ final class LoadMoviesFromRemoteUseCaseTests: XCTestCase {
             title: "title3",
             overview: "overview3",
             releaseDate: (Date(timeIntervalSince1970: 1111276800), "2005-03-20"),
-            posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2a2MStdnadOyh.jpg")!
+            posterImageURL: URL(string: "https://image.tmdb.org/t/p/w780/9vwzkheuCT2a2MStdnadOyh.jpg")!
         )
         
         let remoteMoviesResponseData = makeMovieResponseJSONData([movie1.json, movie2.json, movie3.json])

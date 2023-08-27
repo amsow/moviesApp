@@ -23,7 +23,7 @@ final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Ima
             MovieViewModel(
                 title: model.title,
                 overview: model.overview,
-                releaseDate: model.releaseDate.year(),
+                releaseDate: model.releaseDate?.year(),
                 posterImage: nil,
                 isLoading: true,
                 shouldRetry: false)
@@ -36,7 +36,7 @@ final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Ima
             MovieViewModel(
                 title: model.title,
                 overview: model.overview,
-                releaseDate: model.releaseDate.year(),
+                releaseDate: model.releaseDate?.year(),
                 posterImage: img,
                 isLoading: false,
                 shouldRetry: img == nil)
@@ -48,7 +48,7 @@ final class MovieCellPresenter<View: MovieCellPresentable, Image> where View.Ima
             MovieViewModel(
                 title: model.title,
                 overview: model.overview,
-                releaseDate: model.releaseDate.year(),
+                releaseDate: model.releaseDate?.year(),
                 posterImage: nil,
                 isLoading: false,
                 shouldRetry: true)

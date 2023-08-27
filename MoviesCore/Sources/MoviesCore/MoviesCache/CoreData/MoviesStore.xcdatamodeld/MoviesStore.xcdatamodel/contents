@@ -9,7 +9,7 @@
         <attribute name="overview" attributeType="String"/>
         <attribute name="posterImageData" optional="YES" attributeType="Binary"/>
         <attribute name="posterImageURL" attributeType="URI"/>
-        <attribute name="releaseDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="releaseDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="title" attributeType="String"/>
         <relationship name="cache" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedCache" inverseName="movies" inverseEntity="ManagedCache"/>
     </entity>
