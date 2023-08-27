@@ -38,6 +38,19 @@ final class CacheMoviePosterImageDataUseCaseTests: XCTestCase {
         })
     }
     
+    func test_saveImageDataForURL_doesNotSendResultAfterInstanceHasBeenDeallocated() {
+        let store = ImageDataStoreSpy()
+        var sut: LocalMoviePosterImageDataLoader? = LocalMoviePosterImageDataLoader(store: store)
+        
+        var receivedResults = [LocalMoviePosterImageDataLoader.SaveResult]()
+        sut?.save(anyData(), for: anyURL()) { receivedResults.append($0) }
+        
+        sut = nil
+        store.completeInsertionSuccessfully()
+        
+        XCTAssertTrue(receivedResults.isEmpty, "Expected to receive no result after instance is deallocated")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: LocalMoviePosterImageDataLoader, store: ImageDataStoreSpy) {
