@@ -9,7 +9,7 @@ protocol ImageDataStore {
     func retrieveData(for url: URL, completion: @escaping (RetrievalResult) -> Void)
 }
 
-final class LocalMoviePosterImageDataLoader {
+final class LocalMoviePosterImageDataLoader: ImageDataLoader {
     
     private let store: ImageDataStore
     
@@ -65,7 +65,7 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
         let (store, sut) = makeSUT()
         
         let url = anyURL()
-        sut.loadImageData(from: url) { _ in }
+        _ = sut.loadImageData(from: url) { _ in }
         
         XCTAssertEqual(store.messages, [.retrieve(dataForURL: url)])
     }
@@ -121,7 +121,7 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
         return (store, sut)
     }
     
-    private func expect(_ sut: LocalMoviePosterImageDataLoader,
+    private func expect(_ sut: ImageDataLoader,
                         toCompleteWith expectedResut: ImageDataLoader.Result,
                         when action: () -> Void,
                         file: StaticString = #file,
@@ -129,7 +129,7 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
     ) {
         
         let exp = expectation(description: "Wait for completion")
-        sut.loadImageData(from: anyURL()) { receivedResult in
+        _ = sut.loadImageData(from: anyURL()) { receivedResult in
             switch (expectedResut, receivedResult) {
             case (.success(let expectedData), .success(let receivedData)):
                 XCTAssertEqual(expectedData, receivedData,
