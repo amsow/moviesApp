@@ -4,7 +4,7 @@ import XCTest
 import MoviesCore
 
 protocol ImageDataStore {
-    func retrieveData(for url: URL, completion: @escaping (Error?) -> Void)
+    func retrieveData(for url: URL, completion: @escaping (Result<Data?, Error>) -> Void)
 }
 
 final class LocalMoviePosterImageDataLoader {
@@ -20,10 +20,20 @@ final class LocalMoviePosterImageDataLoader {
         case failed
     }
     
-    func loadImageData(from url: URL, completion: @escaping (Error?) -> Void) {
-        store.retrieveData(for: url) { (error) in
+    func loadImageData(from url: URL, completion: @escaping (Data?, Error?) -> Void) {
+        store.retrieveData(for: url) { result in
             
-            completion(error)
+            switch result {
+            case .success(let data):
+                if data == nil {
+                    completion(nil, RetrievalError.notFound)
+                } else {
+                    completion(data!, nil)
+                }
+                
+            case .failure:
+                completion(nil, RetrievalError.failed)
+            }
         }
     }
 }
@@ -40,7 +50,7 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
         let (store, sut) = makeSUT()
         
         let url = anyURL()
-        sut.loadImageData(from: url) { _ in }
+        sut.loadImageData(from: url) { (_, _) in }
         
         XCTAssertEqual(store.messages, [.retrieve(dataForURL: url)])
     }
@@ -52,12 +62,12 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
         let exp = expectation(description: "Wait for retrive completion")
         
         var receivedError: Error?
-        sut.loadImageData(from: anyURL()) { error in
-            receivedError = error
+        sut.loadImageData(from: anyURL()) { (_, error) in
+                receivedError = error
             exp.fulfill()
         }
         
-        store.completeWithError(retrievalError, at: 0)
+        store.completeRetrievalWithError(retrievalError, at: 0)
         
         wait(for: [exp], timeout: 1.0)
         
@@ -67,15 +77,34 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
     func test_loadImageFataFromURL_deliversNotFoundErrorOnNotFound() {
         let (store, sut) = makeSUT()
         
-        let notFoundError = LocalMoviePosterImageDataLoader.RetrievalError.notFound
         let exp = expectation(description: "wait for retrieval completion")
-       
-        sut.loadImageData(from: anyURL()) { error in
-            XCTAssertEqual(error as? LocalMoviePosterImageDataLoader.RetrievalError, .notFound)
+        sut.loadImageData(from: anyURL()) { (_, error) in
+           // if case .failure(let error) = result {
+                XCTAssertEqual(error as? LocalMoviePosterImageDataLoader.RetrievalError, .notFound)
+       //     }
+           
             exp.fulfill()
         }
-        store.completeWithError(notFoundError, at: 0)
+        store.completeRetrievalWithData(nil, at: 0)
         wait(for: [exp], timeout: 1.0)
+    }
+    
+    func test_loadImageDataFromURL_deliversFoundDataForURL() {
+        let (store, sut) = makeSUT()
+        
+        let expectedData = anyData()
+        let exp = expectation(description: "Wait for retrieval completion")
+        var receivedData: Data?
+        sut.loadImageData(from: anyURL()) { (data, _) in
+            receivedData = data
+            exp.fulfill()
+        }
+        
+        store.completeRetrievalWithData(expectedData, at: 0)
+        
+        wait(for: [exp], timeout: 1.0)
+        
+        XCTAssertEqual(expectedData, receivedData)
     }
     
     // MARK: - Private Helpers
@@ -91,19 +120,23 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
     
     final class ImageDataStoreSpy: ImageDataStore {
         private(set) var messages = [Message]()
-        private var retrievalCompletions = [(Error?) -> Void]()
+        private var retrievalCompletions = [(Result<Data?, Error>) -> Void]()
         
         enum Message: Equatable {
             case retrieve(dataForURL: URL)
         }
         
-        func retrieveData(for url: URL, completion: @escaping (Error?) -> Void) {
+        func retrieveData(for url: URL, completion: @escaping (Result<Data?, Error>) -> Void) {
             messages.append(.retrieve(dataForURL: url))
             retrievalCompletions.append(completion)
         }
         
-        func completeWithError(_ error: Error, at index: Int) {
-            retrievalCompletions[index](error)
+        func completeRetrievalWithError(_ error: Error, at index: Int) {
+            retrievalCompletions[index](.failure(error))
+        }
+        
+        func completeRetrievalWithData(_ data: Data?, at index: Int) {
+            retrievalCompletions[index](.success(data))
         }
     }
 }
