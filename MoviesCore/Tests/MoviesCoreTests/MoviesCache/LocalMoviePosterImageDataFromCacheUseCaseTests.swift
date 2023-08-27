@@ -10,15 +10,9 @@ final class LocalMoviePosterImageDataLoader {
 final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
 
     func test_init_doesNotSendMessgeToStoreUponFreation() {
-        let store = StoreSpy()
+        let store = MoviesStoreSpy()
         let sut = LocalMoviePosterImageDataLoader(store: store)
         
-        XCTAssertTrue(store.receivedMessages.isEmpty)
-    }
-    
-    // MARK: - Helpers
-    
-    final class StoreSpy {
-        private(set) var receivedMessages = [Any]()
+        XCTAssertTrue(store.messages.isEmpty)
     }
 }
