@@ -370,8 +370,8 @@ final class MoviesListViewControllerTests: XCTestCase {
                        file: file,
                        line: line)
         XCTAssertEqual(cell.releaseDateLabel.text,
-                       movie.releaseDate.year(),
-                       "Expected releaseDate label text to be \(movie.releaseDate)'s year for movie cell at index \(index)",
+                       movie.releaseDate?.year(),
+                       "Expected releaseDate label text to be \(String(describing: movie.releaseDate))'s year for movie cell at index \(index)",
                        file: file,
                        line: line)
     }
