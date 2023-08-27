@@ -24,24 +24,17 @@ final class LocalMoviePosterImageDataLoader {
     
     func loadImageData(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
         store.retrieveData(for: url) { result in
-            
-            switch result {
-            case .success(let data):
-                if data == nil {
-                    completion(.failure(RetrievalError.notFound))
-                } else {
-                    completion(.success(data!))
+            completion(result.mapError { _ in RetrievalError.failed }
+                .flatMap { data in
+                    data.map { .success($0) } ?? .failure(RetrievalError.notFound)
                 }
-                
-            case .failure:
-                completion(.failure(RetrievalError.failed))
-            }
+            )
         }
     }
 }
 
 final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
-
+    
     func test_init_doesNotSendMessgeToStoreUponFreation() {
         let (store, _) = makeSUT()
         
@@ -59,7 +52,7 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
     
     func test_loadImageDataFromURL_failsOnStoreError() {
         let (store, sut) = makeSUT()
-
+        
         expect(sut, toCompleteWith: .failure(LocalMoviePosterImageDataLoader.RetrievalError.failed), when: {
             store.completeRetrievalWithError(anyNSError(), at: 0)
         })
@@ -108,7 +101,7 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
                                "Expected success with data \(expectedData) but got this \(receivedData)",
                                file: file,
                                line: line)
-            
+                
             case (.failure(let expectedError as LocalMoviePosterImageDataLoader.RetrievalError), .failure(let receivedError as LocalMoviePosterImageDataLoader.RetrievalError)):
                 XCTAssertEqual(expectedError, receivedError,
                                "Expected failure with error \(expectedError) but got this error \(receivedError) instead",
