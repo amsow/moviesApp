@@ -24,13 +24,16 @@ struct MoviesMapper {
         let posterPath: String
         
         var model: Movie {
-        let posterImageBaseURL = URL(string: "http://poster-image-base-url.com")!
+        let posterImageURL: URL = {
+            let imageBaseURL = URL(string: NetworkConfig.moviePosterImageApiURL)!
+            return imageBaseURL.appendingPathComponent(posterPath)
+        }()
         let movie = Movie(
                 id: id,
                 title: title,
                 overview: overview,
                 releaseDate: dateFormatter().date(from: releaseDate)!,
-                posterImageURL: posterImageBaseURL.appendingPathComponent(posterPath)
+                posterImageURL: posterImageURL
         )
             
             return movie
