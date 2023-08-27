@@ -9,11 +9,16 @@ final class ImageDataStoreSpy: ImageDataStore {
     
     enum Message: Equatable {
         case retrieve(dataForURL: URL)
+        case insert(data: Data, for: URL)
     }
     
     func retrieveData(for url: URL, completion: @escaping (ImageDataStore.RetrievalResult) -> Void) {
         messages.append(.retrieve(dataForURL: url))
         retrievalCompletions.append(completion)
+    }
+    
+    func insert(_ data: Data, for url: URL) {
+        messages.append(.insert(data: data, for: url))
     }
     
     func completeRetrievalWithError(_ error: Error, at index: Int) {

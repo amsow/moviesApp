@@ -43,5 +43,9 @@ public final class LocalMoviePosterImageDataLoader: ImageDataLoader {
         
         return task
     }
+    
+    public func save(_ data: Data, for url: URL) {
+        store.insert(data, for: url)
+    }
 }
 
