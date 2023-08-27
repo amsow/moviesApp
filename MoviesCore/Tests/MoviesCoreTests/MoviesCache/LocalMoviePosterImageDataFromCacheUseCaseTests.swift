@@ -22,14 +22,34 @@ final class LocalMoviePosterImageDataLoader {
         case failed
     }
     
-    func loadImageData(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
+    class Task: ImageDataLoaderTask {
+        private var completion: ((Result<Data, Error>) -> Void)?
+        
+        init(_ completion: ((Result<Data, Error>) -> Void)?) {
+            self.completion = completion
+        }
+        
+        func cancel() {
+            completion = nil
+        }
+        
+        func complete(with result: ImageDataLoader.Result) {
+            completion?(result)
+        }
+    }
+    
+    func loadImageData(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> ImageDataLoaderTask {
+        let task = Task(completion)
         store.retrieveData(for: url) { result in
-            completion(result.mapError { _ in RetrievalError.failed }
+            task.complete(with:
+                            result.mapError { _ in RetrievalError.failed }
                 .flatMap { data in
                     data.map { .success($0) } ?? .failure(RetrievalError.notFound)
                 }
             )
         }
+        
+        return task
     }
 }
 
@@ -73,6 +93,21 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
         expect(sut, toCompleteWith: .success(expectedData), when: {
             store.completeRetrievalWithData(expectedData, at: 0)
         })
+    }
+    
+    func test_loadImageDataFromURL_doesNotDeliverResultAfterCancellingTask() {
+        let (store, sut) = makeSUT()
+        let foundData = anyData()
+        
+        var receivedResults = [ImageDataLoader.Result]()
+        let task = sut.loadImageData(from: anyURL()) { receivedResults.append($0) }
+        task.cancel()
+        
+        store.completeRetrievalWithData(foundData, at: 0)
+        store.completeRetrievalWithData(.none, at: 0)
+        store.completeRetrievalWithError(anyNSError(), at: 0)
+        
+        XCTAssertTrue(receivedResults.isEmpty, "Expected no received results after cancelling task")
     }
     
     // MARK: - Private Helpers
