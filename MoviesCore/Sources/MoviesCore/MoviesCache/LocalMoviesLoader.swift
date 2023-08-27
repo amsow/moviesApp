@@ -2,7 +2,6 @@
 import Foundation
 
 public final class LocalMoviesLoader {
-    public typealias SaveResult = Result<Void, Error>
     
     private let store: MoviesStore
     private let date: () -> Date
@@ -11,6 +10,11 @@ public final class LocalMoviesLoader {
         self.store = store
         self.date = date
     }
+}
+
+// MARK: - MoviesCache
+
+extension LocalMoviesLoader: MoviesCache {
     
     public func save(_ movies: [Movie], completion: @escaping (SaveResult) -> Void) {
         store.deleteCachedMovies { [weak self] deletionResult in
