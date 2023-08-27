@@ -59,58 +59,27 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
     
     func test_loadImageDataFromURL_failsOnStoreError() {
         let (store, sut) = makeSUT()
-        
-        let retrievalError = LocalMoviePosterImageDataLoader.RetrievalError.failed
-        let exp = expectation(description: "Wait for retrive completion")
-        
-        var receivedError: Error?
-        sut.loadImageData(from: anyURL()) { result in
-            if case .failure(let error) = result {
-                receivedError = error
-            }
-            exp.fulfill()
-        }
-        
-        store.completeRetrievalWithError(retrievalError, at: 0)
-        
-        wait(for: [exp], timeout: 1.0)
-        
-        XCTAssertEqual(receivedError as? LocalMoviePosterImageDataLoader.RetrievalError, .failed)
+
+        expect(sut, toCompleteWith: .failure(LocalMoviePosterImageDataLoader.RetrievalError.failed), when: {
+            store.completeRetrievalWithError(anyNSError(), at: 0)
+        })
     }
     
     func test_loadImageFataFromURL_deliversNotFoundErrorOnNotFound() {
         let (store, sut) = makeSUT()
         
-        let exp = expectation(description: "wait for retrieval completion")
-        sut.loadImageData(from: anyURL()) { result in
-            if case .failure(let error) = result {
-                XCTAssertEqual(error as? LocalMoviePosterImageDataLoader.RetrievalError, .notFound)
-          }
-           
-            exp.fulfill()
-        }
-        store.completeRetrievalWithData(nil, at: 0)
-        wait(for: [exp], timeout: 1.0)
+        expect(sut, toCompleteWith: .failure(LocalMoviePosterImageDataLoader.RetrievalError.notFound), when: {
+            store.completeRetrievalWithData(.none, at: 0)
+        })
     }
     
     func test_loadImageDataFromURL_deliversFoundDataForURL() {
         let (store, sut) = makeSUT()
-        
         let expectedData = anyData()
-        let exp = expectation(description: "Wait for retrieval completion")
-        var receivedData: Data?
-        sut.loadImageData(from: anyURL()) { result in
-            if case .success(let data) = result {
-                receivedData = data
-            }
-            exp.fulfill()
-        }
         
-        store.completeRetrievalWithData(expectedData, at: 0)
-        
-        wait(for: [exp], timeout: 1.0)
-        
-        XCTAssertEqual(expectedData, receivedData)
+        expect(sut, toCompleteWith: .success(expectedData), when: {
+            store.completeRetrievalWithData(expectedData, at: 0)
+        })
     }
     
     // MARK: - Private Helpers
@@ -122,6 +91,39 @@ final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
         trackMemoryLeaks(sut, file: file, line: line)
         
         return (store, sut)
+    }
+    
+    private func expect(_ sut: LocalMoviePosterImageDataLoader,
+                        toCompleteWith expectedResut: ImageDataLoader.Result,
+                        when action: () -> Void,
+                        file: StaticString = #file,
+                        line: UInt = #line
+    ) {
+        
+        let exp = expectation(description: "Wait for completion")
+        sut.loadImageData(from: anyURL()) { receivedResult in
+            switch (expectedResut, receivedResult) {
+            case (.success(let expectedData), .success(let receivedData)):
+                XCTAssertEqual(expectedData, receivedData,
+                               "Expected success with data \(expectedData) but got this \(receivedData)",
+                               file: file,
+                               line: line)
+            
+            case (.failure(let expectedError as LocalMoviePosterImageDataLoader.RetrievalError), .failure(let receivedError as LocalMoviePosterImageDataLoader.RetrievalError)):
+                XCTAssertEqual(expectedError, receivedError,
+                               "Expected failure with error \(expectedError) but got this error \(receivedError) instead",
+                               file: file,
+                               line: line)
+                
+            default:
+                XCTFail("Expected to get result \(expectedResut), got \(receivedResult) instead", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+        
+        action()
+        
+        wait(for: [exp], timeout: 1.0)
     }
     
     final class ImageDataStoreSpy: ImageDataStore {
