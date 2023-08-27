@@ -3,56 +3,6 @@
 import XCTest
 import MoviesCore
 
-protocol ImageDataStore {
-    typealias RetrievalResult = Result<Data?, Error>
-    
-    func retrieveData(for url: URL, completion: @escaping (RetrievalResult) -> Void)
-}
-
-final class LocalMoviePosterImageDataLoader: ImageDataLoader {
-    
-    private let store: ImageDataStore
-    
-    init(store: ImageDataStore) {
-        self.store = store
-    }
-    
-    enum RetrievalError: Error {
-        case notFound
-        case failed
-    }
-    
-    class Task: ImageDataLoaderTask {
-        private var completion: ((Result<Data, Error>) -> Void)?
-        
-        init(_ completion: ((Result<Data, Error>) -> Void)?) {
-            self.completion = completion
-        }
-        
-        func cancel() {
-            completion = nil
-        }
-        
-        func complete(with result: ImageDataLoader.Result) {
-            completion?(result)
-        }
-    }
-    
-    func loadImageData(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> ImageDataLoaderTask {
-        let task = Task(completion)
-        store.retrieveData(for: url) { result in
-            task.complete(with:
-                            result.mapError { _ in RetrievalError.failed }
-                .flatMap { data in
-                    data.map { .success($0) } ?? .failure(RetrievalError.notFound)
-                }
-            )
-        }
-        
-        return task
-    }
-}
-
 final class LocalMoviePosterImageDataFromCacheUseCaseTests: XCTestCase {
     
     func test_init_doesNotSendMessgeToStoreUponFreation() {
