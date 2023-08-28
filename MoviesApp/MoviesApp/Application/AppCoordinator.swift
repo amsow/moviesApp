@@ -2,10 +2,6 @@
 import UIKit
 import MoviesCore
 
-protocol Coordinator {
-    func start()
-}
-
 final class AppCoordinator {
     
     typealias Dependencies = MoviePosterImageRepositoryProvider
