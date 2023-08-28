@@ -37,6 +37,7 @@
 		32CC87072A9CDC0D0007E4B0 /* MoviesLoader+Publisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CC87062A9CDC0D0007E4B0 /* MoviesLoader+Publisher.swift */; };
 		32CC87092A9CDC820007E4B0 /* Publisher+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CC87082A9CDC820007E4B0 /* Publisher+helpers.swift */; };
 		32CC870B2A9CDD0C0007E4B0 /* DispatchQueue+ImmediateScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CC870A2A9CDD0C0007E4B0 /* DispatchQueue+ImmediateScheduler.swift */; };
+		32CC870D2A9CEBB10007E4B0 /* ImageDataLoader+Publisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CC870C2A9CEBB10007E4B0 /* ImageDataLoader+Publisher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +84,7 @@
 		32CC87062A9CDC0D0007E4B0 /* MoviesLoader+Publisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoviesLoader+Publisher.swift"; sourceTree = "<group>"; };
 		32CC87082A9CDC820007E4B0 /* Publisher+helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+helpers.swift"; sourceTree = "<group>"; };
 		32CC870A2A9CDD0C0007E4B0 /* DispatchQueue+ImmediateScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchQueue+ImmediateScheduler.swift"; sourceTree = "<group>"; };
+		32CC870C2A9CEBB10007E4B0 /* ImageDataLoader+Publisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageDataLoader+Publisher.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -266,6 +268,7 @@
 				32CC87062A9CDC0D0007E4B0 /* MoviesLoader+Publisher.swift */,
 				32CC87082A9CDC820007E4B0 /* Publisher+helpers.swift */,
 				32CC870A2A9CDD0C0007E4B0 /* DispatchQueue+ImmediateScheduler.swift */,
+				32CC870C2A9CEBB10007E4B0 /* ImageDataLoader+Publisher.swift */,
 			);
 			path = CombineHelpers;
 			sourceTree = "<group>";
@@ -393,6 +396,7 @@
 				3231ADAF2A93E74F0038218F /* MovieCell.swift in Sources */,
 				32CC87092A9CDC820007E4B0 /* Publisher+helpers.swift in Sources */,
 				3257E98C2A99060D00A9BBC3 /* AppComposer.swift in Sources */,
+				32CC870D2A9CEBB10007E4B0 /* ImageDataLoader+Publisher.swift in Sources */,
 				3257E9862A98E04400A9BBC3 /* MovieViewModel.swift in Sources */,
 				3231ADAD2A93DCC50038218F /* MoviesListViewController.swift in Sources */,
 			);

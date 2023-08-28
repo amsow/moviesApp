@@ -29,6 +29,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
     }
     
+    // MARK: - Private
+    
     private func makeRemoteMoviesLoaderWithLocalFallback() -> AnyPublisher<[Movie], Error> {
         let session = URLSession(configuration: .ephemeral)
         let client = URLSessionHTTPClient(session: session)
@@ -59,31 +61,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 remoteImgDataLoader.loadImageDataPublisher(url: url)
                     .caching(to: localImgDataLoader, with: url)
             })
-    }
-}
-
-extension ImageDataLoader {
-    public typealias Publisher = AnyPublisher<Data, Error>
-    
-    public func loadImageDataPublisher(url: URL) -> Publisher {
-        var task: ImageDataLoaderTask?
-        return Deferred {
-            Future { completion in
-                task = loadImageData(from: url, completion: completion)
-            }
-        }
-        .handleEvents(receiveCancel: {
-            task?.cancel()
-        })
-        .eraseToAnyPublisher()
-    }
-}
-
-extension Publisher where Output == Data {
-    func caching(to cache: ImageDataCache, with url: URL) -> AnyPublisher<Output, Failure> {
-        handleEvents(receiveOutput: { data in
-            cache.save(data, for: url) { _ in } // Here we don't really care about the result of that operator, so ignoring the completion
-        })
-        .eraseToAnyPublisher()
     }
 }
