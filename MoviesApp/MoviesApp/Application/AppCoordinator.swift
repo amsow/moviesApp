@@ -1,25 +1,32 @@
 
 import UIKit
-
+import MoviesCore
 
 protocol Coordinator {
     func start()
 }
 
-final class AppCoordinator: Coordinator {
+final class AppCoordinator {
     
-    private let window: UIWindow
-    private let viewController: UIViewController
+    typealias Dependencies = MoviePosterImageRepositoryProvider
     
+    var navigationController: UINavigationController?
+    private let dependencies: Dependencies
     
-    init(window: UIWindow, viewController: UIViewController) {
-        self.window = window
-        self.viewController = viewController
+    init(dependencies: Dependencies) {
+        self.dependencies = dependencies
     }
-    
-    
-    func start() {
-        window.rootViewController = UINavigationController(rootViewController: viewController)
-        window.makeKeyAndVisible()
+}
+
+// MARK: - MoviesListViewControllerDelegate
+
+extension AppCoordinator: MoviesListViewControllerDelegate {
+    func didRequestDetails(for movie: Movie) {
+        let detailsViewController = AppComposer.makeMovieDetailsViewControllerWith(
+            movie: movie,
+            posterImageRepository: dependencies.posterImageDataRepository
+        )
+        
+        navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }

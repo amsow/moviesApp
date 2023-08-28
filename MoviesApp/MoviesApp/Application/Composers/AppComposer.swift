@@ -7,10 +7,13 @@ public final class AppComposer {
     
     public static func moviesListViewControllerWith(
         moviesLoader: @escaping () -> MoviesLoader.Publisher,
-        imageDataLoader: @escaping (URL) -> ImageDataLoader.Publisher
+        imageDataLoader: @escaping (URL) -> ImageDataLoader.Publisher,
+        delegate: MoviesListViewControllerDelegate? = nil
     ) -> MoviesListViewController {
         let moviesListController = makeListViewController()
-        moviesListController.viewModel = MoviesListViewModel(loader: moviesLoader().dispatchOnMainQueue)
+        let viewModel = MoviesListViewModel(loader: moviesLoader().dispatchOnMainQueue)
+        viewModel.delegate = delegate
+        moviesListController.viewModel = viewModel
         moviesListController.cellControllerFactory = MovieCellControllerFactory(
             imageDataLoader: { imageDataLoader($0).dispatchOnMainQueue()}
         )

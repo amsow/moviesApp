@@ -25,6 +25,7 @@ final class MovieDetailsViewController: UIViewController {
         super.viewDidLoad()
         mainView.movieImageView.startShimmering()
         viewModel.updatePosterImage()
+        bindViewModel()
     }
     
     private func bindViewModel() {
