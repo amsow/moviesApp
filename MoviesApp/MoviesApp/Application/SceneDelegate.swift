@@ -31,11 +31,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             moviesLoader: makeRemoteMoviesLoaderWithLocalFallback,
             imageDataLoader: makeLocalImageDataLoaderWithRemoteFallback
         )
-        let moviesListNavController = UINavigationController(rootViewController: moviesList)
         
-        window?.rootViewController = moviesListNavController
-        
-        window?.makeKeyAndVisible()
+        let appCoordinator: Coordinator = AppCoordinator(window: window!, viewController: moviesList)
+       
+        appCoordinator.start()
     }
     
     // MARK: - Private
