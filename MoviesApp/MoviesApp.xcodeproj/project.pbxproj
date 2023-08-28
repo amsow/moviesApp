@@ -134,6 +134,7 @@
 		3231AD6F2A8FFBA80038218F /* MoviesApp */ = {
 			isa = PBXGroup;
 			children = (
+				32CC87172A9D12ED0007E4B0 /* Data */,
 				3231AD7E2A8FFBA90038218F /* Info.plist */,
 				32C1C2182A96BA2200938858 /* Application */,
 				3257E9832A98E00C00A9BBC3 /* Presentation */,
@@ -304,6 +305,13 @@
 				32CC87152A9D050F0007E4B0 /* MovieDetailsViewModel.swift */,
 			);
 			path = MovieDetails;
+			sourceTree = "<group>";
+		};
+		32CC87172A9D12ED0007E4B0 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
