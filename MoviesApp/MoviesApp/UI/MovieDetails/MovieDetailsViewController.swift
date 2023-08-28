@@ -34,7 +34,9 @@ final class MovieDetailsViewController: UIViewController {
         mainView.fullOverviewLabel.text = viewModel.movieOverview
         
         viewModel.onPosterImageChange = { [weak self] imgData in
-            self?.mainView.movieImageView.image = UIImage(data: imgData)
+            DispatchQueue.main.async {
+                self?.mainView.movieImageView.image = UIImage(data: imgData)
+            }
         }
     }
 }

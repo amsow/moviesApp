@@ -18,7 +18,10 @@ final class AppDIContainer {
     }()
     
     lazy var posterImageDataRepository: MoviePosterImageRepository = {
-        DefaultMoviePosterImageRepository(store: store, loader: RemoteMoviePosterImageDataLoader(client: httpClient))
+        let loader = RemoteMoviePosterImageDataLoader(client: httpClient)
+        let repository = DefaultMoviePosterImageRepository(store: store, loader: MainQueueDispatchDecorator(decoratee: loader))
+        
+        return repository
     }()
 }
 

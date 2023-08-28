@@ -34,3 +34,12 @@ extension MainQueueDispatchDecorator: ImageDataLoader where Decoratee == ImageDa
         }
     }
 }
+
+// This sounds like a duplication for `ImageDataLoader`. Need to handle it better way
+extension MainQueueDispatchDecorator: MoviePosterImageRepository where Decoratee == MoviePosterImageRepository {
+    func getImageData(for url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
+        decoratee.getImageData(for: url) { [weak self] result in
+            self?.dispatch { completion(result) }
+        }
+    }
+}
