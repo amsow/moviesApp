@@ -178,6 +178,7 @@
 		3257E9832A98E00C00A9BBC3 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				32CC871A2A9D1AF50007E4B0 /* MovieDetails */,
 				3257E9912A991BD200A9BBC3 /* MoviesList */,
 				3257E9902A991BC300A9BBC3 /* MovieCell */,
 				325A63942A9ABBE800ABB9A0 /* Movies.strings */,
@@ -304,7 +305,6 @@
 			isa = PBXGroup;
 			children = (
 				32CC87132A9CFA870007E4B0 /* MovieDetailsView.swift */,
-				32CC87152A9D050F0007E4B0 /* MovieDetailsViewModel.swift */,
 				32CC87182A9D15060007E4B0 /* MovieDetailsViewController.swift */,
 			);
 			path = MovieDetails;
@@ -315,6 +315,14 @@
 			children = (
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		32CC871A2A9D1AF50007E4B0 /* MovieDetails */ = {
+			isa = PBXGroup;
+			children = (
+				32CC87152A9D050F0007E4B0 /* MovieDetailsViewModel.swift */,
+			);
+			path = MovieDetails;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
