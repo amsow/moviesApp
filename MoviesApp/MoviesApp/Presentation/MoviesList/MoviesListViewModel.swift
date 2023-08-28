@@ -3,6 +3,10 @@ import Combine
 import Foundation
 import MoviesCore
 
+public protocol MoviesListViewControllerDelegate {
+    func didRequestDetails(for movie: Movie)
+}
+
 public final class MoviesListViewModel {
     
     typealias Observer<P> = (P) -> Void
@@ -14,9 +18,17 @@ public final class MoviesListViewModel {
     var onLoadSucceeded: Observer<[Movie]>?
     var onLoadFailed: Observer<String?>?
     
+    // MARK: - Input
+    
+    private(set) var onSelectMovieAtIndex: Observer<Int>?
+    
+    var delegate: MoviesListViewControllerDelegate?
+    
     // MARK: - Properties
     
     private let loader: () -> MoviesLoader.Publisher
+    
+    private var movies = [Movie]()
     
     static var moviesListTitle: String {
         return NSLocalizedString(
@@ -39,6 +51,7 @@ public final class MoviesListViewModel {
     
     init(loader: @escaping () -> MoviesLoader.Publisher) {
         self.loader = loader
+        forwardMovieSelection()
     }
     
     func loadMovies() {
@@ -58,6 +71,14 @@ public final class MoviesListViewModel {
             
         } receiveValue: { [weak self] movies in
             self?.onLoadSucceeded?(movies)
+            self?.movies = movies
+        }
+    }
+    
+    private func forwardMovieSelection() {
+        onSelectMovieAtIndex = { [weak self] index in
+            guard let self else { return }
+            self.delegate?.didRequestDetails(for: movies[index])
         }
     }
 }

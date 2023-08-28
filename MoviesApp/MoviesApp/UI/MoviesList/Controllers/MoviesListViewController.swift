@@ -98,4 +98,8 @@ extension MoviesListViewController {
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         movieCellController(at: indexPath)?.cancelImageDataLoadTask()
     }
+    
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        viewModel?.onSelectMovieAtIndex?(indexPath.row)
+    }
 }

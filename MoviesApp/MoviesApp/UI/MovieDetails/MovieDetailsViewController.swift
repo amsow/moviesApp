@@ -23,8 +23,9 @@ final class MovieDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        mainView.movieImageView.startShimmering()
+        mainView.imageViewContainer.startShimmering()
         viewModel.updatePosterImage()
+        bindViewModel()
     }
     
     private func bindViewModel() {
@@ -33,7 +34,10 @@ final class MovieDetailsViewController: UIViewController {
         mainView.fullOverviewLabel.text = viewModel.movieOverview
         
         viewModel.onPosterImageChange = { [weak self] imgData in
-            self?.mainView.movieImageView.image = UIImage(data: imgData)
+            DispatchQueue.main.async {
+                self?.mainView.movieImageView.image = UIImage(data: imgData)
+                self?.mainView.imageViewContainer.stopShimmering()
+            }
         }
     }
 }
