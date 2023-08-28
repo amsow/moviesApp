@@ -340,7 +340,7 @@ final class MoviesListViewControllerTests: XCTestCase {
         let loader = MoviesLoaderSpy()
         let sut = AppComposer.moviesListViewControllerWith(
             moviesLoader: loader.loadPublisher,
-            imageDataLoader: loader
+            imageDataLoader: loader.loadImageDataPublisher
         )
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)

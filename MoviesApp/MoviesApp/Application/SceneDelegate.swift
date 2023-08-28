@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let moviesList = AppComposer.moviesListViewControllerWith(
             moviesLoader: makeRemoteMoviesLoaderWithLocalFallback,
-            imageDataLoader: imgDataLoader
+            imageDataLoader: makeLocalImageDataLoaderWithRemoteFallback
         )
         let moviesListNavController = UINavigationController(rootViewController: moviesList)
         
@@ -42,5 +42,48 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             .loadPublisher()
             .caching(to: localMoviesLoader)
             .fallback(to: localMoviesLoader.loadPublisher)
+    }
+    
+    private func makeLocalImageDataLoaderWithRemoteFallback(url: URL) -> AnyPublisher<Data, Error> {
+        let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("movies-store.sqlite")
+        let store = try! CoreDataMoviesStore(storeURL: storeURL)
+        let localImgDataLoader = LocalMoviePosterImageDataLoader(store: store)
+        
+        let session = URLSession(configuration: .ephemeral)
+        let client = URLSessionHTTPClient(session: session)
+        let remoteImgDataLoader = RemoteMoviePosterImageDataLoader(client: client)
+        
+        return localImgDataLoader
+            .loadImageDataPublisher(url: url)
+            .fallback(to: {
+                remoteImgDataLoader.loadImageDataPublisher(url: url)
+                    .caching(to: localImgDataLoader, with: url)
+            })
+    }
+}
+
+extension ImageDataLoader {
+    public typealias Publisher = AnyPublisher<Data, Error>
+    
+    public func loadImageDataPublisher(url: URL) -> Publisher {
+        var task: ImageDataLoaderTask?
+        return Deferred {
+            Future { completion in
+                task = loadImageData(from: url, completion: completion)
+            }
+        }
+        .handleEvents(receiveCancel: {
+            task?.cancel()
+        })
+        .eraseToAnyPublisher()
+    }
+}
+
+extension Publisher where Output == Data {
+    func caching(to cache: ImageDataCache, with url: URL) -> AnyPublisher<Output, Failure> {
+        handleEvents(receiveOutput: { data in
+            cache.save(data, for: url) { _ in } // Here we don't really care about the result of that operator, so ignoring the completion
+        })
+        .eraseToAnyPublisher()
     }
 }
