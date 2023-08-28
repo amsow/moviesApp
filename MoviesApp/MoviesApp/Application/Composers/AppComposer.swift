@@ -1,20 +1,26 @@
 
-import UIKit
+import Combine
 import MoviesCore
+import UIKit
 
 public final class AppComposer {
     
-    public static func moviesListViewController(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) -> MoviesListViewController {
-        return makeListViewController(moviesLoader: moviesLoader, imageDataLoader: imageDataLoader)
+    public static func moviesListViewControllerWith(
+        moviesLoader: @escaping () -> MoviesLoader.Publisher,
+        imageDataLoader: ImageDataLoader
+    ) -> MoviesListViewController {
+        let moviesListController = makeListViewController()
+        moviesListController.viewModel = MoviesListViewModel(loader: moviesLoader().dispatchOnMainQueue)
+        moviesListController.cellControllerFactory = MovieCellControllerFactory(imageDataLoader: MainQueueDispatchDecorator(decoratee: imageDataLoader))
+        
+        return moviesListController
     }
     
-    private static func makeListViewController(moviesLoader: MoviesLoader, imageDataLoader: ImageDataLoader) -> MoviesListViewController {
+    private static func makeListViewController() -> MoviesListViewController {
         let storyboard = UIStoryboard(name: "MoviesScene", bundle: Bundle(for: MoviesListViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! MoviesListViewController
         controller.title = MoviesListViewModel.moviesListTitle
-        controller.viewModel = MoviesListViewModel(loader: MainQueueDispatchDecorator(decoratee: moviesLoader))
-        controller.cellControllerFactory = MovieCellControllerFactory(imageDataLoader: MainQueueDispatchDecorator(decoratee: imageDataLoader))
-        
+            
         return controller
     }
 }
