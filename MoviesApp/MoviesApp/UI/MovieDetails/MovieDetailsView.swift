@@ -5,24 +5,24 @@ final class MovieDetailsView: UIView {
     
    // MARK: - Properties
     
-    private let titleLabel: UILabel = {
+    let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         return label
     }()
     
-    private let releaseDateLabel: UILabel = {
+    let releaseDateLabel: UILabel = {
         let label = UILabel()
         return label
     }()
     
-    private let fullOverviewLabel: UILabel = {
+    let fullOverviewLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         return label
     }()
     
-    private let movieImageView: UIImageView = {
+    let movieImageView: UIImageView = {
         let imgView = UIImageView()
         return imgView
     }()

@@ -41,6 +41,7 @@
 		32CC870F2A9CEFD60007E4B0 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CC870E2A9CEFD60007E4B0 /* AppCoordinator.swift */; };
 		32CC87142A9CFA870007E4B0 /* MovieDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CC87132A9CFA870007E4B0 /* MovieDetailsView.swift */; };
 		32CC87162A9D050F0007E4B0 /* MovieDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CC87152A9D050F0007E4B0 /* MovieDetailsViewModel.swift */; };
+		32CC87192A9D15060007E4B0 /* MovieDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CC87182A9D15060007E4B0 /* MovieDetailsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,7 @@
 		32CC870E2A9CEFD60007E4B0 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		32CC87132A9CFA870007E4B0 /* MovieDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsView.swift; sourceTree = "<group>"; };
 		32CC87152A9D050F0007E4B0 /* MovieDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsViewModel.swift; sourceTree = "<group>"; };
+		32CC87182A9D15060007E4B0 /* MovieDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -303,6 +305,7 @@
 			children = (
 				32CC87132A9CFA870007E4B0 /* MovieDetailsView.swift */,
 				32CC87152A9D050F0007E4B0 /* MovieDetailsViewModel.swift */,
+				32CC87182A9D15060007E4B0 /* MovieDetailsViewController.swift */,
 			);
 			path = MovieDetails;
 			sourceTree = "<group>";
@@ -435,6 +438,7 @@
 				32CC870B2A9CDD0C0007E4B0 /* DispatchQueue+ImmediateScheduler.swift in Sources */,
 				32CC870F2A9CEFD60007E4B0 /* AppCoordinator.swift in Sources */,
 				3231AD732A8FFBA80038218F /* SceneDelegate.swift in Sources */,
+				32CC87192A9D15060007E4B0 /* MovieDetailsViewController.swift in Sources */,
 				3231ADAF2A93E74F0038218F /* MovieCell.swift in Sources */,
 				32CC87142A9CFA870007E4B0 /* MovieDetailsView.swift in Sources */,
 				32CC87162A9D050F0007E4B0 /* MovieDetailsViewModel.swift in Sources */,

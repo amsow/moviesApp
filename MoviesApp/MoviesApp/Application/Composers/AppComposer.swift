@@ -18,6 +18,18 @@ public final class AppComposer {
         return moviesListController
     }
     
+    static func makeMovieDetailsViewControllerWith(
+        movie: Movie,
+        posterImageRepository: MoviePosterImageRepository
+    ) -> UIViewController {
+        let viewModel = MovieDetailsViewModel(model: movie, posterImageRepository: posterImageRepository)
+        let controller = MovieDetailsViewController(viewModel: viewModel)
+        
+        return controller
+    }
+    
+    // MARK: - Private
+    
     private static func makeListViewController() -> MoviesListViewController {
         let storyboard = UIStoryboard(name: "MoviesScene", bundle: Bundle(for: MoviesListViewController.self))
         let controller = storyboard.instantiateInitialViewController() as! MoviesListViewController
