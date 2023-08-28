@@ -9,14 +9,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
+    private let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("movies-store.sqlite")
+    
+    private lazy var store: MoviesStore & ImageDataStore = {
+        try! CoreDataMoviesStore(storeURL: storeURL)
+    }()
+    
+    private lazy var httpClient: HTTPClient = {
+        let session = URLSession(configuration: .ephemeral)
+        let client = URLSessionHTTPClient(session: session)
+        
+        return client
+    }()
+    
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
-        
-        let session = URLSession(configuration: .ephemeral)
-        let client = URLSessionHTTPClient(session: session)
-        let imgDataLoader = RemoteMoviePosterImageDataLoader(client: client)
         
         let moviesList = AppComposer.moviesListViewControllerWith(
             moviesLoader: makeRemoteMoviesLoaderWithLocalFallback,
@@ -32,12 +41,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // MARK: - Private
     
     private func makeRemoteMoviesLoaderWithLocalFallback() -> AnyPublisher<[Movie], Error> {
-        let session = URLSession(configuration: .ephemeral)
-        let client = URLSessionHTTPClient(session: session)
-        let remoteMoviesLoader = RemoteMoviesLoader(url: MoviesEndpoint.url()!, client: client)
-        
-        let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("movies-store.sqlite")
-        let store = try! CoreDataMoviesStore(storeURL: storeURL)
+        let remoteMoviesLoader = RemoteMoviesLoader(url: MoviesEndpoint.url()!, client: httpClient)
         let localMoviesLoader = LocalMoviesLoader(store: store, date: Date.init)
         
         return remoteMoviesLoader
@@ -47,13 +51,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func makeLocalImageDataLoaderWithRemoteFallback(url: URL) -> AnyPublisher<Data, Error> {
-        let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("movies-store.sqlite")
-        let store = try! CoreDataMoviesStore(storeURL: storeURL)
         let localImgDataLoader = LocalMoviePosterImageDataLoader(store: store)
-        
-        let session = URLSession(configuration: .ephemeral)
-        let client = URLSessionHTTPClient(session: session)
-        let remoteImgDataLoader = RemoteMoviePosterImageDataLoader(client: client)
+        let remoteImgDataLoader = RemoteMoviePosterImageDataLoader(client: httpClient)
         
         return localImgDataLoader
             .loadImageDataPublisher(url: url)
