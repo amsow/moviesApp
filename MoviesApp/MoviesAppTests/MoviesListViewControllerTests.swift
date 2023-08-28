@@ -72,15 +72,15 @@ final class MoviesListViewControllerTests: XCTestCase {
     func test_loadMoviesCompletion_dispatchesFromBackgroundToMainThread() {
         let (loader, sut) = makeSUT()
         let movie = makeMovie(id: 0, title: "Movie 0", overview: "Any description")
-        
+
         sut.loadViewIfNeeded()
         let exp = expectation(description: "Wait for load completion in background thread")
-        
+
         DispatchQueue.global().async {
             loader.completeMoviesLoadingSuccessfully(with: [movie], at: 0)
             exp.fulfill()
         }
-        
+
         wait(for: [exp], timeout: 1.0)
     }
     
@@ -338,9 +338,9 @@ final class MoviesListViewControllerTests: XCTestCase {
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (loader: MoviesLoaderSpy, sut: MoviesListViewController) {
         let loader = MoviesLoaderSpy()
-        let sut = AppComposer.moviesListViewController(
-            moviesLoader: loader,
-            imageDataLoader: loader
+        let sut = AppComposer.moviesListViewControllerWith(
+            moviesLoader: loader.loadPublisher,
+            imageDataLoader: loader.loadImageDataPublisher
         )
         trackForMemoryLeaks(loader, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)

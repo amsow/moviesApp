@@ -28,4 +28,15 @@ public final class CoreDataMoviesStore {
         let context = self.context
         context.perform { action(context) }
     }
+    
+    private func cleanUpReferencesToPersistenceStores() {
+        context.performAndWait {
+            let coordinator = context.persistentStoreCoordinator
+            try? coordinator?.persistentStores.forEach { try coordinator?.remove($0) }
+        }
+    }
+    
+    deinit {
+        cleanUpReferencesToPersistenceStores()
+    }
 }

@@ -1,10 +1,12 @@
 
+import Combine
 import Foundation
 import MoviesCore
 
 public final class MoviesListViewModel {
     
     typealias Observer<P> = (P) -> Void
+    private var cancellable: Cancellable?
     
     // MARK: - Output Observers
     
@@ -14,7 +16,7 @@ public final class MoviesListViewModel {
     
     // MARK: - Properties
     
-    private let loader: MoviesLoader
+    private let loader: () -> MoviesLoader.Publisher
     
     static var moviesListTitle: String {
         return NSLocalizedString(
@@ -24,7 +26,7 @@ public final class MoviesListViewModel {
         )
     }
     
-    private var loadErrorMessage: String {
+    private static var loadErrorMessage: String {
         return NSLocalizedString(
             "MOVIES_LOAD_ERROR",
             tableName: "Movies",
@@ -35,24 +37,27 @@ public final class MoviesListViewModel {
     
     // MARK: - Init
     
-    init(loader: MoviesLoader) {
+    init(loader: @escaping () -> MoviesLoader.Publisher) {
         self.loader = loader
     }
     
     func loadMovies() {
         onLoadFailed?(.none)
         onLoading?(true)
-        loader.load { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let movies):
-               onLoadSucceeded?(movies)
-        
+        cancellable = loader()
+            .sink { [weak self] completion in
+            self?.onLoading?(false)
+            
+            switch completion {
+            case .finished:
+                break
+                
             case .failure:
-                onLoadFailed?(loadErrorMessage)
+                self?.onLoadFailed?(Self.loadErrorMessage)
             }
             
-            onLoading?(false)
+        } receiveValue: { [weak self] movies in
+            self?.onLoadSucceeded?(movies)
         }
     }
 }
