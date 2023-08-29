@@ -45,8 +45,8 @@ public final class MoviesListViewController: UITableViewController {
     }
     
     func display( _ cellControllers: [MovieCellController]) {
-        tableModels = cellControllers
         cellControllersInLoad = [:]
+        tableModels = cellControllers
     }
     
     private func updateLoadingState(_ isLoading: Bool) {
@@ -56,6 +56,11 @@ public final class MoviesListViewController: UITableViewController {
     private func updateErrorState(_ message: String?) {
         errorView?.isHidden = message == nil
         errorView?.message = message
+    }
+    
+    private func cancelImgeDataLoading(at indexPath: IndexPath) {
+        cellControllersInLoad[indexPath]?.cancelImageDataLoadTask()
+        cellControllersInLoad[indexPath] = nil
     }
 }
 
@@ -92,14 +97,13 @@ extension MoviesListViewController {
 extension MoviesListViewController: UITableViewDataSourcePrefetching {
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            cellControllersInLoad[indexPath]?.preloadImageData()
+            movieCellController(at: indexPath)?.preloadImageData()
         }
     }
     
     public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            cellControllersInLoad[indexPath]?.cancelImageDataLoadTask()
-            cellControllersInLoad[indexPath] = nil
+            cancelImgeDataLoading(at: indexPath)
         }
     }
 }
@@ -108,8 +112,7 @@ extension MoviesListViewController: UITableViewDataSourcePrefetching {
 
 extension MoviesListViewController {
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cellControllersInLoad[indexPath]?.cancelImageDataLoadTask()
-        cellControllersInLoad[indexPath] = nil
+       cancelImgeDataLoading(at: indexPath)
     }
     
     public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
