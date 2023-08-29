@@ -1,6 +1,18 @@
 # Movies App
 A movies app showing the last trending movies and their descriptions.
 
+## Build and Runtime Requirements
+
++ Xcode 14.3 or later
++ iOS 13.0 or later
++ OS X 12.0 or later
+
+## How to run?
+
+1. Clone the project
+2. Open MoviesApp.xcworkspace in the folder MoviesApp
+3. Sync and run
+
 ## BDD Specs
 
 ### Story: Customer requests to see the trending movies
