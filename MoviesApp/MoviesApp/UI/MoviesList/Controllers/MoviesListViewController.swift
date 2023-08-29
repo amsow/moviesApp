@@ -51,6 +51,7 @@ public final class MoviesListViewController: UITableViewController {
     }
     
     private func updateErrorState(_ message: String?) {
+        errorView?.isHidden = message == nil
         errorView?.message = message
     }
 }

@@ -22,6 +22,15 @@ final class MoviesListSnapshotTests: XCTestCase {
         assert(snapshot: sut.snapshot(for: .iPhone8(style: .light)), record: true, named: "MOVIES_LIST_WITH_CONTENT_LIGHT")
     }
     
+    // TODO: - To be fixed as the frame of time is very low to capture the forwarded event by the viewModel
+    func _test_moviesListWithError() {
+        let sut = makeSUT()
+        
+        sut.displayMoviesListWithError("An error occured. Please try again")
+        
+        assert(snapshot: sut.snapshot(for: .iPhone8(style: .light)), record: true, named: "MOVIES_LIST_ERROR_LIGHT")
+    }
+    
     // MARK: - Helpers
     
     private func makeSUT() -> MoviesListViewController {
@@ -135,6 +144,17 @@ extension MoviesListViewController {
             return cellController
         })
     }
+    
+    func displayMoviesListWithError(_ message: String) {
+        class dummyLoader: MoviesLoader {
+            func load(completion: @escaping (MoviesLoader.Result) -> Void) {}
+        }
+        
+        viewModel = MoviesListViewModel(loader: dummyLoader().loadPublisher)
+        
+        
+        viewModel?.onLoadFailed?(message)
+    }
 }
 
 final class MovieCellControllerStub: MovieCellControllerDelegate {
@@ -165,33 +185,4 @@ final class MovieCellControllerStub: MovieCellControllerDelegate {
     
     func didCancelImageDataLoadingRequest() {}
     
-    
-}
-
-func makeMovies() -> [Movie] {
-    let movie1 = Movie(
-        id: 1,
-        title: "title1",
-        overview: "overview1",
-        releaseDate: Date(timeIntervalSince1970: 1627430400),
-        posterImageURL: URL(string: "http://poster-image-base-url.com/w0cn9vwzkheuCT2a2MStdnadOyh.jpg")!
-    )
-    
-    let movie2 = Movie(
-        id: 2,
-        title: "title2",
-        overview: "overview2",
-        releaseDate: Date(timeIntervalSince1970: 970617600),
-        posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2MStdnadOyh.jpg")!
-    )
-    
-    let movie3 = Movie(
-        id: 3,
-        title: "title3",
-        overview: "overview3",
-        releaseDate: Date(timeIntervalSince1970: 1111276800),
-        posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2a2MStdnadOyh.jpg")!
-    )
-    
-    return [movie1, movie2, movie3]
 }

@@ -34,7 +34,9 @@ public final class LoadMoviesErrorView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
-        backgroundColor = UIColor(red: 255, green: 106, blue: 106, alpha: 1)
+        backgroundColor = UIColor(red: 1, green: 106/255, blue: 106/255, alpha: 1)
+        
+        isHidden = true
     }
     
     private func makeConstraints() {
@@ -42,7 +44,7 @@ public final class LoadMoviesErrorView: UIView {
             label.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
             label.leadingAnchor.constraint(equalTo: leadingAnchor),
             label.trailingAnchor.constraint(equalTo: trailingAnchor),
-            label.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor, constant: 8)
+            label.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor, constant: -8)
             ]
         )
     }

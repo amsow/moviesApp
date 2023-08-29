@@ -18,18 +18,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="PeH-bP-BhJ" customClass="LoadMoviesErrorView" customModule="MoviesApp" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="393" height="15"/>
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="35"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <color key="backgroundColor" red="1" green="0.41568627450980389" blue="0.41568627450980389" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </view>
                         <view key="tableFooterView" contentMode="scaleToFill" id="VYX-H4-CkN">
-                            <rect key="frame" x="0.0" y="587" width="393" height="15"/>
+                            <rect key="frame" x="0.0" y="607" width="393" height="15"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="494" id="9S2-LZ-A1v" customClass="MovieCell" customModule="MoviesApp" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="65" width="393" height="494"/>
+                                <rect key="frame" x="0.0" y="85" width="393" height="494"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="9S2-LZ-A1v" id="F5O-O4-E7W">
                                     <rect key="frame" x="0.0" y="0.0" width="393" height="494"/>
