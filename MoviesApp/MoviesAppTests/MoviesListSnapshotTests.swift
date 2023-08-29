@@ -1,6 +1,7 @@
 
 
 import XCTest
+import MoviesCore
 @testable import MoviesApp
 
 final class MoviesListSnapshotTests: XCTestCase {
@@ -10,7 +11,15 @@ final class MoviesListSnapshotTests: XCTestCase {
         
         sut.displayWithEmptyMovies()
         
-        assert(snapshot: sut.snapshot(for: .iPhone8(style: .light)), record: false, named: "EMPTY_MOVIES_LIST_LIGHT")
+        assert(snapshot: sut.snapshot(for: .iPhone8(style: .light)), record: true, named: "EMPTY_MOVIES_LIST_LIGHT")
+    }
+    
+    func test_moviesListWithContent() {
+        let sut = makeSUT()
+        
+        sut.displayMoviesListWithContent()
+        
+        assert(snapshot: sut.snapshot(for: .iPhone8(style: .light)), record: true, named: "MOVIES_LIST_WITH_CONTENT_LIGHT")
     }
     
     // MARK: - Helpers
@@ -85,6 +94,104 @@ final class MoviesListSnapshotTests: XCTestCase {
 
 extension MoviesListViewController {
     func displayWithEmptyMovies() {
-        viewModel?.onLoadSucceeded?([])
+        display([])
     }
+    
+    func displayMoviesListWithContent() {
+        let cellstubs = [
+           MovieCellControllerStub(
+            title: "Black Panther",
+            overview: "Black panther full description",
+            releaseDate: "2019",
+            isLoading: false,
+            image: UIImage.makeWithColor(.red)
+           ),
+           MovieCellControllerStub(
+            title: "Casa De Papel",
+            overview: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
+            releaseDate: "2019",
+            isLoading: false,
+            image: UIImage.makeWithColor(.green)
+           ),
+           MovieCellControllerStub(
+            title: "Glory",
+            overview: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+            releaseDate: "2000",
+            isLoading: false,
+            image: UIImage.makeWithColor(.yellow)
+           ),
+           MovieCellControllerStub(
+            title: "les 100",
+            overview: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type",
+            releaseDate: "1998",
+            isLoading: false,
+            image: UIImage.makeWithColor(.purple)
+           )
+        ]
+        
+        display(cellstubs.map { stub in
+            let cellController = MovieCellController(delegate: stub)
+            stub.controller = cellController
+            return cellController
+        })
+    }
+}
+
+final class MovieCellControllerStub: MovieCellControllerDelegate {
+    
+    let viewModel: MovieViewModel<UIImage>
+    
+    weak var controller: MovieCellController?
+    
+     init(
+        title: String,
+        overview: String,
+        releaseDate: String?,
+        isLoading: Bool,
+        image: UIImage?
+    ) {
+       viewModel = MovieViewModel(
+        title: title,
+        overview: overview,
+        releaseDate: releaseDate,
+        posterImage: image,
+        isLoading: isLoading,
+        shouldRetry: image == nil)
+    }
+    
+    func didRequestImageDataLoading() {
+        controller?.display(viewModel)
+    }
+    
+    func didCancelImageDataLoadingRequest() {}
+    
+    
+}
+
+func makeMovies() -> [Movie] {
+    let movie1 = Movie(
+        id: 1,
+        title: "title1",
+        overview: "overview1",
+        releaseDate: Date(timeIntervalSince1970: 1627430400),
+        posterImageURL: URL(string: "http://poster-image-base-url.com/w0cn9vwzkheuCT2a2MStdnadOyh.jpg")!
+    )
+    
+    let movie2 = Movie(
+        id: 2,
+        title: "title2",
+        overview: "overview2",
+        releaseDate: Date(timeIntervalSince1970: 970617600),
+        posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2MStdnadOyh.jpg")!
+    )
+    
+    let movie3 = Movie(
+        id: 3,
+        title: "title3",
+        overview: "overview3",
+        releaseDate: Date(timeIntervalSince1970: 1111276800),
+        posterImageURL: URL(string: "http://poster-image-base-url.com/9vwzkheuCT2a2MStdnadOyh.jpg")!
+    )
+    
+    return [movie1, movie2, movie3]
 }

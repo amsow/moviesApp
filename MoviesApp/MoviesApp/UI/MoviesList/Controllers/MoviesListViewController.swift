@@ -34,12 +34,16 @@ public final class MoviesListViewController: UITableViewController {
             guard let self, let cellControllerFactory = cellControllerFactory else {
                 return
             }
-            tableModels = movies.map(cellControllerFactory.makeCellController)
+            display(movies.map(cellControllerFactory.makeCellController))
         }
         
         viewModel?.onLoadFailed = { [weak self] errorMessage in self?.updateErrorState(errorMessage) }
         
         refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
+    }
+    
+    func display( _ cellControllers: [MovieCellController]) {
+        tableModels = cellControllers
     }
     
     private func updateLoadingState(_ isLoading: Bool) {
