@@ -31,7 +31,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return remoteMoviesLoader
             .loadPublisher()
             .caching(to: localMoviesLoader)
-            .fallback(to: localMoviesLoader.loadPublisher)
+            .fallback { error in
+                localMoviesLoader.loadPublisher()
+                    .tryMap { movies in
+                        if movies.isEmpty { throw error }
+                        return movies
+                    }
+                    .eraseToAnyPublisher()
+            }
     }
     
     private func makeLocalImageDataLoaderWithRemoteFallback(url: URL) -> AnyPublisher<Data, Error> {
@@ -40,7 +47,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         return localImgDataLoader
             .loadImageDataPublisher(url: url)
-            .fallback(to: {
+            .fallback(to: { _ in
                 remoteImgDataLoader.loadImageDataPublisher(url: url)
                     .caching(to: localImgDataLoader, with: url)
             })
