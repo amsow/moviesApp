@@ -22,8 +22,8 @@ extension Publisher where Output == Data {
 }
 
 extension Publisher {
-    func fallback(to fallback: @escaping () -> AnyPublisher<Output, Failure>) -> AnyPublisher<Output, Failure> {
-        self.catch { _ in fallback() }.eraseToAnyPublisher()
+    func fallback(to fallback: @escaping (Error) -> AnyPublisher<Output, Failure>) -> AnyPublisher<Output, Failure> {
+        self.catch(fallback).eraseToAnyPublisher()
     }
 }
 
