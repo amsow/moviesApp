@@ -19,7 +19,7 @@ final class MovieDetailsViewModel {
         model.overview
     }
     
-    var onPosterImageChange: ((Data) -> Void)?
+    var onPosterImageChange: ((Data?) -> Void)?
     
     init(model: Movie, posterImageRepository: MoviePosterImageRepository) {
         self.model = model
@@ -33,8 +33,7 @@ final class MovieDetailsViewModel {
                 self?.onPosterImageChange?(data)
                 
             case .failure:
-                // TODO: To be handled
-                break
+                self?.onPosterImageChange?(.none)
             }
         }
     }

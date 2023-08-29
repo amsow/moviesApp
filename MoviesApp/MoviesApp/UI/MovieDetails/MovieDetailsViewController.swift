@@ -23,7 +23,6 @@ final class MovieDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        mainView.imageViewContainer.startShimmering()
         viewModel.updatePosterImage()
         bindViewModel()
     }
@@ -33,9 +32,10 @@ final class MovieDetailsViewController: UIViewController {
         mainView.releaseDateLabel.text = viewModel.movieReleaseDate
         mainView.fullOverviewLabel.text = viewModel.movieOverview
         
+        mainView.imageViewContainer.startShimmering()
         viewModel.onPosterImageChange = { [weak self] imgData in
             DispatchQueue.main.async {
-                self?.mainView.movieImageView.image = UIImage(data: imgData)
+                self?.mainView.movieImageView.image = imgData.flatMap(UIImage.init)
                 self?.mainView.imageViewContainer.stopShimmering()
             }
         }
