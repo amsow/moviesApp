@@ -18,6 +18,7 @@
 		3231ADAB2A93DBEF0038218F /* UIRefreshControl+SimulatePullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADAA2A93DBEF0038218F /* UIRefreshControl+SimulatePullToRefresh.swift */; };
 		3231ADAD2A93DCC50038218F /* MoviesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADAC2A93DCC50038218F /* MoviesListViewController.swift */; };
 		3231ADAF2A93E74F0038218F /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3231ADAE2A93E74F0038218F /* MovieCell.swift */; };
+		324B70162A9DEF4800BD580E /* MoviesListSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324B70152A9DEF4800BD580E /* MoviesListSnapshotTests.swift */; };
 		3257E9862A98E04400A9BBC3 /* MovieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3257E9852A98E04400A9BBC3 /* MovieViewModel.swift */; };
 		3257E9882A98E06A00A9BBC3 /* MovieCellPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3257E9872A98E06A00A9BBC3 /* MovieCellPresenter.swift */; };
 		3257E98A2A99033700A9BBC3 /* MoviePosterImageDataLoaderPresentationAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3257E9892A99033700A9BBC3 /* MoviePosterImageDataLoaderPresentationAdapter.swift */; };
@@ -69,6 +70,7 @@
 		3231ADAA2A93DBEF0038218F /* UIRefreshControl+SimulatePullToRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+SimulatePullToRefresh.swift"; sourceTree = "<group>"; };
 		3231ADAC2A93DCC50038218F /* MoviesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesListViewController.swift; sourceTree = "<group>"; };
 		3231ADAE2A93E74F0038218F /* MovieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
+		324B70152A9DEF4800BD580E /* MoviesListSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesListSnapshotTests.swift; sourceTree = "<group>"; };
 		3257E9852A98E04400A9BBC3 /* MovieViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieViewModel.swift; sourceTree = "<group>"; };
 		3257E9872A98E06A00A9BBC3 /* MovieCellPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCellPresenter.swift; sourceTree = "<group>"; };
 		3257E9892A99033700A9BBC3 /* MoviePosterImageDataLoaderPresentationAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviePosterImageDataLoaderPresentationAdapter.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 			children = (
 				3231ADA52A93CDCE0038218F /* Helpers */,
 				3231ADA02A93C66E0038218F /* MoviesListViewControllerTests.swift */,
+				324B70152A9DEF4800BD580E /* MoviesListSnapshotTests.swift */,
 			);
 			path = MoviesAppTests;
 			sourceTree = "<group>";
@@ -468,6 +471,7 @@
 			files = (
 				3231ADA92A93DB390038218F /* UIControl+SimulateEvent.swift in Sources */,
 				3231ADA12A93C66E0038218F /* MoviesListViewControllerTests.swift in Sources */,
+				324B70162A9DEF4800BD580E /* MoviesListSnapshotTests.swift in Sources */,
 				3231ADA72A93CDF80038218F /* XCTestCase+MemoryLeakTracker.swift in Sources */,
 				32C1C2172A96B99100938858 /* UIImage+TestHelpers.swift in Sources */,
 				3261732C2A96BCC7004808B9 /* MovieCell+TestHelpers.swift in Sources */,
