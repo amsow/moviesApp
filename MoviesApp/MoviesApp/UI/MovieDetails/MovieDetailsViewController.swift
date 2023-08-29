@@ -32,7 +32,10 @@ final class MovieDetailsViewController: UIViewController {
         mainView.releaseDateLabel.text = viewModel.movieReleaseDate
         mainView.fullOverviewLabel.text = viewModel.movieOverview
         
-        mainView.imageViewContainer.startShimmering()
+        DispatchQueue.main.async { [weak self] in
+            self?.mainView.imageViewContainer.startShimmering()
+        }
+        
         viewModel.onPosterImageChange = { [weak self] imgData in
             DispatchQueue.main.async {
                 self?.mainView.movieImageView.image = imgData.flatMap(UIImage.init)
