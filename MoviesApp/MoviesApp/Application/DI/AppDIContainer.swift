@@ -7,7 +7,11 @@ final class AppDIContainer {
     
     private(set) lazy var store: MoviesStore & ImageDataStore = {
         let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("movies-store.sqlite")
-        return try! CoreDataMoviesStore(storeURL: storeURL)
+        do {
+            return try CoreDataMoviesStore(storeURL: storeURL)
+        } catch {
+            return NullStore()
+        }
     }()
     
     private(set) lazy var httpClient: HTTPClient = {

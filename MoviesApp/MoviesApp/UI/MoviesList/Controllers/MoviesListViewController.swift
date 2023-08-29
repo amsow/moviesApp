@@ -9,6 +9,8 @@ public final class MoviesListViewController: UITableViewController {
         didSet { tableView.reloadData() }
     }
     
+    private var cellControllersInLoad = [IndexPath: MovieCellController]()
+    
     var cellControllerFactory: MovieCellControllerFactory?
     var viewModel: MoviesListViewModel?
     
@@ -44,6 +46,7 @@ public final class MoviesListViewController: UITableViewController {
     
     func display( _ cellControllers: [MovieCellController]) {
         tableModels = cellControllers
+        cellControllersInLoad = [:]
     }
     
     private func updateLoadingState(_ isLoading: Bool) {
@@ -77,7 +80,10 @@ extension MoviesListViewController {
         guard indexPath.row < tableModels.count else {
             return nil
         }
-        return tableModels[indexPath.row]
+        let cellController = tableModels[indexPath.row]
+        cellControllersInLoad[indexPath] = cellController
+        
+        return cellController
     }
 }
 
@@ -86,13 +92,14 @@ extension MoviesListViewController {
 extension MoviesListViewController: UITableViewDataSourcePrefetching {
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            movieCellController(at: indexPath)?.preloadImageData()
+            cellControllersInLoad[indexPath]?.preloadImageData()
         }
     }
     
     public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            movieCellController(at: indexPath)?.cancelImageDataLoadTask()
+            cellControllersInLoad[indexPath]?.cancelImageDataLoadTask()
+            cellControllersInLoad[indexPath] = nil
         }
     }
 }
@@ -101,7 +108,8 @@ extension MoviesListViewController: UITableViewDataSourcePrefetching {
 
 extension MoviesListViewController {
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        movieCellController(at: indexPath)?.cancelImageDataLoadTask()
+        cellControllersInLoad[indexPath]?.cancelImageDataLoadTask()
+        cellControllersInLoad[indexPath] = nil
     }
     
     public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
