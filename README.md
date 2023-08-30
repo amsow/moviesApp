@@ -1,3 +1,4 @@
+[![.github/workflows/CI.yml](https://github.com/amsow/moviesApp/actions/workflows/CI.yml/badge.svg)](https://github.com/amsow/moviesApp/actions/workflows/CI.yml)
 # Movies App
 A movies app showing the last trending movies and their descriptions.
 
