@@ -33,10 +33,10 @@ public final class MoviesListViewController: UITableViewController {
         viewModel?.onLoading = { [ weak self] isLoading in self?.updateLoadingState(isLoading) }
         
         viewModel?.onLoadSucceeded = { [weak self] movies in
-            guard let self, let cellControllerFactory = cellControllerFactory else {
+            guard let self, let cellControllerFactory = self.cellControllerFactory else {
                 return
             }
-            display(movies.map(cellControllerFactory.makeCellController))
+            self.display(movies.map(cellControllerFactory.makeCellController))
         }
         
         viewModel?.onLoadFailed = { [weak self] errorMessage in self?.updateErrorState(errorMessage) }
