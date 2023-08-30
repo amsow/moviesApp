@@ -78,7 +78,7 @@ public final class MoviesListViewModel {
     private func forwardMovieSelection() {
         onSelectMovieAtIndex = { [weak self] index in
             guard let self else { return }
-            self.delegate?.didRequestDetails(for: movies[index])
+            self.delegate?.didRequestDetails(for: self.movies[index])
         }
     }
 }
