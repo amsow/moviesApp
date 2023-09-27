@@ -7,7 +7,11 @@ extension CoreDataMoviesStore: ImageDataStore {
     public func retrieveData(for url: URL, completion: @escaping (ImageDataStore.RetrievalResult) -> Void) {
         perform { context in
             completion(Result {
-                try? ManagedMovie.first(with: url, in: context)?.posterImageData
+                if let data = context.userInfo[url] as? Data {
+                    return data
+                }
+                
+                return try? ManagedMovie.first(with: url, in: context)?.posterImageData
             })
         }
     }

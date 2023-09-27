@@ -29,7 +29,7 @@ extension ManagedMovie {
     }
     
     static func managedMovieOrderSet(from movies: [Movie], in context: NSManagedObjectContext) -> NSOrderedSet {
-        NSOrderedSet(
+        let moviesOrderSet = NSOrderedSet(
             array: movies.map { movie in
                 let managedMovie = ManagedMovie(context: context)
                 managedMovie.id = movie.id
@@ -37,9 +37,20 @@ extension ManagedMovie {
                 managedMovie.overview = movie.overview
                 managedMovie.releaseDate = movie.releaseDate
                 managedMovie.posterImageURL = movie.posterImageURL
+                managedMovie.posterImageData = context.userInfo[movie.posterImageURL] as? Data
                 
                 return managedMovie
             }
         )
+        
+        context.userInfo.removeAllObjects()
+        
+        return moviesOrderSet
+    }
+    
+    override func prepareForDeletion() {
+        super.prepareForDeletion()
+        
+        managedObjectContext?.userInfo[posterImageURL] = posterImageData
     }
 }
