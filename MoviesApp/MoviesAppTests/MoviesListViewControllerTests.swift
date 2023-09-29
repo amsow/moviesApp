@@ -161,6 +161,29 @@ final class MoviesListViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.cancelledURLs, [movie1.posterImageURL, movie2.posterImageURL], "Expected cancelled url request for the second view and third view as they are no more visible")
     }
     
+    func test_movieView_doesNotLoadImageDataAgainUntilPreviousRequestCompletes() {
+        let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
+        let (loader, sut) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeMoviesLoadingSuccessfully(with: [movie0], at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [], "No image loading request expected")
+        
+        sut.simulateMovieViewNearVisible(at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL], "Expected one request for image loader request when the view is near visible")
+        
+        sut.simulateMovieViewVisible(at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL], "Expected to not load again image data once the previous request is not completed yet")
+        
+        loader.completeImageDataLoadingSuccessfully(at: 0)
+        sut.simulateMovieViewVisible(at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL, movie0.posterImageURL], "Expected to load again image data as the previous is completed")
+        
+        sut.simulateMovieViewNotVisible(at: 0) // It cancels the load image data request
+        sut.simulateMovieViewVisible(at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [movie0.posterImageURL, movie0.posterImageURL, movie0.posterImageURL], "Expected third load  image data request after cancelling the previous one")
+    }
+    
     func test_movieViewLoadingIndicator_isVisibleWhileLoadingPosterImage() {
         let movie0 = makeMovie(id: 1, title: "title 1", overview: "any overview")
         let movie1 = makeMovie(id: 2, title: "title 2", overview: "any overview")
@@ -371,7 +394,7 @@ final class MoviesListViewControllerTests: XCTestCase {
                        line: line)
         XCTAssertEqual(cell.releaseDateLabel.text,
                        movie.releaseDate?.year(),
-                       "Expected releaseDate label text to be \(String(describing: movie.releaseDate))'s year for movie cell at index \(index)",
+                       "Expected releaseDate label text to be \(String(describing: movie.releaseDate)) for movie cell at index \(index)",
                        file: file,
                        line: line)
     }

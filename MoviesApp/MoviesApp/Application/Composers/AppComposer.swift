@@ -55,7 +55,15 @@ final class MovieCellControllerFactory {
             model: movie,
             imageDataLoader: imageDataLoader
         )
-        let controller = MovieCellController(delegate: adapter)
+        let viewModel = MovieViewModel<UIImage>(
+            title: movie.title,
+            overview: movie.overview,
+            releaseDate: movie.releaseDate?.year(),
+            posterImage: nil,
+            isLoading: true,
+            shouldRetry: false
+        )
+        let controller = MovieCellController(delegate: adapter, viewModel: viewModel)
         adapter.presenter = MovieCellPresenter(view: WeakReferenceProxy(controller), imageTransformer: UIImage.init)
         
         return controller

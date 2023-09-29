@@ -147,7 +147,7 @@ extension MoviesListViewController {
         ]
         
         display(cellstubs.map { stub in
-            let cellController = MovieCellController(delegate: stub)
+            let cellController = MovieCellController(delegate: stub, viewModel: stub.viewModel)
             stub.controller = cellController
             return cellController
         })
@@ -183,7 +183,7 @@ extension MoviesListViewController {
         ]
         
         display(cellsStubs.map { stub in
-            let cellController = MovieCellController(delegate: stub)
+            let cellController = MovieCellController(delegate: stub, viewModel: stub.viewModel)
             stub.controller = cellController
             return cellController
         })

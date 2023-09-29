@@ -11,15 +11,18 @@ final class MovieCellController: NSObject, MovieCellPresentable {
     private var cell: MovieCell?
     
     private let delegate: MovieCellControllerDelegate
+    private let viewModel: MovieViewModel<UIImage>
     
-    init(delegate: MovieCellControllerDelegate) {
+    init(delegate: MovieCellControllerDelegate, viewModel: MovieViewModel<UIImage>) {
         self.delegate = delegate
+        self.viewModel = viewModel
     }
     
     ///  The associated View for the controller
     /// - Returns: UITableViewCell
     func view(in tableView: UITableView) -> UITableViewCell? {
         cell = tableView.dequeueCell()
+        display(viewModel)
         loadImageData()
         return cell
     }
